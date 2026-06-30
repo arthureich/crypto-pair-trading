@@ -50,7 +50,23 @@ documentation review
 | Execution spread/depth/imbalance features | unit | 6 | features | passed | sim |
 | Slippage estimator detects cost and insufficient liquidity | unit | 6 | execution | passed | sim |
 | Feature cache freshness fails closed | unit | 6 | market_data | passed | sim |
+| LocalOrderBook snapshot/diff gate correction | unit | 5 | market_data | passed | sim |
+| BookFeatures book_age_ms/in_sync gate correction | unit | 6 | features | passed | sim |
 | Book stale bloqueia entrada | execution | 6 | execution risk gate | pending | sim |
+| Pair selection rejects insufficient data | unit | 7 | research | passed | sim |
+| Pair selection rejects low correlation | unit | 7 | research | passed | sim |
+| Pair selection ranks candidates by score | unit | 7 | research | passed | sim |
+| ADF/KPSS wrappers return standardized results | unit | 7 | research | passed | sim |
+| Preliminary half-life is calculated | unit | 7 | research | passed | sim |
+| Kalman recovers synthetic beta | unit | 7 | research | passed | sim |
+| Kalman spread length matches input series | unit | 7 | research | passed | sim |
+| Kalman flags unstable beta | unit | 7 | research | passed | sim |
+| OU estimates positive theta for mean-reverting synthetic series | unit | 7 | research | passed | sim |
+| OU rejects or warns theta <= 0 | unit | 7 | research | passed | sim |
+| Rolling z-score avoids look-ahead | unit | 7 | research | passed | sim |
+| Rolling correlation avoids look-ahead | unit | 7 | research | passed | sim |
+| Pair selection execution cost filters fail closed | unit | 7 | research | passed | sim |
+| OU sigma respects non-unit dt | unit | 7 | research | passed | sim |
 | Backtest sem look-ahead bias | backtest | 8 | backtest | pending | sim |
 | Kill switch trigger fails closed | live readiness | 14 | execution | pending | sim |
 
@@ -140,4 +156,63 @@ ruff check src\features src\execution\slippage_estimator.py src\market_data\feat
 Result: passed.
 
 Covered BookExecutionFeatures model construction, spread_bps, mid_price, 5bps/10bps bid and ask depth, deterministic imbalance, zero-quantity level filtering, malformed book fail-closed behavior, rolling 1s/5s volatility without future data, stale/invalid/resync-required fail-closed usability, buy ask-side slippage, sell bid-side slippage, invalid-request handling, insufficient-liquidity failure reason, and FeatureCache stale fail-closed behavior.
+```
+
+## Sprint 5/6 Gate Correction Checks
+
+```text
+UV_CACHE_DIR=.uv-cache uv run --with pytest pytest tests/test_book_builder.py tests/test_book_health.py tests/test_execution_features.py tests/test_slippage_estimator.py --basetemp=pytest_temp_run_s5s6_gate_fix -o cache_dir=pytest_temp_run_s5s6_gate_fix/.pytest_cache
+Result: passed, 47 tests, 1 pytest config warning for asyncio_mode.
+
+UV_CACHE_DIR=.uv-cache uv run --with pytest pytest tests --basetemp=pytest_temp_run_s5s6_gate_fix_all -o cache_dir=pytest_temp_run_s5s6_gate_fix_all/.pytest_cache
+Result: passed, 140 tests, 1 pytest config warning for asyncio_mode.
+
+UV_CACHE_DIR=.uv-cache uv run --with ruff ruff check .
+Result: passed.
+
+Covered LocalOrderBook/BookBuilder snapshot application, in-sequence diff
+application, old update discard, gap invalidation, zero-quantity level removal,
+best bid/ask, book_age_ms, in_sync/valid/needs_resync, stale detection, empty
+book invalidation, explicit BookExecutionFeatures book_age_ms/in_sync, feature
+cache fail-closed behavior, and no DataFrame/Pandas hot path in market-data,
+feature, slippage, or cache modules.
+```
+
+## Sprint 7 Research Base Checks
+
+```text
+Required commands:
+pytest tests/test_pair_selection.py
+pytest tests/test_stationarity.py
+pytest tests/test_kalman.py
+pytest tests/test_ou.py
+
+Result:
+UV_CACHE_DIR=.uv-cache uv run --with pytest pytest tests/test_pair_selection.py tests/test_stationarity.py tests/test_kalman.py tests/test_ou.py --basetemp=pytest_temp_run_sprint7_final_core -o cache_dir=pytest_temp_run_sprint7_final_core/.pytest_cache
+passed, 31 tests.
+
+UV_CACHE_DIR=.uv-cache uv run --with pytest pytest tests --basetemp=pytest_temp_run_sprint7_final_all -o cache_dir=pytest_temp_run_sprint7_final_all/.pytest_cache
+passed, 171 tests.
+
+UV_CACHE_DIR=.uv-cache uv run --with ruff ruff check src/research tests/test_pair_selection.py tests/test_stationarity.py tests/test_kalman.py tests/test_ou.py
+passed.
+
+UV_CACHE_DIR=.uv-cache uv run python -c "<execute code cells for notebooks/01_pair_selection.ipynb and notebooks/02_kalman_ou.ipynb>"
+passed, both notebook code-cell checks ok.
+
+Required coverage:
+pair selection rejects insufficient data and low correlation;
+pair selection ranks candidates by score;
+ADF/KPSS wrappers return standardized results;
+preliminary half-life is calculated;
+Kalman recovers approximate beta on synthetic data;
+Kalman spread_t length matches input;
+Kalman flags unstable beta;
+OU estimates positive theta on mean-reverting synthetic data;
+OU rejects or warns theta <= 0;
+rolling z-score avoids look-ahead;
+rolling correlation avoids look-ahead;
+execution-cost filters fail closed when quality/tail evidence is incomplete;
+OU sigma scales correctly for non-unit dt;
+functions do not rely on mutable global DataFrame state.
 ```

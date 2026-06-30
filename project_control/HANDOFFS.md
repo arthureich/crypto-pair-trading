@@ -2,6 +2,484 @@
 
 Last updated: 2026-06-30
 
+## HANDOFF - TASK-007-06 TASK-007-07 TASK-007-08 Sprint 7 Notebooks, Tests, and Report
+
+### Status
+
+DONE
+
+### Agente
+
+Quant Research Agent + QA Agent + Documentation Agent + PM Agent
+
+### O que foi feito
+
+- Created `notebooks/01_pair_selection.ipynb` with a deterministic synthetic
+  normalized-bars workflow using `src/research/pair_selection.py`.
+- Created `notebooks/02_kalman_ou.ipynb` with deterministic synthetic Kalman and
+  OU diagnostics using `src/research/kalman.py`, `src/research/ou.py`, and
+  `src/research/stationarity.py`.
+- Updated `reports/research_sprint_07.md` with dataset contract, cleaning
+  summary, filters, module status, notebook status, synthetic smoke examples,
+  verification, risks, and final conclusion.
+- Kept synthetic examples explicitly out of the Sprint 8 gate.
+- Updated control state to mark TASK-007-06, TASK-007-07, and TASK-007-08 DONE.
+- Added `BLOCKER-2026-06-30-S7-REAL-DATASET-GATE` to prevent Sprint 8 from
+  starting before real historical data is run.
+
+### Arquivos alterados
+
+```text
+notebooks/01_pair_selection.ipynb
+notebooks/02_kalman_ou.ipynb
+reports/research_sprint_07.md
+project_control/BLOCKERS.md
+project_control/CURRENT_SPRINT.md
+project_control/DAILY_LOG.md
+project_control/HANDOFFS.md
+project_control/PROJECT_STATE.md
+project_control/TASK_BOARD.md
+project_control/TEST_MATRIX.md
+```
+
+### Testes rodados
+
+```text
+UV_CACHE_DIR=.uv-cache uv run --with pytest pytest tests/test_pair_selection.py tests/test_stationarity.py tests/test_kalman.py tests/test_ou.py --basetemp=pytest_temp_run_sprint7_final_core -o cache_dir=pytest_temp_run_sprint7_final_core/.pytest_cache
+Result: passed, 31 tests, 1 pytest config warning for asyncio_mode.
+
+UV_CACHE_DIR=.uv-cache uv run --with pytest pytest tests --basetemp=pytest_temp_run_sprint7_final_all -o cache_dir=pytest_temp_run_sprint7_final_all/.pytest_cache
+Result: passed, 171 tests, 1 pytest config warning for asyncio_mode.
+
+UV_CACHE_DIR=.uv-cache uv run --with ruff ruff check src/research tests/test_pair_selection.py tests/test_stationarity.py tests/test_kalman.py tests/test_ou.py
+Result: passed.
+
+Notebook code-cell execution check:
+notebooks/01_pair_selection.ipynb: code cells ok.
+notebooks/02_kalman_ou.ipynb: code cells ok.
+```
+
+### Revisoes
+
+```text
+Documentation Agent initial review requested a cleaning-summary section in the
+Sprint 7 report.
+PM added the cleaning summary.
+Documentation Agent re-review returned PASSA.
+Quant Research Agent review returned PASSA for TASK-007-07 test coverage.
+PM report review result: technical implementation PASSA, Sprint 8 gate NAO
+PASSA until real dataset execution.
+```
+
+### Pares aprovados
+
+```text
+Real Binance USD-M dataset: none approved; DATASET_NOT_RUN.
+Synthetic smoke example only: BTCUSDT/ETHUSDT candidate with score 0.998467.
+```
+
+### Pares rejeitados
+
+```text
+Real Binance USD-M dataset: not evaluated.
+Synthetic smoke example only:
+- BTCUSDT/SOLUSDT rejected for LOW_CORRELATION.
+- ETHUSDT/SOLUSDT rejected for LOW_CORRELATION.
+- WEAKUSDT rejected for liquidity and funding reasons.
+```
+
+### Pendencias
+
+```text
+Real historical dataset loader/normalizer and execution are still required.
+Sprint 8 remains blocked by BLOCKER-2026-06-30-S7-REAL-DATASET-GATE.
+```
+
+### Riscos
+
+```text
+Synthetic examples prove workflow shape only, not market edge.
+Cost-gated PASS remains impossible without verified historical execution-cost
+evidence.
+Full-sample diagnostics are exploratory only.
+```
+
+### Proximo passo recomendado
+
+Implement or run the historical dataset pipeline for the documented 36
+complete-month Binance USD-M window, then repeat the Sprint 7 real-dataset gate.
+
+## HANDOFF - TASK-007-02 TASK-007-03 TASK-007-04 TASK-007-05 Research Core
+
+### Status
+
+DONE
+
+### Agente
+
+Quant Research Agent + PM Agent fallback integration
+
+### O que foi feito
+
+- Implemented `src/research/pair_selection.py` with in-memory normalized-bar
+  pair selection, symbol rejection reasons, pair rejection reasons,
+  deterministic ranking, rolling no-look-ahead correlation, exploratory
+  full-sample correlation marking, conditional execution-cost filters, and
+  conservative direction-agnostic funding carry.
+- Implemented `src/research/stationarity.py` with standardized ADF/KPSS
+  wrappers, preliminary half-life, rolling correlation, spread stability, and
+  combined stationarity decisions.
+- Implemented `src/research/kalman.py` with sequential dynamic beta/alpha
+  estimation, spread_t, innovation, innovation variance, state covariance, and
+  beta instability flags.
+- Implemented `src/research/ou.py` with OU theta/mu/sigma/half-life estimation,
+  theta <= 0 rejection/warning, rolling no-look-ahead z-score, and exploratory
+  full-sample z-score marking.
+- Updated `src/research/__init__.py` exports for pair selection, stationarity,
+  Kalman, and OU helpers.
+- Added focused tests for pair selection, stationarity, Kalman, and OU.
+- Addressed Backtest review findings by making rolling correlation explicitly
+  no-look-ahead, failing closed on partial execution-cost quality evidence, and
+  requiring real tail-spread evidence for verified p95/p99 spread filters.
+- Addressed QA review finding by correcting OU continuous sigma scaling for
+  non-unit `dt`.
+
+### Arquivos alterados
+
+```text
+src/research/__init__.py
+src/research/pair_selection.py
+src/research/stationarity.py
+src/research/kalman.py
+src/research/ou.py
+tests/test_pair_selection.py
+tests/test_stationarity.py
+tests/test_kalman.py
+tests/test_ou.py
+project_control/CURRENT_SPRINT.md
+project_control/DAILY_LOG.md
+project_control/HANDOFFS.md
+project_control/TASK_BOARD.md
+project_control/PROJECT_STATE.md
+project_control/TEST_MATRIX.md
+```
+
+### Testes rodados
+
+```text
+UV_CACHE_DIR=.uv-cache uv run --with pytest pytest tests/test_pair_selection.py tests/test_stationarity.py tests/test_kalman.py tests/test_ou.py --basetemp=pytest_temp_run_sprint7_core2 -o cache_dir=pytest_temp_run_sprint7_core2/.pytest_cache
+Result: passed, 28 tests, 1 pytest config warning for asyncio_mode.
+
+UV_CACHE_DIR=.uv-cache uv run --with pytest pytest tests --basetemp=pytest_temp_run_sprint7_all -o cache_dir=pytest_temp_run_sprint7_all/.pytest_cache
+Result: passed, 168 tests, 1 pytest config warning for asyncio_mode.
+
+UV_CACHE_DIR=.uv-cache uv run --with ruff ruff check src/research tests/test_pair_selection.py tests/test_stationarity.py tests/test_kalman.py tests/test_ou.py
+Result: passed.
+
+UV_CACHE_DIR=.uv-cache uv run --with pytest pytest tests/test_pair_selection.py tests/test_stationarity.py tests/test_kalman.py tests/test_ou.py --basetemp=pytest_temp_run_sprint7_core_reviewed2 -o cache_dir=pytest_temp_run_sprint7_core_reviewed2/.pytest_cache
+Result: passed, 31 tests, 1 pytest config warning for asyncio_mode.
+
+UV_CACHE_DIR=.uv-cache uv run --with pytest pytest tests --basetemp=pytest_temp_run_sprint7_full_reviewed -o cache_dir=pytest_temp_run_sprint7_full_reviewed/.pytest_cache
+Result: passed, 171 tests, 1 pytest config warning for asyncio_mode.
+
+UV_CACHE_DIR=.uv-cache uv run --with pytest pytest tests/test_pair_selection.py tests/test_stationarity.py tests/test_kalman.py tests/test_ou.py --basetemp=pytest_temp_run_sprint7_final_core -o cache_dir=pytest_temp_run_sprint7_final_core/.pytest_cache
+Result: passed, 31 tests, 1 pytest config warning for asyncio_mode.
+
+UV_CACHE_DIR=.uv-cache uv run --with pytest pytest tests --basetemp=pytest_temp_run_sprint7_final_all -o cache_dir=pytest_temp_run_sprint7_final_all/.pytest_cache
+Result: passed, 171 tests, 1 pytest config warning for asyncio_mode.
+```
+
+### Revisoes
+
+```text
+Backtest Agent initial review requested changes:
+- rolling_correlation included the current row while claiming no-look-ahead;
+- VERIFIED execution-cost quality did not fail closed on partial missing quality;
+- p95/p99 spread could be fabricated from median-only evidence.
+
+PM fixes applied with regression tests.
+Backtest Agent re-review returned PASSA.
+
+QA Agent initial review requested changes:
+- OU continuous sigma formula incorrectly multiplied by dt after theta already
+  included dt.
+
+PM fix applied with non-unit-dt regression test.
+QA Agent re-review returned PASSA.
+```
+
+### Pendencias
+
+```text
+TASK-007-06 notebooks, TASK-007-07 research test review, and TASK-007-08 final
+report remain pending.
+```
+
+### Riscos
+
+```text
+Pair selection currently consumes normalized in-memory data only; actual
+downloaders/loaders remain future work.
+Full-sample correlation and full-sample z-score are explicitly exploratory and
+must not be used as no-look-ahead signal evidence.
+Execution-spread filters are conditional and fail closed for cost-gated PASS
+when historical top-of-book/L2 evidence is unavailable.
+Kalman and OU parameters are research estimates, not live trading permission.
+```
+
+## HANDOFF - TASK-007-01 Historical Dataset Minimum
+
+### Status
+
+DONE
+
+### Agente
+
+Quant Research Agent
+
+### O que foi definido
+
+- Defined the minimum Sprint 7 historical research dataset for Binance USD-M
+  futures pairs.
+- Defined the initial seed universe with 20 USDT perpetual symbols.
+- Defined the canonical research window as 36 complete UTC months:
+  `2023-06-01T00:00:00Z <= open_time < 2026-06-01T00:00:00Z`.
+- Defined `1h` UTC bars as the canonical research frequency.
+- Defined OHLCV, mark price, index price, premium index, and funding as
+  required dataset families.
+- Defined historical top-of-book/L2 spread evidence as conditional: required for
+  cost-gated Sprint 7 PASS, but not assumed available from Binance Public Data.
+- Defined required fields, checksum/provenance fields, cleaning rules, gap
+  rules, and no-forward-fill constraints.
+- Defined minimum history, liquidity, conditional spread, funding, and pair
+  pre-filters.
+- Defined conservative absolute funding carry as the pair pre-filter formula.
+- Documented explicit look-ahead controls for full-sample exploration,
+  rolling/expanding features, funding as-of joins, optional execution-spread
+  joins, and universe selection.
+
+### Review findings addressed
+
+```text
+Market Data Agent requested changes:
+P1: Binance Public Data does not provide complete verified bookTicker coverage
+    for the full 2023-06 through 2026-05 window.
+P2: Original 2023-07-01 through 2026-06-30 window was not 36 complete months.
+P3: Pair funding carry needed an explicit bps/day formula.
+
+PM corrected the dataset contract. Market Data Agent re-review passed with no
+remaining P1/P2/P3 findings.
+```
+
+### Fonte / periodo / frequencia
+
+```text
+Source: Binance Public Data archive, https://data.binance.vision/
+OHLCV: data/futures/um/monthly/klines/{SYMBOL}/1h/
+Mark price: data/futures/um/monthly/markPriceKlines/{SYMBOL}/1h/
+Index price: data/futures/um/monthly/indexPriceKlines/{SYMBOL}/1h/
+Premium index: data/futures/um/monthly/premiumIndexKlines/{SYMBOL}/1h/
+Funding: data/futures/um/monthly/fundingRate/{SYMBOL}/
+Optional execution spread: verified historical top-of-book/L2 source only.
+Period: 2023-06-01T00:00:00Z <= open_time < 2026-06-01T00:00:00Z
+Frequency: canonical 1h UTC bars; funding event-time as-of sidecar.
+```
+
+### Arquivos alterados
+
+```text
+docs/historical_dataset.md
+docs/index.md
+reports/research_sprint_07.md
+project_control/HANDOFFS.md
+```
+
+### Testes rodados
+
+```text
+No automated tests are required for TASK-007-01.
+Documentation-only task; no data was downloaded and no exchange client was
+implemented.
+```
+
+### Pendencias
+
+```text
+Future implementation tasks must create actual loaders/normalizers separately
+and preserve checksumed dataset versioning.
+Pair selection, stationarity, Kalman, OU, notebooks, and final research report
+sections remain pending Sprint 7 work.
+```
+
+### Riscos
+
+```text
+The seed universe is biased toward symbols known to be liquid on 2026-06-30;
+walk-forward evaluation must avoid survivorship bias.
+Public archive files can be corrected after publication; checksums and dataset
+versions are mandatory.
+OHLCV/mark/index/premium data alone cannot prove executable cost; verified
+top-of-book/L2 evidence is required before claiming cost-gated acceptance.
+Funding may dominate apparent mean reversion and must be included in pair
+pre-filters.
+Any full-sample ranking is exploratory only and must not be treated as
+no-look-ahead signal evidence.
+```
+
+### Proximo passo recomendado
+
+TASK-007-02 can implement pair selection against this documented dataset
+contract.
+
+## HANDOFF - Sprint 7 Opening
+
+### Status
+
+READY
+
+### Agente
+
+PM Agent
+
+### O que foi feito
+
+- Pre-Sprint 7 gate for Sprints 5 and 6 was revalidated and passed.
+- `project_control/PROJECT_STATE.md` was moved to Sprint 7 - Research base.
+- `project_control/CURRENT_SPRINT.md` was updated with Sprint 7 scope, gate,
+  deliverables, tests, and task table.
+- `project_control/TASK_BOARD.md` was updated with TASK-007-01 through
+  TASK-007-08 in READY.
+- `tasks/sprint_07/` was created with task templates for dataset definition,
+  pair selection, stationarity, Kalman, OU, notebooks, tests, and report.
+- `project_control/TEST_MATRIX.md` was updated with Sprint 7 required checks.
+
+### Arquivos alterados
+
+```text
+project_control/PROJECT_STATE.md
+project_control/CURRENT_SPRINT.md
+project_control/TASK_BOARD.md
+project_control/TEST_MATRIX.md
+project_control/HANDOFFS.md
+tasks/sprint_07/TASK-007-01-historical-dataset.md
+tasks/sprint_07/TASK-007-02-pair-selection.md
+tasks/sprint_07/TASK-007-03-stationarity.md
+tasks/sprint_07/TASK-007-04-kalman-filter.md
+tasks/sprint_07/TASK-007-05-ou-estimator.md
+tasks/sprint_07/TASK-007-06-exploratory-notebooks.md
+tasks/sprint_07/TASK-007-07-research-tests.md
+tasks/sprint_07/TASK-007-08-research-report.md
+```
+
+### Testes rodados
+
+```text
+No Sprint 7 implementation tests exist yet.
+Pre-Sprint 7 gate verification is recorded in the Sprint 5/6 Gate Correction
+handoff below.
+```
+
+### Proximo passo recomendado
+
+Delegate TASK-007-01 to Quant Research Agent and require Market Data Agent
+review before implementation tasks consume the dataset definition.
+
+## HANDOFF - TASK-031 TASK-032 TASK-033 Sprint 5/6 Gate Correction
+
+### Status
+
+DONE
+
+### Agente
+
+Market Data Agent + Execution / Risk Agent + PM Agent
+
+### O que foi feito
+
+- Added `LocalOrderBook` / `BookBuilder` with deterministic snapshot and diff
+  application.
+- Added explicit local-book top-of-book accessors: `best_bid`, `best_ask`,
+  `best_bid_level`, and `best_ask_level`.
+- Added local-book sequence handling: old updates are discarded, sequence gaps
+  invalidate the book, and a new snapshot can resync state.
+- Added zero-quantity level removal.
+- Added local-book age/staleness helpers: `book_age_ms`, `is_stale`, and
+  `valid_at`.
+- Added explicit `book_age_ms` and `in_sync` fields to
+  `BookExecutionFeatures`.
+- Preserved fail-closed execution feature behavior for stale, invalid,
+  resync-required, malformed, crossed, or empty books.
+- Added focused regression tests for the corrected gate checklist.
+
+### Arquivos alterados
+
+```text
+src/market_data/book_builder.py
+src/market_data/__init__.py
+src/features/execution_features.py
+tests/test_book_builder.py
+tests/test_execution_features.py
+project_control/BLOCKERS.md
+project_control/DAILY_LOG.md
+project_control/HANDOFFS.md
+project_control/PROJECT_STATE.md
+project_control/TASK_BOARD.md
+tasks/sprint_05/TASK-031-local-order-book-gate-correction.md
+tasks/sprint_06/TASK-032-bookfeatures-health-fields.md
+tasks/sprint_06/TASK-033-revalidate-s5-s6-gate.md
+```
+
+### Testes rodados
+
+```text
+UV_CACHE_DIR=.uv-cache uv run --with pytest pytest tests/test_book_health.py tests/test_execution_features.py tests/test_slippage_estimator.py --basetemp=pytest_temp_run_s7_gate_precheck -o cache_dir=pytest_temp_run_s7_gate_precheck/.pytest_cache
+Result: passed, 37 tests, 1 pytest config warning for asyncio_mode.
+
+UV_CACHE_DIR=.uv-cache uv run --with pytest pytest tests/test_book_builder.py tests/test_book_health.py tests/test_execution_features.py tests/test_slippage_estimator.py --basetemp=pytest_temp_run_s5s6_gate_fix -o cache_dir=pytest_temp_run_s5s6_gate_fix/.pytest_cache
+Result: passed, 47 tests, 1 pytest config warning for asyncio_mode.
+
+UV_CACHE_DIR=.uv-cache uv run --with pytest pytest tests --basetemp=pytest_temp_run_s5s6_gate_fix_all -o cache_dir=pytest_temp_run_s5s6_gate_fix_all/.pytest_cache
+Result: passed, 140 tests, 1 pytest config warning for asyncio_mode.
+
+UV_CACHE_DIR=.uv-cache uv run --with ruff ruff check src/market_data src/features src/execution/slippage_estimator.py tests/test_book_builder.py tests/test_book_health.py tests/test_execution_features.py tests/test_slippage_estimator.py
+Result: passed.
+
+UV_CACHE_DIR=.uv-cache uv run --with ruff ruff check .
+Result: passed.
+```
+
+### Revisoes
+
+```text
+Market Data Agent completed TASK-031.
+Execution / Risk Agent completed TASK-032.
+QA / Chaos Testing Agent re-review passed TASK-033 and found no P1/P2/P3
+issues.
+```
+
+### Pendencias
+
+```text
+None for the Sprint 5/6 gate correction.
+BLOCKER-2026-06-30-S5S6-GATE-LOCAL-BOOK was closed.
+```
+
+### Riscos encontrados
+
+```text
+LocalOrderBook is an in-memory pure helper only; it does not fetch snapshots,
+connect to WebSocket streams, persist book state, or attempt automatic gap
+recovery without a fresh snapshot.
+FeatureCache remains in-memory only.
+The pytest asyncio_mode warning remains because pytest-asyncio is not installed
+in the ephemeral test environment.
+```
+
+### Proximo passo recomendado
+
+Sprint 7 control state was opened. Do not start Sprint 8 without explicit user
+authorization.
+
 ## HANDOFF - TASK-026 TASK-027 TASK-028 TASK-029 TASK-030 Sprint 6 Execution Features and Slippage
 
 ### Status

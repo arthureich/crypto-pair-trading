@@ -49,3 +49,7 @@ project-root/
     src/                # Código-fonte
     tests/              # Testes automatizados (pytest)
 ```
+
+## Pesquisa
+
+* [Historical Dataset Minimum](historical_dataset.md)

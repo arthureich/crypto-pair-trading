@@ -58,6 +58,18 @@ ARCHIVED
 | TASK-028 | 6 | Implementar SlippageEstimator | Execution / Risk Agent | DONE | - | Market Data Agent + QA / Chaos Testing Agent | nenhum |
 | TASK-029 | 6 | Implementar FeatureCache | Market Data Agent | DONE | - | Execution / Risk Agent | nenhum |
 | TASK-030 | 6 | Testes e gate review Sprint 6 | QA / Chaos Testing Agent + PM Agent | DONE | - | Market Data Agent + Execution / Risk Agent | nenhum |
+| TASK-031 | 5 | Corrigir gate: LocalOrderBook snapshot/diff | Market Data Agent | DONE | - | QA / Chaos Testing Agent + PM Agent | nenhum |
+| TASK-032 | 6 | Corrigir gate: BookFeatures book_age_ms/in_sync | Execution / Risk Agent | DONE | - | Market Data Agent + QA / Chaos Testing Agent | nenhum |
+| TASK-033 | 6 | Revalidar gate Sprint 5/6 antes do Sprint 7 | QA / Chaos Testing Agent + PM Agent | DONE | - | Market Data Agent + Execution / Risk Agent | nenhum |
+| TASK-007-01 | 7 | Definir dataset historico minimo | Quant Research Agent | DONE | - | Market Data Agent | nenhum |
+| TASK-007-02 | 7 | Implementar pair_selection.py | Quant Research Agent | DONE | - | Backtest Agent | nenhum |
+| TASK-007-03 | 7 | Implementar stationarity.py | Quant Research Agent | DONE | - | QA Agent | nenhum |
+| TASK-007-04 | 7 | Implementar Kalman Filter | Quant Research Agent | DONE | - | Backtest Agent + QA Agent | nenhum |
+| TASK-007-05 | 7 | Implementar OU estimator | Quant Research Agent | DONE | - | Backtest Agent + QA Agent | nenhum |
+| TASK-007-06 | 7 | Criar notebooks exploratorios | Quant Research Agent | DONE | - | Documentation Agent | nenhum |
+| TASK-007-07 | 7 | Criar testes de research base | QA Agent | DONE | - | Quant Research Agent | nenhum |
+| TASK-007-08 | 7 | Gerar relatorio research_sprint_07.md | Documentation Agent | DONE | - | PM Agent | nenhum |
+| TASK-007-09 | 7 | Implementar loader/normalizer historico Binance | PM Agent | IN_PROGRESS | - | Market Data Agent + QA Agent | BLOCKER-2026-06-30-S7-REAL-DATASET-GATE |
 
 ## Progresso
 
@@ -93,3 +105,15 @@ ARCHIVED
 | TASK-028 | 100% | Market Data and QA reviews passed; SlippageEstimator integrated with explicit failure reasons. |
 | TASK-029 | 100% | Execution / Risk review passed; FeatureCache stale fail-closed behavior integrated. |
 | TASK-030 | 100% | Sprint 6 gate passed after P1 QA findings were corrected and re-reviewed. |
+| TASK-031 | 100% | LocalOrderBook/BookBuilder snapshot/diff gate correction implemented and QA re-review passed. |
+| TASK-032 | 100% | BookExecutionFeatures book_age_ms/in_sync gate correction implemented and QA re-review passed. |
+| TASK-033 | 100% | Sprint 5/6 gate revalidated: focused 47 tests passed, full suite 140 tests passed, ruff passed. |
+| TASK-007-01 | 100% | Dataset contract passed Market Data re-review after correcting bookTicker coverage, complete-month window, and funding carry formula. |
+| TASK-007-02 | 100% | Pair selection passed Backtest re-review after fail-closed cost-quality/tail-spread fixes and regression tests. |
+| TASK-007-03 | 100% | Stationarity wrappers passed QA/Backtest re-review after no-look-ahead rolling-correlation fix and regression tests. |
+| TASK-007-04 | 100% | Kalman Filter synthetic implementation passed Backtest and QA review with no blocking findings. |
+| TASK-007-05 | 100% | OU estimator passed QA re-review after non-unit-dt sigma fix and regression test; rolling z-score remains no-look-ahead. |
+| TASK-007-06 | 100% | Exploratory notebooks created and Documentation Agent re-review passed; notebooks use synthetic smoke data only. |
+| TASK-007-07 | 100% | Research tests passed Quant Research Agent review; focused suite passed 31 tests. |
+| TASK-007-08 | 100% | Final Sprint 7 report written and PM/Documentation review passed with Sprint 8 gate set to NAO PASSA until real dataset run. |
+| TASK-007-09 | 25% | Historical Binance loader/normalizer started to address the real-dataset Sprint 7 gate blocker. |

@@ -1,5 +1,123 @@
 # Daily Log
 
+## 2026-06-30
+
+Pre-Sprint 7 gate audit:
+
+```text
+PM Agent received instructions to validate Sprint 5 and Sprint 6 before opening
+Sprint 7.
+Existing focused gate tests passed:
+UV_CACHE_DIR=.uv-cache uv run --with pytest pytest tests/test_book_health.py tests/test_execution_features.py tests/test_slippage_estimator.py --basetemp=pytest_temp_run_s7_gate_precheck -o cache_dir=pytest_temp_run_s7_gate_precheck/.pytest_cache
+Result: passed, 37 tests, 1 pytest config warning for asyncio_mode.
+```
+
+QA / Chaos audit:
+
+```text
+Gate blocked against the literal checklist because the codebase had book health
+helpers but no explicit LocalOrderBook/BookBuilder applying snapshots and diffs,
+and BookExecutionFeatures did not expose book_age_ms/in_sync required by the
+BookFeatures contract.
+```
+
+Corrective actions:
+
+```text
+Created BLOCKER-2026-06-30-S5S6-GATE-LOCAL-BOOK.
+Created TASK-031, TASK-032, and TASK-033.
+Delegated TASK-031 to Market Data Agent.
+Delegated TASK-032 to Execution / Risk Agent.
+Sprint 7 remains blocked until TASK-033 revalidates the gate.
+```
+
+Sprint 5/6 gate correction closure:
+
+```text
+Market Data Agent implemented LocalOrderBook/BookBuilder with snapshot/diff,
+sequence validation, old update discard, gap invalidation, zero-quantity level
+removal, best bid/ask, book_age_ms, in_sync, stale detection, and empty-book
+invalidity.
+Execution / Risk Agent added explicit BookExecutionFeatures book_age_ms and
+in_sync fields.
+Focused gate checks passed: 47 tests.
+Full suite passed: 140 tests.
+Ruff passed globally.
+QA / Chaos Testing Agent re-review returned PASSA with no P1/P2/P3 findings.
+BLOCKER-2026-06-30-S5S6-GATE-LOCAL-BOOK closed.
+TASK-031, TASK-032, and TASK-033 moved to DONE.
+Sprint 7 opened in project control as Research base: pair selection, Kalman e OU.
+```
+
+Sprint 7 execution:
+
+```text
+TASK-007-01 historical dataset minimum was delegated to Quant Research Agent.
+Market Data Agent requested changes for impossible historical bookTicker
+coverage, ambiguous 36-month window, and missing funding carry formula.
+PM corrected the dataset contract:
+- canonical window is 2023-06-01 <= open_time < 2026-06-01;
+- bookTicker is not mandatory; execution spread requires verified top-of-book/L2
+  evidence and cost-gated PASS fails closed without it;
+- funding carry formula is conservative absolute bps/day.
+Market Data Agent re-review passed TASK-007-01 with no remaining P1/P2/P3.
+TASK-007-01 moved to DONE.
+TASK-007-02 pair_selection.py, TASK-007-03 stationarity.py, and TASK-007-04
+Kalman Filter were delegated to Quant Research Agents with disjoint write sets.
+Implementation agents hit usage limits, so PM Agent performed fallback
+integration for the research core and added TASK-007-05 OU estimator.
+Focused Sprint 7 research core verification passed:
+pytest tests/test_pair_selection.py tests/test_stationarity.py tests/test_kalman.py tests/test_ou.py returned 28 passed.
+Full suite verification passed: pytest tests returned 168 passed.
+Ruff verification passed for src/research and Sprint 7 research tests.
+TASK-007-02 through TASK-007-05 moved to IN_REVIEW.
+```
+
+Sprint 7 research core review closure:
+
+```text
+Backtest Agent requested fixes for rolling-correlation look-ahead and pair
+selection execution-cost evidence. PM corrected rolling_correlation to shift(1),
+made partial execution_cost_quality fail closed as INCOMPLETE, and stopped
+fabricating p95/p99 spread from median-only evidence.
+QA Agent requested a fix for OU continuous sigma when dt != 1. PM removed the
+extra dt factor and added a non-unit-dt regression test.
+Focused reviewed verification passed: 31 tests.
+Full suite passed: 171 tests.
+Ruff passed for src/research and Sprint 7 research tests.
+Backtest Agent re-review returned PASSA.
+QA Agent re-review returned PASSA.
+TASK-007-02 through TASK-007-05 moved to DONE.
+TASK-007-06 notebooks, TASK-007-07 test review, and TASK-007-08 report remain
+pending before Sprint 7 can close.
+```
+
+Sprint 7 technical report closure:
+
+```text
+Created notebooks/01_pair_selection.ipynb and notebooks/02_kalman_ou.ipynb with
+deterministic synthetic smoke examples.
+Notebook code-cell execution check passed for both notebooks.
+Final Sprint 7 report was updated with dataset contract, cleaning summary,
+filters, module status, synthetic examples, verification, risks, and conclusion.
+Documentation Agent requested one cleaning-summary fix; PM added it and
+Documentation Agent re-review returned PASSA.
+Quant Research Agent review passed TASK-007-07 test coverage.
+TASK-007-06, TASK-007-07, and TASK-007-08 moved to DONE.
+Technical implementation of Sprint 7 is complete, but Sprint 8 advancement gate
+is NAO PASSA until the real 36 complete-month historical dataset is executed.
+PROJECT_STATE marked blocked for Sprint 8.
+```
+
+Sprint 7 real-dataset gate continuation:
+
+```text
+User asked to continue.
+PM opened TASK-007-09 to implement a Binance Public Data historical
+loader/normalizer and runner. This task targets the active Sprint 8 blocker but
+does not start Sprint 8.
+```
+
 ## 2026-06-28
 
 Initialized project management control plane for crypto futures pairs trading system.

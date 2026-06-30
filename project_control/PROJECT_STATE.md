@@ -4,82 +4,106 @@ Last updated: 2026-06-30
 
 ## Sprint atual
 
-Sprint 6 - Execution Features and Slippage
+Sprint 7 - Research base: pair selection, Kalman e OU
 
 ## Status geral
 
-PRONTO
+BLOQUEADO PARA SPRINT 8
 
-## Objetivo atual
+## Ultimos sprints concluidos
 
-Sprint 6 completed. Await explicit user confirmation before starting Sprint 7 - Research Base.
-
-## Ultimo commit estavel
-
-ainda nao definido
+- Sprint 1 - Especificacao operacional
+- Sprint 2 - Ledger base com SQLite WAL
+- Sprint 3 - Idempotencia, clientOrderId e reconciliacao cumulativa
+- Sprint 4 - Recovery boot e modo safe
+- Sprint 5 - Market Data Plane: book local
+- Sprint 6 - Features de execucao e slippage
 
 ## Componentes concluidos
 
-- Control plane created in `project_control/`.
-- Sprint folders created in `tasks/sprint_01` through `tasks/sprint_28`.
-- Sprint 1 operational specifications completed and reviewed.
-- Sprint 2 Ledger base completed with SQLite WAL, append-only events, idempotent EventStore append/read, and 7 EventStore tests.
-- Sprint 3 idempotency, deterministic clientOrderId, cumulative fill reconciliation, and ACK_UNKNOWN retry guard completed and reviewed.
-- Sprint 4 recovery/order lifecycle failure routes completed and reviewed.
-- Sprint 5 market-data book health helpers completed and reviewed.
-- Sprint 6 execution features and slippage helpers completed and reviewed.
-- `src/market_data/book_health.py` created with pure L2 update, book health, stale-book, and snapshot-resync helpers.
-- `src/features/execution_features.py` created with spread, mid, depth bands, imbalance, rolling volatility, and fail-closed usability helpers.
-- `src/execution/slippage_estimator.py` created with deterministic book consumption, VWAP/slippage, and explicit failure reasons.
-- `src/market_data/feature_cache.py` created with latest-feature cache and stale fail-closed lookups.
-- `reports/sprint_01_review.md` through `reports/sprint_06_review.md` created.
+- EventStore base
+- SQLite WAL
+- clientOrderId deterministico
+- cumulative fill reconciliation
+- ACK_UNKNOWN sem retry cego
+- recovery_boot
+- SAFE_MODE
+- LocalOrderBook
+- BookBuilder
+- snapshot/diff L2 local
+- gap detection
+- stale book detection
+- best bid / best ask confiaveis
+- book_age_ms
+- book.in_sync
+- feature cache
+- spread_bps
+- depth_5bps
+- depth_10bps
+- imbalance
+- slippage estimator
+- pair selection research helpers
+- stationarity research helpers
+- Kalman beta_t / alpha_t / spread_t
+- Ornstein-Uhlenbeck estimator
+- no-look-ahead research z-score helpers
+- exploratory research notebooks
+- Sprint 7 technical research report
 
 ## Componentes em andamento
 
-- None.
+- Historical dataset execution for Sprint 7 gate
+
+## Objetivo atual
+
+Validar o sinal estatistico bruto por meio de selecao de pares, Kalman Filter,
+Ornstein-Uhlenbeck, estacionariedade, half-life e z-score.
+
+## Proximo gate
+
+Sprint 7 so passa se:
+
+- pares candidatos sao ranqueados;
+- spread e calculado com beta dinamico;
+- OU gera half-life e z-score;
+- pares instaveis sao descartados;
+- nao ha look-ahead na preparacao dos dados;
+- os resultados sao documentados.
 
 ## Bloqueadores atuais
 
-- None.
-
-## Proximas tarefas prioritarias
-
-1. Wait for explicit user confirmation before starting Sprint 7.
-2. If approved, create Sprint 7 control state for Research Base: pair selection, Kalman, and OU.
-3. Keep full Execution Risk Gate, order router, live trading, and ML control behavior out of scope until their later gates.
-
-## Riscos atuais
-
-- Interface ambiguity can create unsafe order paths.
-- ACK_UNKNOWN can become a blind retry if event contracts are vague.
-- Recovery or safe mode can be underspecified.
-- Kill switch behavior can fail open if not specified with measurable triggers.
-- Ledger uncertainty must block entry.
-- Daily realized loss and drawdown thresholds are not numeric yet; live entries fail closed until approved.
-- EventStore must preserve transactional append, idempotency, and projection/outbox consistency.
-- clientOrderId must not depend on unpersisted timestamp or randomness.
-- ACK_UNKNOWN must not permit blind retry.
-- Future consumers must obey `usable_for_trading` and slippage failure reasons instead of reading raw feature numbers as permission to trade.
-- Feature cache is in-memory only; persistence and cross-process sharing remain future work.
+- Sprint 7 research gate is not satisfied for Sprint 8 because the documented
+  36 complete-month Binance USD-M dataset has not been downloaded, checksumed,
+  normalized, or run through the research pipeline.
 
 ## Gates pendentes
 
-- Daily realized loss and drawdown threshold gaps remain fail-closed live-readiness blockers.
-- Sprint 3 gate passed.
-- Sprint 4 gate passed.
-- Sprint 5 gate passed.
-- Sprint 6 gate passed.
-- Sprint 7 not started; requires explicit user confirmation.
+- Daily realized loss and drawdown threshold gaps remain fail-closed
+  live-readiness blockers.
+- Sprint 7 real-dataset research gate.
 
-## Areas proibidas neste momento
+## Riscos atuais
 
-- Real live trading.
-- Live order router implementation.
-- Full Execution Risk Gate.
-- Exchange trading endpoint integration.
-- Leverage.
-- Cross Margin.
-- Kelly sizing.
-- Multi-exchange live behavior.
-- Model-driven exits, hedges, reconciliation, or hard stops.
-- XGBoost/ML control behavior.
+- Research full-sample exploratorio pode ser confundido com sinal disponivel em
+  tempo real se o relatorio nao separar claramente analise exploratoria de
+  features rolling/no-look-ahead.
+- Pares candidatos podem parecer estacionarios em amostra curta e quebrar em
+  mudanca de regime.
+- Funding, liquidez e spread medio podem eliminar pares estatisticamente bons.
+- Kalman beta_t pode ficar instavel se parametros de ruido forem mal definidos.
+- OU half-life muito curto pode ser ruido; half-life muito longo pode ser
+  inviavel operacionalmente.
+
+## Fora de escopo agora
+
+- XGBoost
+- P_fill/P_profit
+- paper trading
+- live trading
+- alavancagem
+- multi-exchange
+- Execution Risk Gate completo
+- Real live trading
+- Live order router implementation
+- Exchange trading endpoint integration
+- Kelly sizing

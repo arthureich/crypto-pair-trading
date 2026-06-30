@@ -2,88 +2,138 @@
 
 ## Sprint
 
-Sprint 6 - Execution Features and Slippage
+Sprint 7 - Research base: pair selection, Kalman e OU
 
 ## Objetivo
 
-Create pure execution-quality features derived from trusted local book health evidence before any full Execution Risk Gate or order router exists.
+Construir a base de pesquisa estatistica da estrategia: selecionar pares
+candidatos, calcular spread com hedge ratio dinamico via Kalman Filter, estimar
+processo Ornstein-Uhlenbeck, calcular half-life, z-score e descartar pares
+instaveis.
 
 ## Escopo permitido
 
-- Compute spread_bps and mid price from supplied best bid/ask.
-- Compute depth within 5 bps and 10 bps from supplied book levels.
-- Compute order book imbalance.
-- Estimate buy/sell slippage from supplied book depth and notional/quantity inputs.
-- Mark execution features unusable when book health is stale, invalid, out of sync, or requires resync.
-- Maintain a lightweight in-memory feature cache.
-- Add focused unit tests for execution features, slippage, cache freshness, and fail-closed usability.
+- coleta/normalizacao de OHLCV historico
+- coleta/normalizacao de mark price
+- coleta/normalizacao de funding
+- pair selection inicial
+- filtros de liquidez
+- filtros de spread medio
+- correlacao rolling
+- ADF
+- KPSS
+- half-life
+- beta stability
+- Kalman beta_t
+- Kalman alpha_t
+- spread_t
+- OU theta
+- OU mu
+- OU sigma
+- z-score
+- relatorios de pesquisa
 
 ## Fora de escopo
 
-- Full Execution Risk Gate.
-- Order router.
-- Live WebSocket clients.
-- Exchange REST clients.
-- Real market-data ingestion.
-- Signal generation.
-- Kalman/OU research.
-- ML features or XGBoost.
-- Backtest engine.
-- Paper trading.
-- Real trading endpoint calls.
+- XGBoost
+- calibracao de modelo
+- P_fill
+- P_profit_given_fill
+- live trading
+- order router
+- Risk Gate completo
+- paper trading
+- alavancagem
+- multi-exchange
 
 ## Entregaveis obrigatorios
 
-- `src/features/execution_features.py`
-- `src/features/__init__.py`
-- `src/execution/slippage_estimator.py`
-- `src/market_data/feature_cache.py`
-- `tests/test_execution_features.py`
-- `tests/test_slippage_estimator.py`
+- `src/research/pair_selection.py`
+- `src/research/kalman.py`
+- `src/research/ou.py`
+- `src/research/stationarity.py`
+- `notebooks/01_pair_selection.ipynb`
+- `notebooks/02_kalman_ou.ipynb`
+- `reports/research_sprint_07.md`
+- `tests/test_pair_selection.py`
+- `tests/test_kalman.py`
+- `tests/test_ou.py`
+- `tests/test_stationarity.py`
 
 ## Criterio de pronto
 
-- Spread bps is computed correctly.
-- Depth within 5 bps and 10 bps is computed on both sides.
-- Order book imbalance is computed deterministically.
-- Given a notional or quantity, buy slippage consumes asks and sell slippage consumes bids.
-- Insufficient liquidity returns an explicit failure reason.
-- Stale, invalid, or resync-required book evidence makes features unusable for trading.
-- Feature cache returns the latest feature snapshot and marks stale data fail-closed.
-- Hot path does not use DataFrame/Pandas.
-- Tests pass.
-- Handoffs exist for every task.
+- pares candidatos sao ranqueados
+- spread e calculado com beta dinamico
+- OU gera half-life e z-score
+- pares instaveis sao descartados
+- testes passam
+- relatorio explica quais pares continuam e quais foram rejeitados
 
 ## Testes obrigatorios
 
-- `pytest tests/test_execution_features.py`
-- `pytest tests/test_slippage_estimator.py`
-- `pytest tests`
+- `pytest tests/test_pair_selection.py`
+- `pytest tests/test_stationarity.py`
+- `pytest tests/test_kalman.py`
+- `pytest tests/test_ou.py`
 
-## Gate para avancar
+## Gate para avancar ao Sprint 8
 
-Do not advance to Sprint 7 until execution features, slippage estimation, feature cache freshness, and fail-closed book usability are implemented, tested, and reviewed.
+So avancar se houver pelo menos um conjunto de pares candidatos com:
+
+- liquidez minima aceitavel
+- spread medio aceitavel
+- estacionariedade razoavel
+- half-life operacionalmente viavel
+- beta_t nao explosivo
+- documentacao clara dos resultados
+
+## Gate final do Sprint 7
+
+- dataset historico minimo definido
+- pares candidatos ranqueados
+- filtros de liquidez aplicados
+- correlacao rolling calculada
+- ADF/KPSS aplicados
+- Kalman beta_t implementado
+- spread_t calculado
+- OU implementado
+- half-life calculado
+- z-score calculado
+- pares instaveis descartados
+- testes passam
+- `reports/research_sprint_07.md` escrito
+- `project_control/HANDOFFS.md` atualizado
+- `project_control/PROJECT_STATE.md` atualizado
+- `project_control/TASK_BOARD.md` atualizado
 
 ## Agentes envolvidos
 
-- PM Agent
+- Quant Research Agent
+- Backtest Agent
 - Market Data Agent
-- Execution / Risk Agent
-- QA / Chaos Testing Agent
+- QA Agent
+- Documentation Agent
+- PM Agent
 
 ## Revisores obrigatorios
 
-- Execution / Risk Agent for feature usability semantics.
-- Market Data Agent for book-derived feature ownership.
-- QA / Chaos Testing Agent for slippage/depth/stale-book tests.
+- Market Data Agent for dataset/source/liquidity assumptions.
+- Backtest Agent for no-look-ahead and research/backtest boundaries.
+- QA Agent for synthetic tests, no mutable global DataFrame state, and
+  fail-closed rejection cases.
+- Documentation Agent for notebooks and report clarity.
 - PM Agent for gate and sprint state.
 
 ## Sprint tasks
 
 | ID | Tarefa | Dono | Revisor | Status | Progresso |
 |---|---|---|---|---|---:|
-| TASK-026 | BookExecutionFeatures primitives | Market Data Agent | Execution / Risk Agent | DONE | 100% |
-| TASK-027 | Spread, depth, imbalance, and volatility helpers | Market Data Agent | QA / Chaos Testing Agent | DONE | 100% |
-| TASK-028 | Slippage estimator | Execution / Risk Agent | Market Data Agent + QA / Chaos Testing Agent | DONE | 100% |
-| TASK-029 | Feature cache | Market Data Agent | Execution / Risk Agent | DONE | 100% |
-| TASK-030 | Sprint 6 tests and gate review | QA / Chaos Testing Agent + PM Agent | Market Data Agent + Execution / Risk Agent | DONE | 100% |
+| TASK-007-01 | Definir dataset historico minimo | Quant Research Agent | Market Data Agent | DONE | 100% |
+| TASK-007-02 | Implementar pair_selection.py | Quant Research Agent | Backtest Agent | DONE | 100% |
+| TASK-007-03 | Implementar stationarity.py | Quant Research Agent | QA Agent | DONE | 100% |
+| TASK-007-04 | Implementar Kalman Filter | Quant Research Agent | Backtest Agent + QA Agent | DONE | 100% |
+| TASK-007-05 | Implementar OU estimator | Quant Research Agent | Backtest Agent + QA Agent | DONE | 100% |
+| TASK-007-06 | Criar notebooks exploratorios | Quant Research Agent | Documentation Agent | DONE | 100% |
+| TASK-007-07 | Criar testes de research base | QA Agent | Quant Research Agent | DONE | 100% |
+| TASK-007-08 | Gerar relatorio research_sprint_07.md | Documentation Agent | PM Agent | DONE | 100% |
+| TASK-007-09 | Implementar loader/normalizer historico Binance | PM Agent | Market Data Agent + QA Agent | IN_PROGRESS | 25% |
