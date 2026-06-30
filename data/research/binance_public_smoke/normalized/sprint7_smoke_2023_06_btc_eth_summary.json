@@ -1,0 +1,26 @@
+{
+  "accepted_symbols": [
+    "BTCUSDT",
+    "ETHUSDT"
+  ],
+  "candidate_pairs": [
+    {
+      "correlation": 0.8894088979774671,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 4.1196,
+      "pair": "BTCUSDT/ETHUSDT",
+      "score": 0.889408897977
+    }
+  ],
+  "end_month_exclusive": "2023-07",
+  "expected_bars": 720,
+  "gate_note": "Statistical-only run. Cost-gated Sprint 7 PASS still requires verified historical top-of-book/L2 execution-cost evidence.",
+  "normalized_path": "/home/arthur/Work/Devel/Repos/GitHub/crypto-pair-trading-main/data/research/binance_public_smoke/normalized/sprint7_smoke_2023_06_btc_eth_bars.csv",
+  "rejected_pairs": [],
+  "rejected_symbols": [],
+  "start_month": "2023-06",
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT"
+  ]
+}
