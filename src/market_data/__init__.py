@@ -1,5 +1,14 @@
 """Market-data plane pure helpers."""
 
+from .book_builder import (
+    BookApplyReason,
+    BookApplyResult,
+    BookBuilder,
+    BookDiffUpdate,
+    BookLevel,
+    BookSnapshot,
+    LocalOrderBook,
+)
 from .book_health import (
     BookHealthDecision,
     BookHealthReason,
@@ -16,14 +25,21 @@ from .book_health import (
 from .feature_cache import FeatureCache, FeatureCacheReason, FeatureCacheResult
 
 __all__ = [
+    "BookApplyReason",
+    "BookApplyResult",
+    "BookBuilder",
     "BookHealthDecision",
     "BookHealthReason",
     "BookHealthState",
     "BookHealthStatus",
+    "BookDiffUpdate",
+    "BookLevel",
+    "BookSnapshot",
     "FeatureCache",
     "FeatureCacheReason",
     "FeatureCacheResult",
     "L2BookUpdate",
+    "LocalOrderBook",
     "SnapshotEvidence",
     "SnapshotResyncDecision",
     "SnapshotResyncDecisionType",

@@ -85,8 +85,20 @@ class BookExecutionFeatures:
     order_book_imbalance: Decimal | None
     volatility_1s: Decimal
     volatility_5s: Decimal
+    book_age_ms: int | None
+    in_sync: bool
     usable_for_trading: bool
     reason: ExecutionFeatureReason
+
+    def __post_init__(self) -> None:
+        object.__setattr__(
+            self,
+            "in_sync",
+            bool(
+                self.usable_for_trading
+                and _enum_value(self.reason) == ExecutionFeatureReason.USABLE.value
+            ),
+        )
 
     @property
     def unusable_for_trading(self) -> bool:
@@ -107,6 +119,7 @@ def build_book_execution_features(
     """Build one fail-closed execution feature snapshot from local evidence."""
 
     generated_at = _non_negative_int("generated_at_ms", generated_at_ms)
+    book_age_ms = book_health.age_ms
     reason = _feature_reason(book_health, snapshot_resync)
     try:
         normalized_bids = _normalize_levels(bids, descending=True)
@@ -116,19 +129,20 @@ def build_book_execution_features(
             venue,
             symbol,
             generated_at,
+            book_age_ms,
             volatility,
             ExecutionFeatureReason.INVALID_BOOK,
         )
 
     if not normalized_bids or not normalized_asks:
         reason = ExecutionFeatureReason.CROSSED_OR_EMPTY_BOOK
-        return _empty_features(venue, symbol, generated_at, volatility, reason)
+        return _empty_features(venue, symbol, generated_at, book_age_ms, volatility, reason)
 
     best_bid = normalized_bids[0].price
     best_ask = normalized_asks[0].price
     if best_bid >= best_ask:
         reason = ExecutionFeatureReason.CROSSED_OR_EMPTY_BOOK
-        return _empty_features(venue, symbol, generated_at, volatility, reason)
+        return _empty_features(venue, symbol, generated_at, book_age_ms, volatility, reason)
 
     mid = mid_price(best_bid=best_bid, best_ask=best_ask)
     spread = spread_bps(best_bid=best_bid, best_ask=best_ask)
@@ -154,6 +168,8 @@ def build_book_execution_features(
         order_book_imbalance=imbalance,
         volatility_1s=vol.volatility_1s,
         volatility_5s=vol.volatility_5s,
+        book_age_ms=book_age_ms,
+        in_sync=reason is ExecutionFeatureReason.USABLE,
         usable_for_trading=reason is ExecutionFeatureReason.USABLE,
         reason=reason,
     )
@@ -301,6 +317,7 @@ def _empty_features(
     venue: str,
     symbol: str,
     generated_at_ms: int,
+    book_age_ms: int | None,
     volatility: VolatilityFeatures | None,
     reason: ExecutionFeatureReason,
 ) -> BookExecutionFeatures:
@@ -328,6 +345,8 @@ def _empty_features(
         order_book_imbalance=None,
         volatility_1s=vol.volatility_1s,
         volatility_5s=vol.volatility_5s,
+        book_age_ms=book_age_ms,
+        in_sync=False,
         usable_for_trading=False,
         reason=reason,
     )
