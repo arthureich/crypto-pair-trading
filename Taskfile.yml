@@ -1,0 +1,46 @@
+version: "3"
+
+tasks:
+  install:
+    desc: "Install all dependencies using uv sync"
+    cmds:
+      - uv sync
+
+  test:
+    desc: "Run the test suite using pytest"
+    cmds:
+      - uv run pytest
+
+  lint:
+    desc: "Run Ruff checks and formatting validation"
+    cmds:
+      - uv run ruff check .
+      - uv run ruff format --check .
+
+  format:
+    desc: "Format code with Ruff and fix autofixable lint errors"
+    cmds:
+      - uv run ruff format .
+      - uv run ruff check . --fix
+
+  type:
+    desc: "Run pyright type checking"
+    cmds:
+      - uv run pyright
+
+  check:
+    desc: "Run all lint, type, and test checks"
+    cmds:
+      - task: lint
+      - task: type
+      - task: test
+
+  docs:
+    desc: "Serve MkDocs documentation locally"
+    cmds:
+      - uv run mkdocs serve
+
+  paper:
+    desc: "Run paper engine simulation"
+    cmds:
+      - uv run python -m src.paper.paper_engine

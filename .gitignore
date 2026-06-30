@@ -1,0 +1,50 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments and dependencies
+.venv/
+venv/
+env/
+.env
+.env.local
+.env.*.local
+.python-version
+
+# Testing & Linting cache/reports
+.pytest_cache/
+pytest_temp/
+.ruff_cache/
+.pyright_cache/
+.hypothesis/
+.coverage
+htmlcov/
+coverage.xml
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Docker
+.docker/
+
+# Documentation build site
+site/
+
+# Local databases and data files
+*.db
+*.sqlite
+*.sqlite3
+data/
+db.sqlite3-journal
+db.sqlite-journal
+db.sqlite3-wal
+db.sqlite3-shm
+
+# Pytest temporary directories
+pytest_temp*/
+.uv_cache/
+

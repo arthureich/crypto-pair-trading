@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  app:
+    environment:
+      - ENV=development
+      - LOG_LEVEL=DEBUG
+    volumes:
+      - .:/app
+    # Overwrite the command for dev environment to run check or sleep/keep alive
+    command: ["uv", "run", "pytest"]
