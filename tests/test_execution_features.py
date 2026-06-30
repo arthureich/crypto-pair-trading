@@ -31,7 +31,7 @@ from src.market_data import (
 )
 
 
-def _healthy_book() -> BookHealthDecision:
+def _healthy_book(age_ms: int | None = 42) -> BookHealthDecision:
     return BookHealthDecision(
         status=BookHealthStatus.HEALTHY,
         reason=BookHealthReason.IN_SEQUENCE,
@@ -39,6 +39,7 @@ def _healthy_book() -> BookHealthDecision:
         symbol="BTCUSDT",
         last_sequence=10,
         entry_eligible=True,
+        age_ms=age_ms,
     )
 
 
@@ -97,6 +98,8 @@ def test_book_execution_features_model_is_usable_for_healthy_book() -> None:
     assert features.spread_bps == Decimal("8.00")
     assert features.depth_5_bps.bid_quantity == Decimal("2")
     assert features.depth_10_bps.ask_quantity == Decimal("5")
+    assert features.book_age_ms == 42
+    assert features.in_sync is True
     assert features.usable_for_trading is True
     assert features.reason is ExecutionFeatureReason.USABLE
 
@@ -109,6 +112,7 @@ def test_invalid_stale_or_resync_required_evidence_is_unusable_for_trading() -> 
         symbol="BTCUSDT",
         last_sequence=10,
         entry_eligible=False,
+        age_ms=10,
     )
     stale = BookHealthDecision(
         status=BookHealthStatus.INVALID,
@@ -117,6 +121,7 @@ def test_invalid_stale_or_resync_required_evidence_is_unusable_for_trading() -> 
         symbol="BTCUSDT",
         last_sequence=10,
         entry_eligible=False,
+        age_ms=251,
     )
     stale_features = build_book_execution_features(
         venue="BINANCE",
@@ -154,10 +159,16 @@ def test_invalid_stale_or_resync_required_evidence_is_unusable_for_trading() -> 
     )
 
     assert invalid_features.usable_for_trading is False
+    assert invalid_features.in_sync is False
+    assert invalid_features.book_age_ms == 10
     assert invalid_features.reason is ExecutionFeatureReason.INVALID_BOOK
     assert stale_features.usable_for_trading is False
+    assert stale_features.in_sync is False
+    assert stale_features.book_age_ms == 251
     assert stale_features.reason is ExecutionFeatureReason.STALE_BOOK
     assert resync_features.usable_for_trading is False
+    assert resync_features.in_sync is False
+    assert resync_features.book_age_ms == 42
     assert resync_features.reason is ExecutionFeatureReason.RESYNC_REQUIRED
 
 
@@ -172,6 +183,7 @@ def test_zero_quantity_levels_do_not_become_best_bid_or_ask() -> None:
     )
 
     assert features.usable_for_trading is True
+    assert features.in_sync is True
     assert features.best_bid == Decimal("99")
     assert features.best_ask == Decimal("101")
     assert features.mid_price == Decimal("100")
@@ -188,6 +200,8 @@ def test_all_zero_quantity_book_is_unusable_for_trading() -> None:
     )
 
     assert features.usable_for_trading is False
+    assert features.in_sync is False
+    assert features.book_age_ms == 42
     assert features.reason is ExecutionFeatureReason.CROSSED_OR_EMPTY_BOOK
     assert features.best_bid is None
     assert features.best_ask is None
@@ -204,6 +218,8 @@ def test_malformed_book_levels_fail_closed_without_exception() -> None:
     )
 
     assert features.usable_for_trading is False
+    assert features.in_sync is False
+    assert features.book_age_ms == 42
     assert features.reason is ExecutionFeatureReason.INVALID_BOOK
     assert features.mid_price is None
 
@@ -240,7 +256,11 @@ def test_feature_cache_returns_latest_and_marks_stale_fail_closed() -> None:
 
     assert fresh.reason is FeatureCacheReason.HIT
     assert fresh.usable_for_trading is True
+    assert fresh.feature is not None
+    assert fresh.feature.in_sync is True
     assert stale.reason is FeatureCacheReason.STALE
     assert stale.feature is not None
     assert stale.feature.usable_for_trading is False
+    assert stale.feature.in_sync is False
+    assert stale.feature.book_age_ms == 42
     assert stale.feature.reason is ExecutionFeatureReason.STALE_BOOK
