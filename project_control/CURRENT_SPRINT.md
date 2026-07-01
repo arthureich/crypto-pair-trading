@@ -106,6 +106,42 @@ So avancar se houver pelo menos um conjunto de pares candidatos com:
 - `project_control/PROJECT_STATE.md` atualizado
 - `project_control/TASK_BOARD.md` atualizado
 
+## Gate real-dataset
+
+Real 2023-06 through 2026-05 Binance USD-M run:
+
+- 20 seed symbols accepted
+- 526080 normalized 1h bars
+- 41 statistical candidate pairs
+- 149 rejected pairs
+- 41 pairs evaluated by stationarity, Kalman, OU, and z-score gate
+- 41 statistical-only accepts
+- cost-gated PASS: false (definitive, not pending)
+
+TASK-007-09 received Market Data Agent + QA Agent review: PASSA (no P1
+findings). TASK-007-09 is DONE.
+
+TASK-007-10 executed a real source review against the Binance Public Data
+bookTicker archive (monthly and daily, both S3 prefixes, all 20 accepted
+symbols) for the full 36-month window. Result: `SOURCE_INCOMPLETE_FAIL_CLOSED`.
+Verified top-of-book/L2 coverage exists for only 11 of the 36 required months
+(2023-06 through approximately 2024-04); no symbol reaches complete coverage,
+and Binance Public Data does not publish bookTicker archives past that point
+for any of the 20 symbols. This was independently confirmed against the live
+S3 endpoint (not a pagination artifact) and re-verified by QA Agent. Because
+the source is incomplete, `cost_gated_pass=false` for all 41 candidate pairs,
+unconditionally. TASK-007-10 is DONE with this definitive negative finding.
+
+Sprint 8 remains blocked. This is no longer a pending-execution blocker: it is
+a data-availability limitation of the current source. Advancing to Sprint 8
+now requires a PM/stakeholder decision: (a) find and verify an alternative
+top-of-book/L2 source, (b) shrink the research window to the ~11 months with
+verified coverage and re-run the statistical gate on that sub-window, (c)
+redefine the cost-gated PASS policy via ADR (e.g. accept forward-collected
+execution-cost evidence going forward instead of retroactive), or (d) keep
+Sprint 8 blocked indefinitely until one of the above is resolved. See
+`BLOCKER-2026-06-30-S7-REAL-DATASET-GATE`.
+
 ## Agentes envolvidos
 
 - Quant Research Agent
@@ -136,4 +172,5 @@ So avancar se houver pelo menos um conjunto de pares candidatos com:
 | TASK-007-06 | Criar notebooks exploratorios | Quant Research Agent | Documentation Agent | DONE | 100% |
 | TASK-007-07 | Criar testes de research base | QA Agent | Quant Research Agent | DONE | 100% |
 | TASK-007-08 | Gerar relatorio research_sprint_07.md | Documentation Agent | PM Agent | DONE | 100% |
-| TASK-007-09 | Implementar loader/normalizer historico Binance | PM Agent | Market Data Agent + QA Agent | IN_PROGRESS | 25% |
+| TASK-007-09 | Implementar loader/normalizer historico Binance | PM Agent | Market Data Agent + QA Agent | DONE | 100% |
+| TASK-007-10 | Produzir evidencia historica de custo de execucao | Market Data Agent | QA Agent + PM Agent | DONE | 100% |

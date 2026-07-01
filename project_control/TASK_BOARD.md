@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-Last updated: 2026-06-30
+Last updated: 2026-07-01
 
 ## Status permitidos
 
@@ -69,7 +69,8 @@ ARCHIVED
 | TASK-007-06 | 7 | Criar notebooks exploratorios | Quant Research Agent | DONE | - | Documentation Agent | nenhum |
 | TASK-007-07 | 7 | Criar testes de research base | QA Agent | DONE | - | Quant Research Agent | nenhum |
 | TASK-007-08 | 7 | Gerar relatorio research_sprint_07.md | Documentation Agent | DONE | - | PM Agent | nenhum |
-| TASK-007-09 | 7 | Implementar loader/normalizer historico Binance | PM Agent | IN_PROGRESS | - | Market Data Agent + QA Agent | BLOCKER-2026-06-30-S7-REAL-DATASET-GATE |
+| TASK-007-09 | 7 | Implementar loader/normalizer historico Binance | PM Agent | DONE | - | Market Data Agent + QA Agent | nenhum |
+| TASK-007-10 | 7 | Produzir evidencia historica de custo de execucao | Market Data Agent | DONE | - | QA Agent + PM Agent | nenhum (ver BLOCKER-2026-06-30-S7-REAL-DATASET-GATE para o bloqueio de abertura do Sprint 8) |
 
 ## Progresso
 
@@ -115,5 +116,6 @@ ARCHIVED
 | TASK-007-05 | 100% | OU estimator passed QA re-review after non-unit-dt sigma fix and regression test; rolling z-score remains no-look-ahead. |
 | TASK-007-06 | 100% | Exploratory notebooks created and Documentation Agent re-review passed; notebooks use synthetic smoke data only. |
 | TASK-007-07 | 100% | Research tests passed Quant Research Agent review; focused suite passed 31 tests. |
-| TASK-007-08 | 100% | Final Sprint 7 report written and PM/Documentation review passed with Sprint 8 gate set to NAO PASSA until real dataset run. |
-| TASK-007-09 | 25% | Historical Binance loader/normalizer started to address the real-dataset Sprint 7 gate blocker. |
+| TASK-007-08 | 100% | Final Sprint 7 report written and PM/Documentation review passed; after TASK-007-09 real run, Sprint 8 remains NAO PASSA until verified execution-cost evidence and review. |
+| TASK-007-09 | 100% | Historical Binance loader/normalizer, local runner smoke, BTCUSDT 2023-06 real one-month smoke, full 2023-06 through 2026-05 dataset run, and statistical research gate passed. Market Data Agent review PASSA (2 P3 findings, non-blocking). QA Agent review PASSA (2 P2 + 1 P3 findings, non-blocking, no P1). Moved to DONE. |
+| TASK-007-10 | 100% | Market Data Agent implemented `src/research/execution_cost_evidence.py` and probed the real Binance Public Data bookTicker source (monthly + daily) for all 20 accepted symbols across the full 2023-06 through 2026-05 window. Result: `SOURCE_INCOMPLETE_FAIL_CLOSED` — verified top-of-book/L2 coverage exists for only 11 of 36 required months (2023-06 through ~2024-04); no symbol has complete coverage. `cost_gated_pass=false` for all 41 candidate pairs, enforced unconditionally when source is incomplete. PM independently verified against the live Binance S3 endpoint (not a pagination artifact: `IsTruncated=false`, `KeyCount << MaxKeys` on both monthly and daily prefixes). QA Agent independent re-review PASSA, confirmed no pagination masking and no code path treats missing evidence as approved. Moved to DONE with a definitive negative finding, not a pending execution. Sprint 8 remains blocked; see BLOCKER-2026-06-30-S7-REAL-DATASET-GATE. |

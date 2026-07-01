@@ -1,5 +1,223 @@
 # Daily Log
 
+## 2026-07-01 (continuacao - fechamento TASK-007-09/TASK-007-10)
+
+Governance audit:
+
+```text
+User asked to confirm/create the 12 project_control files. All 12 already
+existed and were consistent with each other. No file was missing; audited
+PROJECT_STATE, CURRENT_SPRINT, TASK_BOARD, AGENTS, OWNERSHIP, INTERFACES,
+DECISIONS, RISKS, BLOCKERS, HANDOFFS, TEST_MATRIX, DAILY_LOG, RELEASE_CHECKLIST.
+Confirmed the mandatory dispatch protocol (agent, sprint, task, contexto,
+arquivos permitidos/proibidos, criterio de pronto, testes, handoff) going
+forward.
+```
+
+User asked to complete Sprint 7:
+
+```text
+Found that TASK-007-10 work (src/research/execution_cost_evidence.py,
+scripts/run_sprint7_execution_cost_evidence.py) had already been implemented
+and run against the real Binance source after the last control-file update,
+producing data/research/binance_public/normalized/
+sprint7_binance_usdm_202306_202605_execution_cost_source_review.json and
+_execution_cost_gate.json, not yet reflected in project_control.
+```
+
+PM verification before trusting the result:
+
+```text
+Independently queried the live Binance S3 endpoint
+(s3-ap-northeast-1.amazonaws.com/data.binance.vision) via curl for BTCUSDT:
+monthly bookTicker prefix returned KeyCount=24, MaxKeys=1000,
+IsTruncated=false, last archive 2024-04; daily bookTicker prefix returned
+KeyCount=640, MaxKeys=1000, IsTruncated=false, last archive 2024-03-30.
+Confirmed the coverage gap is real and not a pagination artifact of
+_fetch_s3_objects/parse_s3_list_objects (which do not handle
+IsTruncated/NextContinuationToken).
+```
+
+Formal reviews dispatched in parallel (per governance protocol, no vague task):
+
+```text
+1. Market Data Agent review of TASK-007-09 (paths, checksum, funding as-of,
+   sidecars, global mutable state). Result: PASSA, 2 P3 findings.
+2. QA Agent review of TASK-007-09 (fail-closed: checksum mismatch, gaps,
+   runner smoke, select_pairs integration). Result: PASSA, 2 P2 + 1 P3
+   findings, no P1.
+3. QA Agent independent re-review of TASK-007-10 (S3 pagination risk,
+   no-default-approve on missing evidence). Result: PASSA, confirmed PM's
+   verification, 1 P2 finding (pagination handling should be added as
+   future hardening, harmless today).
+```
+
+Verification:
+
+```text
+UV_CACHE_DIR=.uv-cache uv run --offline --with pytest pytest tests/test_execution_cost_evidence.py tests/test_historical_dataset.py tests/test_pair_selection.py -q
+Result: passed, 26 tests.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with pytest pytest tests -q
+Result: passed, 186 tests.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with ruff ruff check src/research/execution_cost_evidence.py tests/test_execution_cost_evidence.py scripts/run_sprint7_execution_cost_evidence.py
+Result: passed.
+```
+
+Status:
+
+```text
+TASK-007-09 moved to DONE (100%). TASK-007-10 moved to DONE (100%) with a
+definitive negative finding: Binance Public Data bookTicker coverage exists
+for only 11 of 36 required months, identically for all 20 accepted symbols;
+cost_gated_pass=false for all 41 candidate pairs, unconditionally.
+Sprint 7 technical implementation is complete. Sprint 8 start remains blocked,
+but the blocker changed from "evidence not yet produced" to "verified
+evidence does not exist on this source for this window" - a policy decision
+for the user/PM, not further execution work. Updated PROJECT_STATE,
+CURRENT_SPRINT, TASK_BOARD, BLOCKERS, RISKS, TEST_MATRIX, HANDOFFS, and
+reports/research_sprint_07.md accordingly. BLOCKER-2026-06-30-S7-REAL-DATASET-GATE
+kept ACTIVE, reframed as a decision blocker.
+```
+
+## 2026-07-01
+
+Sprint 7 TASK-007-09 historical loader continuation:
+
+```text
+User corrected the previous instruction: active project state is Sprint 7, not
+Sprint 5. PM restored PROJECT_STATE.md, CURRENT_SPRINT.md, BLOCKERS.md, and
+related control files to the Sprint 7 state before continuing.
+```
+
+Implementation:
+
+```text
+Updated src/research/historical_dataset.py so Binance ZIP CSV reading handles
+headerless public-data CSVs without dropping the first data row.
+Checksum parsing now accepts sha256sum-style binary filename markers such as
+`*BTCUSDT-1h-2023-06.zip`.
+Added tests for checksum parser/verifier, checksum mismatch before
+normalization, headerless ZIPs, archive-plan normalization feeding select_pairs,
+and local no-download runner smoke.
+```
+
+Verification:
+
+```text
+UV_CACHE_DIR=.uv-cache uv run --offline --with pytest pytest tests/test_historical_dataset.py tests/test_pair_selection.py --basetemp=pytest_temp_run_task00709_focus -o cache_dir=pytest_temp_run_task00709_focus/.pytest_cache
+Result: passed, 21 tests, 1 pytest config warning for unknown asyncio_mode.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with pytest pytest tests --basetemp=pytest_temp_run_sprint7_real_gate_all -o cache_dir=pytest_temp_run_sprint7_real_gate_all/.pytest_cache
+Result: passed, 182 tests, 1 pytest config warning for unknown asyncio_mode.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with ruff ruff check src/research/historical_dataset.py tests/test_historical_dataset.py scripts/run_sprint7_historical_dataset.py
+Result: passed.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with ruff ruff check .
+Result: failed on pre-existing notebook lint issues in notebooks/01_pair_selection.ipynb
+and notebooks/02_kalman_ou.ipynb. Scoped TASK-007-09 ruff passed, so notebook
+cleanup is left out of this loader task.
+
+UV_CACHE_DIR=.uv-cache uv run --offline python scripts/run_sprint7_historical_dataset.py --symbols BTCUSDT --start-month 2023-06 --end-month-exclusive 2023-07 --dataset-version sprint7_real_smoke_202306_btcusdt --data-root /tmp/crypto_pair_trading_sprint7_real_smoke --correlation-window 2
+Result: passed. Downloaded/checksumed real Binance Public Data for BTCUSDT
+2023-06 across klines, markPriceKlines, indexPriceKlines, premiumIndexKlines,
+and fundingRate. Normalized output contains 720 bars.
+```
+
+Status:
+
+```text
+TASK-007-09 moved to IN_REVIEW at 90%.
+Market Data Agent and QA Agent review remain mandatory before DONE.
+Real one-month smoke passed, but real 36 complete-month Binance USD-M dataset
+execution remains pending and continues to block Sprint 8.
+```
+
+Sprint 7 real-dataset gate execution:
+
+```text
+User asked to do the remaining Sprint 7 work.
+
+Full real dataset run completed:
+UV_CACHE_DIR=.uv-cache uv run --offline python scripts/run_sprint7_historical_dataset.py --symbols BTCUSDT ETHUSDT BNBUSDT SOLUSDT XRPUSDT ADAUSDT DOGEUSDT AVAXUSDT LINKUSDT LTCUSDT BCHUSDT DOTUSDT TRXUSDT ETCUSDT UNIUSDT ATOMUSDT APTUSDT ARBUSDT OPUSDT SUIUSDT --start-month 2023-06 --end-month-exclusive 2026-06 --dataset-version sprint7_binance_usdm_202306_202605 --data-root data/research/binance_public --correlation-window 168 --download-workers 12
+
+Artifacts:
+data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_bars.csv
+data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_summary.json
+
+Result:
+526080 normalized 1h bars, 20 accepted symbols, 0 rejected symbols, 41
+statistical candidate pairs, and 149 rejected pairs.
+
+Real research gate completed:
+UV_CACHE_DIR=.uv-cache uv run --offline python scripts/run_sprint7_research_gate.py --bars-csv data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_bars.csv --summary-json data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_summary.json --output-json data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_research_gate.json --output-csv data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_research_gate.csv
+
+Artifacts:
+data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_research_gate.json
+data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_research_gate.csv
+
+Result:
+41 candidate pairs evaluated; 41 statistical-only accepts; 0 statistical
+rejects; cost_gated_pass=false because verified historical top-of-book/L2
+execution-cost evidence is unavailable.
+```
+
+Implementation follow-up:
+
+```text
+Added scripts/run_sprint7_research_gate.py and an automated smoke test that
+executes it against a synthetic normalized bars CSV.
+Added dataset_version to future run_sprint7_historical_dataset.py summaries.
+Added explicit cost_gate_reason and generated_at_utc to research gate JSON
+output.
+```
+
+Verification:
+
+```text
+UV_CACHE_DIR=.uv-cache uv run --offline --with pytest pytest tests/test_historical_dataset.py tests/test_pair_selection.py --basetemp=pytest_temp_run_task00709_gate_focus -o cache_dir=pytest_temp_run_task00709_gate_focus/.pytest_cache
+Result: passed, 22 tests, 1 pytest config warning for unknown asyncio_mode.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with pytest pytest tests --basetemp=pytest_temp_run_sprint7_real_gate_all -o cache_dir=pytest_temp_run_sprint7_real_gate_all/.pytest_cache
+Result: passed, 182 tests, 1 pytest config warning for unknown asyncio_mode.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with ruff ruff check src/research/historical_dataset.py tests/test_historical_dataset.py scripts/run_sprint7_historical_dataset.py scripts/run_sprint7_research_gate.py
+Result: passed.
+```
+
+Status:
+
+```text
+TASK-007-09 remains IN_REVIEW and moved to 95%.
+The dataset execution part of BLOCKER-2026-06-30-S7-REAL-DATASET-GATE is no
+longer pending.
+Sprint 8 remains blocked by cost-gated execution-cost evidence and mandatory
+Market Data Agent + QA Agent review.
+```
+
+TASK-007-10 delegation:
+
+```text
+User instructed PM to send the remaining work.
+PM opened TASK-007-10 - Produzir evidencia historica de custo de execucao.
+
+Delegated agent: Market Data Agent.
+Subagent nickname: Ptolemy.
+Mandatory reviewers: QA Agent + PM Agent.
+Status: IN_PROGRESS, 25%.
+
+Scope:
+- produce or disprove verified historical top-of-book/L2 execution-cost
+  evidence for the 41 Sprint 7 statistical pairs;
+- keep evidence incomplete/absent fail-closed;
+- do not touch ledger, execution, live engine, or models.
+
+Sprint 8 remains blocked until TASK-007-10 produces cost-gated evidence and
+TASK-007-09 receives Market Data Agent + QA Agent review.
+```
+
 ## 2026-06-30
 
 Pre-Sprint 7 gate audit:

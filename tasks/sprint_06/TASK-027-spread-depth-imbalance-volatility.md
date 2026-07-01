@@ -52,4 +52,3 @@ Compute spread, depth within 5/10 bps, order book imbalance, and short-window vo
 ## Testes obrigatorios
 
 - `pytest tests/test_execution_features.py`
-

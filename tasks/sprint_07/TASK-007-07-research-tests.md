@@ -95,4 +95,3 @@ Atualizar project_control/HANDOFFS.md com:
 - gaps de cobertura
 - pendencias
 - riscos
-

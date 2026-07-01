@@ -92,3 +92,31 @@ Atualizar project_control/HANDOFFS.md com:
 - execucao real/smoke, se houver
 - pendencias
 - riscos
+
+## Status
+
+IN_REVIEW
+
+## Progresso
+
+95%
+
+## Nota de status
+
+Loader, normalizer, checksum verification, local runner smoke, and tests are
+implemented. The real 2023-06 through 2026-05 Binance USD-M dataset was
+downloaded, checksumed, normalized, and run through the Sprint 7 statistical
+research gate.
+
+Current real run artifacts:
+
+```text
+data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_bars.csv
+data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_summary.json
+data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_research_gate.json
+data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_research_gate.csv
+```
+
+Market Data Agent and QA Agent review are still required before DONE.
+Cost-gated Sprint 7 PASS remains false because verified historical
+top-of-book/L2 execution-cost evidence is unavailable.

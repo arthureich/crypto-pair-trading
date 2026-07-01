@@ -67,6 +67,22 @@ documentation review
 | Rolling correlation avoids look-ahead | unit | 7 | research | passed | sim |
 | Pair selection execution cost filters fail closed | unit | 7 | research | passed | sim |
 | OU sigma respects non-unit dt | unit | 7 | research | passed | sim |
+| Historical dataset checksum parser/verifier | unit | 7 | research | passed | sim |
+| Historical dataset normalizer no-forward-fill gaps | unit | 7 | research | passed | sim |
+| Historical dataset archive plan feeds pair selection | integration | 7 | research | passed | sim |
+| Sprint 7 historical runner local no-download smoke | integration | 7 | research | passed | sim |
+| Sprint 7 historical runner real one-month smoke | integration | 7 | research | passed | nao |
+| Sprint 7 full Binance USD-M dataset normalization | integration | 7 | research | passed | sim |
+| Sprint 7 real statistical research gate | integration | 7 | research | passed | sim |
+| Historical dataset headerless Binance CSV preserves first row | unit | 7 | research | passed | sim |
+| Historical dataset checksum mismatch rejected before normalization | unit | 7 | research | passed | sim |
+| Execution-cost evidence book-ticker normalization/hourly schema | unit | 7 | research | passed | sim |
+| Execution-cost gate forces cost_gated_pass=false when source incomplete | unit | 7 | research | passed | sim |
+| Sprint 7 historical execution-cost evidence source review | documentation review | 7 | market_data | passed (SOURCE_INCOMPLETE_FAIL_CLOSED, verified against live source) | sim |
+| Sprint 7 cost-gated execution-cost evidence | integration | 7 | research/market_data | passed (definitive: cost_gated_pass=false for all 41 pairs, evidence source incomplete) | sim |
+| TASK-007-09 Market Data Agent review | documentation review | 7 | market_data | passed (2 P3, non-blocking) | sim |
+| TASK-007-09 QA Agent fail-closed review | documentation review | 7 | research | passed (2 P2 + 1 P3, non-blocking) | sim |
+| TASK-007-10 QA Agent independent re-review (S3 pagination, no-default-approve) | documentation review | 7 | research/market_data | passed (1 P2, non-blocking) | sim |
 | Backtest sem look-ahead bias | backtest | 8 | backtest | pending | sim |
 | Kill switch trigger fails closed | live readiness | 14 | execution | pending | sim |
 
@@ -215,4 +231,66 @@ rolling correlation avoids look-ahead;
 execution-cost filters fail closed when quality/tail evidence is incomplete;
 OU sigma scales correctly for non-unit dt;
 functions do not rely on mutable global DataFrame state.
+```
+
+## Sprint 7 Historical Loader Checks
+
+```text
+Required commands:
+pytest tests/test_historical_dataset.py
+pytest tests/test_pair_selection.py
+
+Result:
+UV_CACHE_DIR=.uv-cache uv run --offline --with pytest pytest tests/test_historical_dataset.py tests/test_pair_selection.py --basetemp=pytest_temp_run_task00709_focus -o cache_dir=pytest_temp_run_task00709_focus/.pytest_cache
+passed, 21 tests.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with pytest pytest tests/test_historical_dataset.py tests/test_pair_selection.py --basetemp=pytest_temp_run_task00709_gate_focus -o cache_dir=pytest_temp_run_task00709_gate_focus/.pytest_cache
+passed, 22 tests.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with pytest pytest tests --basetemp=pytest_temp_run_sprint7_real_gate_all -o cache_dir=pytest_temp_run_sprint7_real_gate_all/.pytest_cache
+passed, 182 tests.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with ruff ruff check src/research/historical_dataset.py tests/test_historical_dataset.py scripts/run_sprint7_historical_dataset.py
+passed.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with ruff ruff check src/research/historical_dataset.py tests/test_historical_dataset.py scripts/run_sprint7_historical_dataset.py scripts/run_sprint7_research_gate.py
+passed.
+
+Real smoke:
+UV_CACHE_DIR=.uv-cache uv run --offline python scripts/run_sprint7_historical_dataset.py --symbols BTCUSDT --start-month 2023-06 --end-month-exclusive 2023-07 --dataset-version sprint7_real_smoke_202306_btcusdt --data-root /tmp/crypto_pair_trading_sprint7_real_smoke --correlation-window 2
+passed.
+Downloaded and checksumed the 5 required Binance Public Data families for
+BTCUSDT 2023-06, wrote 720 normalized bars plus header to
+/tmp/crypto_pair_trading_sprint7_real_smoke/normalized/sprint7_real_smoke_202306_btcusdt_bars.csv,
+and accepted BTCUSDT in the one-symbol statistical smoke summary.
+
+Full real dataset:
+UV_CACHE_DIR=.uv-cache uv run --offline python scripts/run_sprint7_historical_dataset.py --symbols BTCUSDT ETHUSDT BNBUSDT SOLUSDT XRPUSDT ADAUSDT DOGEUSDT AVAXUSDT LINKUSDT LTCUSDT BCHUSDT DOTUSDT TRXUSDT ETCUSDT UNIUSDT ATOMUSDT APTUSDT ARBUSDT OPUSDT SUIUSDT --start-month 2023-06 --end-month-exclusive 2026-06 --dataset-version sprint7_binance_usdm_202306_202605 --data-root data/research/binance_public --correlation-window 168 --download-workers 12
+passed.
+Downloaded and checksumed Binance Public Data archives, wrote 526080 normalized
+bars plus header, accepted 20 symbols, produced 41 statistical candidate pairs,
+and rejected 149 pairs by pair-selection filters.
+
+Real statistical research gate:
+UV_CACHE_DIR=.uv-cache uv run --offline python scripts/run_sprint7_research_gate.py --bars-csv data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_bars.csv --summary-json data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_summary.json --output-json data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_research_gate.json --output-csv data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_research_gate.csv
+passed.
+Evaluated 41 candidate pairs; 41 statistical-only accepts; 0 statistical
+rejects; cost_gated_pass=false because verified historical top-of-book/L2
+execution-cost evidence is unavailable.
+
+Required coverage:
+deterministic Binance Public Data archive paths;
+SHA256 checksum parsing and exact verification, including sha256sum binary marker;
+checksum mismatch blocks normalization before CSV parsing;
+headerless public-data ZIPs preserve the first data row;
+kline, mark, index, premium, and funding normalization;
+funding joined as-of without future events;
+missing hourly gaps do not forward-fill returns;
+normalized archive plan feeds select_pairs;
+runner script executes local no-download smoke and writes normalized CSV/summary.
+
+Limit:
+real statistical gate is complete, but cost-gated Sprint 7 PASS is blocked by
+missing verified historical execution-cost evidence and pending Market Data
+Agent + QA Agent review.
 ```

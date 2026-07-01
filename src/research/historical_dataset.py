@@ -51,6 +51,7 @@ class BinanceDataFamily(StrEnum):
     INDEX_PRICE_KLINES = "indexPriceKlines"
     PREMIUM_INDEX_KLINES = "premiumIndexKlines"
     FUNDING_RATE = "fundingRate"
+    BOOK_TICKER = "bookTicker"
 
 
 @dataclass(frozen=True, slots=True)
@@ -65,14 +66,14 @@ class BinanceArchiveSpec:
 
     @property
     def filename(self) -> str:
-        if self.family is BinanceDataFamily.FUNDING_RATE:
-            return f"{self.symbol}-fundingRate-{self.year_month}.zip"
+        if self.family in (BinanceDataFamily.FUNDING_RATE, BinanceDataFamily.BOOK_TICKER):
+            return f"{self.symbol}-{self.family.value}-{self.year_month}.zip"
         return f"{self.symbol}-{self.interval}-{self.year_month}.zip"
 
     @property
     def relative_path(self) -> str:
-        if self.family is BinanceDataFamily.FUNDING_RATE:
-            return f"data/futures/um/monthly/fundingRate/{self.symbol}/{self.filename}"
+        if self.family in (BinanceDataFamily.FUNDING_RATE, BinanceDataFamily.BOOK_TICKER):
+            return f"data/futures/um/monthly/{self.family.value}/{self.symbol}/{self.filename}"
         return (
             f"data/futures/um/monthly/{self.family.value}/{self.symbol}/"
             f"{self.interval}/{self.filename}"
@@ -249,7 +250,7 @@ def parse_checksum_text(text: str) -> tuple[str, str]:
         char not in "0123456789abcdef" for char in checksum
     ):
         raise HistoricalDatasetError(f"invalid SHA256 checksum: {checksum!r}")
-    filename = parts[1].strip() if len(parts) > 1 else ""
+    filename = parts[1].strip().lstrip("*") if len(parts) > 1 else ""
     return checksum, filename
 
 
@@ -372,7 +373,7 @@ def read_zip_csv(path: Path) -> pd.DataFrame:
         if len(csv_names) != 1:
             raise HistoricalDatasetError(f"{path} must contain exactly one CSV; got {csv_names}")
         content = archive.read(csv_names[0])
-    return pd.read_csv(io.BytesIO(content))
+    return pd.read_csv(io.BytesIO(content), header=None, dtype="string")
 
 
 def normalize_kline_frame(
@@ -658,12 +659,15 @@ def _drop_exact_duplicates_or_fail(
 
 def _numeric_columns(data: pd.DataFrame, columns: Sequence[str]) -> pd.DataFrame:
     return pd.DataFrame(
-        {column: pd.to_numeric(data[column], errors="coerce") for column in columns}
+        {
+            column: pd.to_numeric(data[column], errors="coerce").astype("float64")
+            for column in columns
+        }
     )
 
 
 def _finite_int_series(values: pd.Series) -> pd.Series:
-    numeric = pd.to_numeric(values, errors="coerce")
+    numeric = pd.to_numeric(values, errors="coerce").astype("float64")
     result = pd.Series(np.nan, index=values.index, dtype="float64")
     finite = np.isfinite(numeric)
     result.loc[finite] = numeric.loc[finite]

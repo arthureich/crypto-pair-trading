@@ -207,3 +207,74 @@ Ledger can recover order truth from persisted events after restart. `ACK_UNKNOWN
 ## Migration
 
 Implementation tasks must derive Ledger schema, order router behavior, recovery boot, and documentation checks from `docs/event_contracts.md`. Any future contract-breaking event or `clientOrderId` change requires a new ADR and migration plan.
+
+## ADR-0007 - Cost-Gated PASS Scoped To Verified Evidence, Not The Full Backtest Window
+
+## Status
+
+Accepted
+
+## Context
+
+TASK-007-10 proved that Binance Public Data does not publish verified
+top-of-book/L2 (`bookTicker`) archives for USD-M futures symbols past
+approximately 2024-04. Only 11 of the 36 months in the Sprint 7 research
+window (2023-06 through 2026-05) have any verified top-of-book coverage, for
+every symbol. This was independently confirmed against the live source (not a
+pagination artifact) and re-verified by QA Agent. The original Sprint 7 gate
+policy required verified cost evidence across the *entire* backtest window
+before any pair could be cost-gated PASS, which is now known to be
+unsatisfiable from this source, permanently.
+
+Separately, downloading and normalizing full-month `bookTicker` archives at
+monthly granularity is itself unsafe: a single mid-cap symbol's monthly
+archive decompresses into multiple GB of tick data, and loading it in one
+pandas frame caused an out-of-memory kill in this environment (30 GiB RAM).
+
+## Decision
+
+1. Cost-gated PASS claims are scoped to the specific symbols, dates, and
+   granularity for which verified top-of-book evidence was actually
+   downloaded, checksum-verified, and aggregated — never to the full 36-month
+   window by default. A pair's cost-gated status must always cite the exact
+   evidence window it was evaluated against.
+2. Historical top-of-book ingestion uses Binance **daily** `bookTicker`
+   archives, processed one symbol-day at a time, with the raw tick-level
+   frame freed before moving to the next symbol-day. Monthly `bookTicker`
+   archives must not be loaded whole into memory.
+3. Going forward, once any paper or live trading exists, the already-built
+   Market Data Plane (`LocalOrderBook`/`BookBuilder`, `BookFeatures` with
+   `spread_bps`/`depth_5bps`/`depth_10bps`, Sprint 5/6) is the source of truth
+   for forward execution-cost evidence. Sprint 8 work that depends on cost
+   evidence should prefer live-captured `BookFeatures` history over
+   attempting to backfill more historical Binance archives.
+4. Sprint 8 may open scoped only to work items that either (a) depend on
+   pairs with real verified cost-gated evidence for the specific evidence
+   window covered, or (b) do not require historical execution-cost evidence
+   at all. Claims beyond the verified evidence window remain statistical-only
+   and must be labeled as such.
+
+## Consequences
+
+Sprint 7's cost-gated conclusion is now precise instead of blocked-in-full:
+some pairs may get a genuine, narrowly-scoped cost-gated PASS/FAIL for the
+period actually verified (for example one representative month within
+2023-06 through 2024-04), while the claim for the remaining, unverifiable
+portion of the 36-month window stays statistical-only. `PROJECT_STATE.md`,
+`CURRENT_SPRINT.md`, and `reports/research_sprint_07.md` must state the
+evidence window explicitly whenever `cost_gated_pass` is reported.
+
+## Agent Impact
+
+- PM Agent
+- Market Data Agent
+- Quant Research Agent
+- QA / Chaos Testing Agent
+
+## Migration
+
+`src/research/execution_cost_evidence.py` and
+`scripts/run_sprint7_execution_cost_download.py` implement the daily,
+memory-bounded ingestion path. Any future cost-gated claim must record the
+evidence window (symbols, dates, granularity) alongside `cost_gated_pass` and
+must not silently imply full-window coverage.

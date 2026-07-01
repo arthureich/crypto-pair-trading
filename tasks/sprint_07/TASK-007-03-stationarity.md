@@ -83,4 +83,3 @@ Atualizar project_control/HANDOFFS.md com:
 - limitacoes estatisticas
 - pendencias
 - riscos
-

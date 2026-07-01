@@ -85,4 +85,3 @@ Atualizar project_control/HANDOFFS.md com:
 - comportamento para theta <= 0
 - pendencias
 - riscos
-

@@ -86,4 +86,3 @@ Atualizar project_control/HANDOFFS.md com:
 - arquivos alterados
 - pendencias
 - riscos
-

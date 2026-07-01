@@ -52,4 +52,3 @@ Estimate buy and sell slippage from supplied book levels before any order router
 ## Testes obrigatorios
 
 - `pytest tests/test_slippage_estimator.py`
-

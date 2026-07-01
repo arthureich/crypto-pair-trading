@@ -47,4 +47,3 @@ db.sqlite3-shm
 # Pytest temporary directories
 pytest_temp*/
 .uv_cache/
-

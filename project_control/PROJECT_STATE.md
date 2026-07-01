@@ -1,6 +1,6 @@
 # PROJECT_STATE
 
-Last updated: 2026-06-30
+Last updated: 2026-07-01
 
 ## Sprint atual
 
@@ -50,9 +50,19 @@ BLOQUEADO PARA SPRINT 8
 - exploratory research notebooks
 - Sprint 7 technical research report
 
+## Componentes concluidos (Sprint 7, adicional)
+
+- Historical Binance loader/normalizer (TASK-007-09), reviewed and passed by
+  Market Data Agent and QA Agent
+- Historical top-of-book/L2 execution-cost source review (TASK-007-10):
+  definitive finding that Binance Public Data bookTicker coverage is
+  incomplete for the required window
+
 ## Componentes em andamento
 
-- Historical dataset execution for Sprint 7 gate
+- Nenhum item tecnico de Sprint 7 em andamento. Sprint 8 start depende de
+  decisao de politica sobre a fonte de custo de execucao (ver Bloqueadores
+  atuais).
 
 ## Objetivo atual
 
@@ -72,15 +82,29 @@ Sprint 7 so passa se:
 
 ## Bloqueadores atuais
 
-- Sprint 7 research gate is not satisfied for Sprint 8 because the documented
-  36 complete-month Binance USD-M dataset has not been downloaded, checksumed,
-  normalized, or run through the research pipeline.
+- Sprint 7 statistical real-dataset gate has been executed for the documented
+  2023-06 through 2026-05 Binance USD-M window. It produced 20 accepted
+  symbols, 526080 normalized 1h bars, 41 statistical candidate pairs, 149
+  rejected pairs, and 41 statistical-only pair accepts after stationarity,
+  Kalman, OU, and z-score checks.
+- TASK-007-09 passed Market Data Agent + QA Agent review and is DONE.
+- TASK-007-10 is DONE with a definitive negative finding: Binance Public Data
+  bookTicker (top-of-book/L2) coverage exists for only 11 of the required 36
+  months, for every one of the 20 accepted symbols. This was independently
+  verified against the live source and re-verified by QA Agent; it is a real
+  data-availability limit, not a bug.
+- Sprint 8 remains blocked. The blocker is no longer "evidence not yet
+  produced" — it is "verified evidence does not exist for this window on this
+  source." Starting Sprint 8 now requires an explicit PM/stakeholder decision
+  among: find an alternative verified cost source, shrink the research window
+  to the covered sub-period, redefine cost-gated PASS policy via ADR, or keep
+  Sprint 8 blocked indefinitely.
 
 ## Gates pendentes
 
 - Daily realized loss and drawdown threshold gaps remain fail-closed
   live-readiness blockers.
-- Sprint 7 real-dataset research gate.
+- Sprint 7 cost-gated real-dataset research gate.
 
 ## Riscos atuais
 

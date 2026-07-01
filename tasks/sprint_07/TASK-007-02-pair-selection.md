@@ -85,4 +85,3 @@ Atualizar project_control/HANDOFFS.md com:
 - pares/metricas de exemplo, se houver
 - pendencias
 - riscos
-

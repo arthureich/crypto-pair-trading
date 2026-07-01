@@ -1,10 +1,13 @@
 # Research Sprint 7 Report
 
-Status: final report for Sprint 7 technical base.
+Status: final report for Sprint 7 technical base. Sprint 7 technical
+implementation is complete (PASSA). Sprint 8 advancement gate: NAO PASSA,
+definitively, pending a PM/stakeholder policy decision (see Conclusion).
 
-Last updated: 2026-06-30.
+Last updated: 2026-07-01.
 
-Gate conclusion for Sprint 8: NAO PASSA.
+Gate conclusion for Sprint 8: NAO PASSA (definitive data-availability finding,
+not a pending-execution gap).
 
 ## Executive Summary
 
@@ -12,10 +15,29 @@ Sprint 7 delivered the research base for pair selection, stationarity checks,
 Kalman dynamic hedge ratio, OU estimation, half-life, and z-score. The modules
 are implemented, reviewed, and covered by automated tests.
 
-The Sprint 8 advancement gate does not pass yet because no real 36 complete
-month Binance USD-M historical dataset was downloaded, checksumed, normalized,
-or run through the research pipeline. The notebooks include deterministic
-synthetic smoke examples only. They prove the workflow shape, not market edge.
+TASK-007-09 added the historical loader/normalizer path and executed the real
+36 complete-month Binance USD-M dataset for 20 seed symbols. The run produced
+526080 normalized 1h bars, 41 statistical candidate pairs, and 149 rejected
+pairs. The follow-up research gate evaluated all 41 candidates with
+stationarity, Kalman, OU, and rolling z-score diagnostics. TASK-007-09 passed
+Market Data Agent and QA Agent review with no blocking findings and is DONE.
+
+TASK-007-10 probed the real Binance Public Data bookTicker archive (monthly
+and daily, both S3 prefixes) for all 20 accepted symbols across the full
+2023-06 through 2026-05 window. The result is definitive:
+`SOURCE_INCOMPLETE_FAIL_CLOSED`. Verified top-of-book/L2 coverage exists for
+only 11 of the 36 required months (2023-06 through approximately 2024-04),
+identically for every symbol; Binance does not publish bookTicker archives
+past that point for any of them. This was independently verified against the
+live S3 endpoint (not a pagination artifact) and independently re-reviewed by
+QA Agent. `cost_gated_pass=false` for all 41 candidate pairs, unconditionally.
+TASK-007-10 is DONE with this negative finding.
+
+All 41 candidates remain statistical-only accepts, not cost-gated approvals.
+This is no longer a pending-evidence gap: verified historical top-of-book/L2
+execution-cost evidence does not exist on this source for this window. No
+pair should advance to Sprint 8 as executable until the PM/stakeholder chooses
+and executes one of the paths in the Conclusion section below.
 
 ## Dataset Contract
 
@@ -142,11 +164,47 @@ Real Binance USD-M research result:
 
 | Scope | Approved pairs | Rejected pairs | Status |
 |---|---:|---:|---|
-| 2023-06 through 2026-05 historical dataset | 0 | not evaluated | DATASET_NOT_RUN |
+| 2023-06 through 2026-05 historical dataset | 41 statistical-only, 0 cost-gated | 149 pair-selection rejects | COST_GATED_PASS_FALSE |
 
-All real-market pair decisions are deferred and treated as not approved for the
-Sprint 8 gate because the required dataset has not been run. No pair should be
-advanced to backtest or Sprint 8 from synthetic notebook evidence.
+Dataset artifacts:
+
+```text
+data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_bars.csv
+data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_summary.json
+data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_research_gate.json
+data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_research_gate.csv
+```
+
+The 41 accepted pairs are statistical-only candidates. `cost_gated_pass=false`
+for every pair, definitively: TASK-007-10 probed the real Binance Public Data
+bookTicker source (monthly and daily archives) for all 20 accepted symbols
+across the full window and found verified top-of-book/L2 coverage for only 11
+of the 36 required months (2023-06 through approximately 2024-04), identically
+for every symbol. Binance does not publish bookTicker archives past that point
+for any of them. This is a real source limitation, independently verified
+against the live S3 endpoint and re-verified by QA Agent — not a pending
+check and not a code defect.
+
+```text
+data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_execution_cost_source_review.json
+data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_execution_cost_gate.json
+data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_execution_cost_gate.csv
+```
+
+Top statistical candidates from the real run:
+
+| Pair | Corr | Funding bps/day | OU half-life h | Latest z | Stationarity | Cost gate |
+|---|---:|---:|---:|---:|---|---|
+| `ARBUSDT/OPUSDT` | 0.843935 | 6.0000 | 1.9887 | 0.7693 | WARN | false |
+| `BTCUSDT/ETHUSDT` | 0.829052 | 4.0707 | 0.8227 | -1.0531 | WARN | false |
+| `ARBUSDT/ETHUSDT` | 0.815144 | 5.0808 | 0.8472 | 1.4426 | WARN | false |
+| `ADAUSDT/DOTUSDT` | 0.812082 | 6.0000 | 1.8837 | -0.3626 | WARN | false |
+| `ARBUSDT/ETCUSDT` | 0.811014 | 6.0000 | 1.5255 | 1.2917 | WARN | false |
+| `ETCUSDT/ETHUSDT` | 0.806539 | 5.0808 | 0.7356 | 1.0044 | WARN | false |
+| `ARBUSDT/DOTUSDT` | 0.795231 | 6.0000 | 1.9232 | 0.9324 | WARN | false |
+| `ETHUSDT/LINKUSDT` | 0.794781 | 5.0808 | 1.7305 | -1.2722 | WARN | false |
+| `AVAXUSDT/DOTUSDT` | 0.791653 | 6.0000 | 1.7933 | 0.4127 | WARN | false |
+| `DOTUSDT/ETCUSDT` | 0.791625 | 6.0000 | 1.5057 | 0.8822 | WARN | false |
 
 Synthetic pair-selection smoke example:
 
@@ -165,7 +223,12 @@ Real market Kalman/OU result:
 
 | Scope | beta_t / spread_t | OU result | Status |
 |---|---|---|---|
-| 2023-06 through 2026-05 historical dataset | not evaluated | not evaluated | DATASET_NOT_RUN |
+| 2023-06 through 2026-05 historical dataset | 41 evaluated, 0 beta-unstable flags | 41 mean-reverting OU fits, half-life range 0.7356h to 2.2430h | STATISTICAL_ONLY |
+
+Stationarity was `WARN` for all 41 accepted statistical candidates, mostly
+because historical z-score outliers exceeded the stability threshold. These
+warnings do not reject the pairs statistically, but they reinforce that the
+result is exploratory and not an execution-ready approval.
 
 Synthetic Kalman/OU smoke example from `notebooks/02_kalman_ou.ipynb`:
 
@@ -201,6 +264,59 @@ Result: passed.
 Notebook code-cell execution check:
 notebooks/01_pair_selection.ipynb: code cells ok.
 notebooks/02_kalman_ou.ipynb: code cells ok.
+
+TASK-007-09 loader checks:
+UV_CACHE_DIR=.uv-cache uv run --offline --with pytest pytest tests/test_historical_dataset.py tests/test_pair_selection.py --basetemp=pytest_temp_run_task00709_focus -o cache_dir=pytest_temp_run_task00709_focus/.pytest_cache
+Result: passed, 21 tests.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with pytest pytest tests/test_historical_dataset.py tests/test_pair_selection.py --basetemp=pytest_temp_run_task00709_gate_focus -o cache_dir=pytest_temp_run_task00709_gate_focus/.pytest_cache
+Result: passed, 22 tests.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with pytest pytest tests --basetemp=pytest_temp_run_sprint7_real_gate_all -o cache_dir=pytest_temp_run_sprint7_real_gate_all/.pytest_cache
+Result: passed, 182 tests.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with ruff ruff check src/research/historical_dataset.py tests/test_historical_dataset.py scripts/run_sprint7_historical_dataset.py
+Result: passed.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with ruff ruff check src/research/historical_dataset.py tests/test_historical_dataset.py scripts/run_sprint7_historical_dataset.py scripts/run_sprint7_research_gate.py
+Result: passed.
+
+Real loader smoke:
+UV_CACHE_DIR=.uv-cache uv run --offline python scripts/run_sprint7_historical_dataset.py --symbols BTCUSDT --start-month 2023-06 --end-month-exclusive 2023-07 --dataset-version sprint7_real_smoke_202306_btcusdt --data-root /tmp/crypto_pair_trading_sprint7_real_smoke --correlation-window 2
+Result: passed. BTCUSDT 2023-06 downloaded, checksumed, normalized, and accepted
+as a one-symbol statistical smoke. No candidate pairs are possible with one
+symbol.
+
+Full real dataset:
+UV_CACHE_DIR=.uv-cache uv run --offline python scripts/run_sprint7_historical_dataset.py --symbols BTCUSDT ETHUSDT BNBUSDT SOLUSDT XRPUSDT ADAUSDT DOGEUSDT AVAXUSDT LINKUSDT LTCUSDT BCHUSDT DOTUSDT TRXUSDT ETCUSDT UNIUSDT ATOMUSDT APTUSDT ARBUSDT OPUSDT SUIUSDT --start-month 2023-06 --end-month-exclusive 2026-06 --dataset-version sprint7_binance_usdm_202306_202605 --data-root data/research/binance_public --correlation-window 168 --download-workers 12
+Result: passed. Output contains 526080 normalized bars, 20 accepted symbols,
+41 statistical candidate pairs, and 149 rejected pairs.
+
+Real statistical research gate:
+UV_CACHE_DIR=.uv-cache uv run --offline python scripts/run_sprint7_research_gate.py --bars-csv data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_bars.csv --summary-json data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_summary.json --output-json data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_research_gate.json --output-csv data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_research_gate.csv
+Result: passed. Evaluated 41 candidate pairs; 41 statistical-only accepts;
+0 statistical rejects; cost_gated_pass=false.
+
+Real execution-cost evidence source review and gate (TASK-007-10):
+UV_CACHE_DIR=.uv-cache uv run --offline --with pytest pytest tests/test_execution_cost_evidence.py -q
+Result: passed, 4 tests.
+Live probe against s3-ap-northeast-1.amazonaws.com/data.binance.vision bookTicker
+monthly and daily prefixes for all 20 accepted symbols, full 2023-06 through
+2026-05 window.
+Result: SOURCE_INCOMPLETE_FAIL_CLOSED. Verified coverage 11 of 36 months
+(30.56%) identically for all 20 symbols; cost_gated_pass=false for all 41
+candidate pairs.
+PM independently re-queried the live S3 endpoint directly via curl for
+BTCUSDT: monthly prefix KeyCount=24 MaxKeys=1000 IsTruncated=false (last
+archive 2024-04); daily prefix KeyCount=640 MaxKeys=1000 IsTruncated=false
+(last archive 2024-03-30). Confirms the coverage gap is real, not a
+pagination artifact.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with pytest pytest tests -q
+Result: passed, 186 tests.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with ruff ruff check src/research/execution_cost_evidence.py tests/test_execution_cost_evidence.py scripts/run_sprint7_execution_cost_evidence.py
+Result: passed.
 ```
 
 Reviews:
@@ -209,6 +325,12 @@ Reviews:
 Market Data Agent passed TASK-007-01 after dataset contract corrections.
 Backtest Agent re-review passed TASK-007-02/TASK-007-04/TASK-007-05 after no-look-ahead and cost-evidence fixes.
 QA Agent re-review passed TASK-007-03/TASK-007-04/TASK-007-05 after OU sigma dt fix.
+Market Data Agent reviewed TASK-007-09: PASSA, 2 P3 findings (non-blocking).
+QA Agent reviewed TASK-007-09 fail-closed behavior: PASSA, 2 P2 + 1 P3
+findings (non-blocking, no P1).
+QA Agent independently re-reviewed TASK-007-10 (S3 pagination risk,
+no-default-approve on missing evidence): PASSA, confirmed PM's finding,
+1 P2 finding (add pagination handling as future hardening).
 ```
 
 ## Risks
@@ -220,18 +342,42 @@ QA Agent re-review passed TASK-007-03/TASK-007-04/TASK-007-05 after OU sigma dt 
 - Full-sample diagnostics are exploratory and must not be used as online signal
   truth.
 - Funding and execution costs can dominate statistical mean reversion.
-- Verified historical execution-spread evidence is still conditional; without it,
-  cost-gated PASS must fail closed.
+- Verified historical execution-spread evidence does not exist for the full
+  Sprint 7 window on Binance Public Data (only 11 of 36 months); cost-gated
+  PASS fails closed permanently for this source and window, not conditionally.
 - Kalman/OU parameters can be unstable under regime shifts or poorly chosen
   noise assumptions.
+- `_fetch_s3_objects`/`parse_s3_list_objects` do not handle S3 pagination;
+  harmless for the current probe (KeyCount well below MaxKeys=1000) but
+  should be hardened before relying on this probe at larger scale.
+- `download_archives`/`_download_archive` (the real-network download path in
+  `historical_dataset.py`) has no test coverage, mocked or otherwise; safe for
+  offline CI but its error handling is unverified.
 
 ## Conclusion
 
-Technical implementation: PASSA.
+Technical implementation: PASSA for the Sprint 7 statistical research base,
+historical loader path, and execution-cost evidence probe. TASK-007-09 and
+TASK-007-10 both passed Market Data Agent + QA Agent review and are DONE.
 
-Sprint 8 advancement gate: NAO PASSA.
+Sprint 8 advancement gate: NAO PASSA, definitively. This is a data-availability
+finding, not a pending-execution gap: Binance Public Data does not publish
+verified top-of-book/L2 (bookTicker) archives past approximately 2024-04 for
+any of the 20 Sprint 7 symbols, so complete coverage of the required 2023-06
+through 2026-05 window cannot be produced from this source.
 
-Required next step: run the documented 36 complete-month historical dataset
-through the research pipeline, produce real approved/rejected pair tables, and
-only then repeat the Sprint 7 gate decision. Do not start Sprint 8 from the
-synthetic notebook examples.
+Required next step: a PM/stakeholder decision among the following paths, each
+requiring an ADR entry in `DECISIONS.md` before Sprint 8 opens:
+
+1. Locate and verify an alternative top-of-book/L2 source (for example a paid
+   tick-data vendor) with full coverage of the 2023-06 through 2026-05 window,
+   then rerun the cost gate.
+2. Shrink the Sprint 7 research window to the verified ~11-month sub-period
+   (2023-06 through approximately 2024-04) and rerun the full statistical and
+   cost gate on that sub-window only.
+3. Redefine cost-gated PASS policy (for example: require verified
+   execution-cost evidence collected forward from live market data instead of
+   retroactive historical top-of-book coverage for the full backtest window).
+4. Keep Sprint 8 blocked indefinitely until (1) or (3) is resolved.
+
+Do not start Sprint 8 from statistical-only candidates.

@@ -24,6 +24,9 @@
 | Forbidden runtime configuration accepted | Critical | Execution / Risk Agent | Reject Cross Margin, Kelly, 10x, live multi-exchange, and leverage before Sprint 26 at config load and pre-order checks | Open |
 | Daily loss or drawdown threshold unresolved before live mode | High | PM Agent | Mark as Sprint 1 gate unresolved; live entries fail closed until measurable thresholds are approved | Open |
 | Scope drift across agents | Medium | PM Agent | Allowed-file lists and handoffs | Open |
+| Binance Public Data bookTicker source has no verified top-of-book/L2 coverage past ~2024-04, so cost-gated PASS cannot be produced for the 2023-06/2026-05 window from this source | High | PM Agent | Documented as a definitive TASK-007-10 finding; Sprint 8 stays blocked until an alternative source, a shrunk window, or an ADR policy change is chosen | Open |
+| S3 ListObjectsV2 pagination (IsTruncated/NextContinuationToken) is not handled in `_fetch_s3_objects`/`parse_s3_list_objects` | Medium | Market Data Agent | Verified harmless for the current run (KeyCount << MaxKeys=1000, IsTruncated=false); add continuation-token handling before relying on this probe if per-symbol object counts could exceed 1000 | Open |
+| `download_archives`/`_download_archive` real-network path in historical_dataset.py has zero test coverage (no mock) | Medium | QA Agent | Safe for offline CI since no test exercises it; add a mocked-network regression test before depending on this path for unattended/scheduled real downloads | Open |
 
 ## MVP Forbidden Items
 

@@ -84,4 +84,3 @@ Atualizar project_control/HANDOFFS.md com:
 - testes rodados
 - pendencias
 - riscos
-

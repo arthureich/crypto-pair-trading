@@ -85,4 +85,3 @@ Atualizar project_control/HANDOFFS.md com:
 - parametros default
 - pendencias
 - riscos
-

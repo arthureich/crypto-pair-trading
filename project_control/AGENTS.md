@@ -52,4 +52,3 @@ Owns Docker, health checks, structured logs, Prometheus, Grafana, dashboards, al
 ## Documentation Agent
 
 Owns docs, handoffs, sprint reviews, runbooks, release checklist, changelog, and decision logs.
-

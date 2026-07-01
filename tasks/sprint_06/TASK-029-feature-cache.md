@@ -51,4 +51,3 @@ Create a lightweight in-memory feature cache for latest execution features by sy
 ## Testes obrigatorios
 
 - `pytest tests/test_execution_features.py`
-

@@ -51,4 +51,3 @@ Create pure feature primitives that expose book-derived execution quality and fa
 ## Testes obrigatorios
 
 - `pytest tests/test_execution_features.py`
-

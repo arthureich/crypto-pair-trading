@@ -1,6 +1,399 @@
 # Handoffs
 
-Last updated: 2026-06-30
+Last updated: 2026-07-01
+
+## HANDOFF - TASK-007-10 Historical Execution-Cost Evidence (Closure)
+
+### Status
+
+DONE
+
+### Agente
+
+Market Data Agent (implementation), QA Agent (independent re-review), PM Agent (independent verification against live source)
+
+### O que foi feito
+
+- Implemented `src/research/execution_cost_evidence.py` and
+  `scripts/run_sprint7_execution_cost_evidence.py` to probe the real Binance
+  Public Data bookTicker archive (monthly and daily S3 prefixes) for all 20
+  Sprint 7 accepted symbols across the full 2023-06 through 2026-05 window,
+  and to compute a fail-closed cost-gated PASS decision per candidate pair.
+- Ran the real probe. Result: `SOURCE_INCOMPLETE_FAIL_CLOSED`. Verified
+  top-of-book/L2 coverage exists for only 11 of the 36 required months
+  (2023-06 through approximately 2024-04), identically for every one of the
+  20 symbols. Binance Public Data does not publish bookTicker archives past
+  that point for any of the checked symbols.
+- `cost_gated_pass=false` for all 41 candidate pairs, enforced unconditionally
+  whenever `source_review.complete_for_window` is false — no code path treats
+  missing/incomplete evidence as approved.
+- PM independently verified this against the live Binance S3 endpoint
+  (`curl` against `s3-ap-northeast-1.amazonaws.com/data.binance.vision`) for
+  BTCUSDT: monthly prefix `KeyCount=24, MaxKeys=1000, IsTruncated=false`
+  (last archive `2024-04`), daily prefix `KeyCount=640, MaxKeys=1000,
+  IsTruncated=false` (last archive `2024-03-30`). This rules out a pagination
+  artifact — the coverage gap is real, not a truncated listing.
+- QA Agent performed an independent second re-review focused specifically on
+  whether S3 pagination (`IsTruncated`/`NextContinuationToken`) could be
+  hiding additional months, and whether any code path defaults to "approved"
+  on missing evidence. Result: PASSA, confirmed both concerns are unfounded
+  for this run.
+
+### Arquivos alterados
+
+```text
+src/research/execution_cost_evidence.py
+scripts/run_sprint7_execution_cost_evidence.py
+tests/test_execution_cost_evidence.py
+data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_execution_cost_source_review.json
+data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_execution_cost_gate.json
+data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_execution_cost_gate.csv
+reports/research_sprint_07.md
+project_control/TASK_BOARD.md
+project_control/CURRENT_SPRINT.md
+project_control/PROJECT_STATE.md
+project_control/BLOCKERS.md
+project_control/RISKS.md
+project_control/TEST_MATRIX.md
+project_control/DAILY_LOG.md
+```
+
+### Testes rodados
+
+```text
+UV_CACHE_DIR=.uv-cache uv run --offline --with pytest pytest tests/test_execution_cost_evidence.py -q
+Result: passed, 4 tests (QA re-review independently re-ran and confirmed).
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with pytest pytest tests -q
+Result: passed, 186 tests.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with ruff ruff check src/research/execution_cost_evidence.py tests/test_execution_cost_evidence.py scripts/run_sprint7_execution_cost_evidence.py
+Result: passed.
+```
+
+### Findings nao bloqueantes (P2, follow-up recomendado)
+
+```text
+1. _fetch_s3_objects/parse_s3_list_objects do not handle S3 pagination
+   (IsTruncated/NextContinuationToken). Harmless today because KeyCount is
+   far below MaxKeys=1000 for both prefixes checked, but could silently
+   under-count coverage in the future if per-symbol object counts grow past
+   1000 (e.g. years of accumulated daily archives). Add continuation-token
+   handling before depending on this probe at larger scale.
+2. Result is identical (11/36 months, 30.56% coverage) across all 20 symbols,
+   which is expected given Binance appears to have stopped publishing
+   bookTicker archives (both granularities) for USD-M futures symbols
+   around 2024-04 broadly, not per-symbol.
+```
+
+### Decisao pendente (nao e tarefa de execucao)
+
+```text
+This finding is definitive, not a pending-execution gap. TASK-007-10 cannot be
+advanced further by re-running the same probe. Sprint 8 start now depends on a
+PM/stakeholder policy decision:
+a. find and verify an alternative top-of-book/L2 source covering the full
+   window;
+b. shrink the Sprint 7 research window to the verified ~11-month sub-period
+   and rerun the statistical + cost gate on it;
+c. redefine cost-gated PASS policy via a new ADR (e.g. accept forward-collected
+   live execution-cost evidence instead of retroactive historical coverage);
+d. keep Sprint 8 blocked indefinitely.
+See BLOCKER-2026-06-30-S7-REAL-DATASET-GATE for the full blocker record.
+```
+
+## HANDOFF - TASK-007-09 Historical Binance Loader/Normalizer (Closure)
+
+### Status
+
+DONE
+
+### Agente
+
+Market Data Agent (review), QA Agent (review), PM Agent (fallback implementation)
+
+### O que foi feito
+
+- Market Data Agent reviewed `src/research/historical_dataset.py` for
+  Binance path/URL correctness, checksum-before-normalization enforcement,
+  funding as-of join correctness (no look-ahead), sidecar completeness, and
+  global mutable state. Result: PASSA. Two P3 findings (optional
+  `funding_mark_price` field not populated; one indirect fail-closed fallback
+  path in `_coerce_funding_columns` that could be more explicit). No P1/P2.
+- QA Agent reviewed the same module plus `tests/test_historical_dataset.py`
+  and `tests/test_pair_selection.py` for fail-closed behavior: checksum
+  mismatch, headerless-CSV handling, gap no-forward-fill, runner smoke, and
+  `select_pairs` integration. Result: PASSA. Two P2 findings (no direct
+  regression test for `LONG_HISTORY_GAP` rejection in pair selection, though
+  manually verified correct; zero test coverage — not even mocked — for the
+  real-network `download_archives` path, safe for offline CI but untested
+  error handling) and one P3 (checksum-mismatch test could be split from the
+  malformed-CSV case). No P1.
+- Both reviews returned no blocking findings. TASK-007-09 moved to DONE.
+
+### Arquivos alterados
+
+```text
+project_control/TASK_BOARD.md
+project_control/CURRENT_SPRINT.md
+project_control/PROJECT_STATE.md
+project_control/RISKS.md
+project_control/TEST_MATRIX.md
+project_control/DAILY_LOG.md
+```
+
+### Findings nao bloqueantes (follow-up recomendado, nao bloqueia DONE)
+
+```text
+P3: populate funding_mark_price when present in Binance funding CSV.
+P3: make the _coerce_funding_columns fallback path more explicit.
+P2: add a direct regression test for LONG_HISTORY_GAP rejection in
+    tests/test_pair_selection.py.
+P2: add a mocked-network regression test for download_archives/
+    _download_archive error handling (timeout, checksum mismatch
+    post-download) before relying on this path for unattended real downloads.
+```
+
+## HANDOFF - TASK-007-10 Historical Execution-Cost Evidence (superseded, see closure above)
+
+### Status
+
+IN_PROGRESS
+
+### Agente
+
+Market Data Agent
+
+### Sprint atual
+
+Sprint 7 - Research base: pair selection, Kalman e OU
+
+### Task
+
+Produzir evidencia historica verificavel de top-of-book/L2, spread e custo de
+execucao para os 41 pares estatisticos gerados pelo Sprint 7 real-dataset gate.
+
+### Contexto obrigatorio
+
+```text
+TASK-007-09 executou o dataset real 2023-06 through 2026-05:
+- 20 simbolos aceitos;
+- 526080 barras 1h normalizadas;
+- 41 pares estatisticos aceitos;
+- 149 pares rejeitados por pair selection.
+
+O bloqueio atual e cost_gated_pass=false por falta de evidencia historica
+verificada de top-of-book/L2/spread/custo. Nao avance Sprint 8 com candidatos
+estatisticos sem essa evidencia.
+```
+
+### Arquivos permitidos
+
+```text
+src/research/
+tests/
+scripts/
+reports/
+docs/historical_dataset.md
+project_control/
+tasks/sprint_07/
+data/research/
+```
+
+### Arquivos proibidos
+
+```text
+src/live/
+src/execution/
+src/ledger/
+src/models/
+notebooks/
+```
+
+### Criterio de pronto
+
+```text
+1. Fonte historica de custo documentada com periodo, simbolos, granularidade,
+   campos, checksums/proveniencia e limites.
+2. Se a fonte existir, dados normalizados com schema estavel.
+3. Join com barras/pairs sem look-ahead.
+4. Median, p95 e p99 de spread/custo calculados por simbolo e par.
+5. Cobertura temporal, gaps e stale stats reportados.
+6. Evidencia ausente/incompleta falha fechada.
+7. cost_gated_pass=true somente para pares com evidencia completa e dentro dos
+   limites.
+8. Relatorio, blocker, test matrix e handoff atualizados.
+```
+
+### Testes obrigatorios
+
+```text
+pytest tests/test_pair_selection.py
+pytest tests/test_historical_dataset.py
+pytest <novo teste de custo historico>
+ruff check src/research tests scripts
+```
+
+### Handoff esperado
+
+```text
+Informar fonte avaliada, artefatos gerados, pares aprovados/reprovados por
+custo, testes rodados, risco residual e decisao do gate Sprint 8.
+```
+
+## HANDOFF - TASK-007-09 Historical Binance Loader/Normalizer (superseded, see closure above)
+
+### Status
+
+IN_REVIEW (superseded by DONE closure above)
+
+### Agente
+
+PM Agent fallback for Quant Research Agent
+
+### O que foi feito
+
+- Implemented and hardened the Binance Public Data historical loader path in
+  `src/research/historical_dataset.py`.
+- Kept deterministic monthly URL/path planning for OHLCV, mark price, index
+  price, premium index, and funding families.
+- Kept SHA256 verification before archive normalization.
+- Updated checksum parsing to accept sha256sum-style `*filename` markers.
+- Updated ZIP CSV reading to preserve the first row for headerless Binance
+  public-data files.
+- Preserved no-forward-fill return behavior across hourly gaps.
+- Verified normalized archive plans can feed `select_pairs`.
+- Verified `scripts/run_sprint7_historical_dataset.py` with a local
+  no-download smoke using synthetic ZIP/checksum fixtures.
+- Added `scripts/run_sprint7_research_gate.py` to run stationarity, Kalman, OU,
+  and rolling z-score diagnostics against real normalized candidate pairs.
+- Ran the full 2023-06 through 2026-05 Binance USD-M dataset and generated the
+  statistical Sprint 7 research gate artifacts.
+
+### Arquivos alterados
+
+```text
+src/research/historical_dataset.py
+tests/test_historical_dataset.py
+scripts/run_sprint7_historical_dataset.py
+scripts/run_sprint7_research_gate.py
+reports/research_sprint_07.md
+project_control/CURRENT_SPRINT.md
+project_control/DAILY_LOG.md
+project_control/HANDOFFS.md
+project_control/PROJECT_STATE.md
+project_control/TASK_BOARD.md
+project_control/TEST_MATRIX.md
+tasks/sprint_07/TASK-007-09-historical-loader-runner.md
+```
+
+### Testes rodados
+
+```text
+UV_CACHE_DIR=.uv-cache uv run --offline --with pytest pytest tests/test_historical_dataset.py tests/test_pair_selection.py --basetemp=pytest_temp_run_task00709_focus -o cache_dir=pytest_temp_run_task00709_focus/.pytest_cache
+Result: passed, 21 tests, 1 pytest config warning for unknown asyncio_mode.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with pytest pytest tests/test_historical_dataset.py tests/test_pair_selection.py --basetemp=pytest_temp_run_task00709_gate_focus -o cache_dir=pytest_temp_run_task00709_gate_focus/.pytest_cache
+Result: passed, 22 tests, 1 pytest config warning for unknown asyncio_mode.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with pytest pytest tests --basetemp=pytest_temp_run_sprint7_real_gate_all -o cache_dir=pytest_temp_run_sprint7_real_gate_all/.pytest_cache
+Result: passed, 182 tests, 1 pytest config warning for unknown asyncio_mode.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with ruff ruff check src/research/historical_dataset.py tests/test_historical_dataset.py scripts/run_sprint7_historical_dataset.py
+Result: passed.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with ruff ruff check src/research/historical_dataset.py tests/test_historical_dataset.py scripts/run_sprint7_historical_dataset.py scripts/run_sprint7_research_gate.py
+Result: passed.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with ruff ruff check .
+Result: failed on pre-existing notebook lint issues in notebooks/01_pair_selection.ipynb
+and notebooks/02_kalman_ou.ipynb (`E402`, `E501`, and one unused import). These
+notebook lint issues were not introduced by TASK-007-09 and were not changed in
+this task.
+
+UV_CACHE_DIR=.uv-cache uv run --offline python scripts/run_sprint7_historical_dataset.py --symbols BTCUSDT --start-month 2023-06 --end-month-exclusive 2023-07 --dataset-version sprint7_real_smoke_202306_btcusdt --data-root /tmp/crypto_pair_trading_sprint7_real_smoke --correlation-window 2
+Result: passed.
+```
+
+### Execucao real/smoke
+
+```text
+Local smoke:
+tests/test_historical_dataset.py runs scripts/run_sprint7_historical_dataset.py
+with --no-download against synthetic Binance-like ZIP and .CHECKSUM fixtures.
+
+Real one-month smoke:
+Downloaded and checksumed BTCUSDT 2023-06 klines, markPriceKlines,
+indexPriceKlines, premiumIndexKlines, and fundingRate from Binance Public Data.
+Normalized output:
+/tmp/crypto_pair_trading_sprint7_real_smoke/normalized/sprint7_real_smoke_202306_btcusdt_bars.csv
+Result: 720 normalized bars, BTCUSDT accepted in one-symbol statistical smoke,
+no candidate pairs because only one symbol was included.
+
+Real Binance 36 complete-month dataset:
+Downloaded, checksumed, normalized, and run for 20 Binance USD-M seed symbols
+from 2023-06 through 2026-05.
+
+Normalized bars:
+data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_bars.csv
+526080 rows plus header.
+
+Pair-selection summary:
+data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_summary.json
+20 accepted symbols, 0 rejected symbols, 41 statistical candidate pairs, 149
+rejected pairs.
+
+Research gate:
+data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_research_gate.json
+data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_research_gate.csv
+41 pairs evaluated; 41 statistical-only accepts; 0 statistical rejects;
+cost_gated_pass=false because verified historical top-of-book/L2
+execution-cost evidence is unavailable.
+```
+
+### Revisoes necessarias
+
+```text
+Market Data Agent:
+- verify Binance Public Data family paths and checksum assumptions;
+- verify headerless/headered CSV behavior is acceptable for public archives;
+- verify funding as-of semantics and unavailable execution-cost labeling.
+
+QA Agent:
+- verify checksum mismatch fail-closed behavior;
+- verify no future funding joins;
+- verify no forward-fill across gaps;
+- verify runner smoke and select_pairs integration.
+```
+
+### Pendencias
+
+```text
+Formal Market Data Agent review.
+Formal QA Agent review.
+reports/research_sprint_07.md update with real approved/rejected pair tables.
+Final full-suite verification after report/control updates.
+Verified historical top-of-book/L2 execution-cost evidence, or explicit
+decision to keep Sprint 8 blocked.
+```
+
+### Riscos
+
+```text
+Cost-gated Sprint 7 PASS remains impossible without verified historical
+top-of-book/L2 execution-cost evidence.
+Statistical-only accepts prove the research pipeline can rank candidates, but
+they do not prove executable edge after spread/slippage/fill costs.
+Global ruff currently fails on pre-existing notebook lint issues outside the
+TASK-007-09 code path; scoped TASK-007-09 ruff passes.
+TASK-007-09 must not touch ledger, execution, live engine, or models.
+```
+
+### Proximo passo recomendado
+
+Update the Sprint 7 report with the real run, request Market Data Agent and QA
+Agent review for TASK-007-09, then decide whether to add a separate historical
+execution-cost evidence task or keep Sprint 8 blocked.
 
 ## HANDOFF - TASK-007-06 TASK-007-07 TASK-007-08 Sprint 7 Notebooks, Tests, and Report
 
@@ -68,20 +461,22 @@ PM added the cleaning summary.
 Documentation Agent re-review returned PASSA.
 Quant Research Agent review returned PASSA for TASK-007-07 test coverage.
 PM report review result: technical implementation PASSA, Sprint 8 gate NAO
-PASSA until real dataset execution.
+PASSA until verified execution-cost evidence and TASK-007-09 review.
 ```
 
 ### Pares aprovados
 
 ```text
-Real Binance USD-M dataset: none approved; DATASET_NOT_RUN.
+Real Binance USD-M dataset: 41 statistical-only accepts after TASK-007-09
+research gate; none are cost-gated approved because verified top-of-book/L2
+execution-cost evidence is unavailable.
 Synthetic smoke example only: BTCUSDT/ETHUSDT candidate with score 0.998467.
 ```
 
 ### Pares rejeitados
 
 ```text
-Real Binance USD-M dataset: not evaluated.
+Real Binance USD-M dataset: 149 pairs rejected by pair selection.
 Synthetic smoke example only:
 - BTCUSDT/SOLUSDT rejected for LOW_CORRELATION.
 - ETHUSDT/SOLUSDT rejected for LOW_CORRELATION.
@@ -91,7 +486,9 @@ Synthetic smoke example only:
 ### Pendencias
 
 ```text
-Real historical dataset loader/normalizer and execution are still required.
+TASK-007-09 Market Data Agent + QA Agent review is still required.
+Verified historical execution-cost evidence is still required for cost-gated
+PASS.
 Sprint 8 remains blocked by BLOCKER-2026-06-30-S7-REAL-DATASET-GATE.
 ```
 

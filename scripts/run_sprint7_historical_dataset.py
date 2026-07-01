@@ -73,6 +73,7 @@ def main() -> int:
     selection = select_pairs(bars, config)
     summary = _selection_summary(
         symbols=args.symbols,
+        dataset_version=args.dataset_version,
         start_month=args.start_month,
         end_month_exclusive=args.end_month_exclusive,
         expected_bars=expected_bars,
@@ -88,6 +89,7 @@ def main() -> int:
 def _selection_summary(
     *,
     symbols: list[str],
+    dataset_version: str,
     start_month: str,
     end_month_exclusive: str,
     expected_bars: int,
@@ -95,6 +97,7 @@ def _selection_summary(
     selection,
 ) -> dict[str, object]:
     return {
+        "dataset_version": dataset_version,
         "symbols": symbols,
         "start_month": start_month,
         "end_month_exclusive": end_month_exclusive,

@@ -31,4 +31,3 @@ kill switch working
 no order without prior persistence
 external dead man switch before serious production
 ```
-
