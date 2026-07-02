@@ -1,0 +1,40 @@
+{
+  "all_archives_present": true,
+  "archive_bytes": 17984161977,
+  "archive_count": 450,
+  "bars_rows": 10800,
+  "candidate_pair_count": 41,
+  "dedupe_policy": "for duplicate (symbol, open_time), keep the row with highest spread_sample_count_1h, then latest last_event_time",
+  "deduped_hourly_rows": 10800,
+  "duplicate_hour_rows": 54,
+  "duplicate_symbol_hours": 27,
+  "expected_bars_per_symbol": 720,
+  "expected_total_symbol_bars": 10800,
+  "generated_at_utc": "2026-07-02T14:27:50.314196+00:00",
+  "outputs": {
+    "archive_manifest_csv": "data/research/binance_public/cost_pilot/all_candidates_202306_archive_manifest.csv",
+    "bars_csv": "data/research/binance_public/cost_pilot/all_candidates_202306_bars.csv",
+    "duplicate_hours_csv": "data/research/binance_public/cost_pilot/all_candidates_202306_duplicate_hours.csv",
+    "hourly_cost_csv": "data/research/binance_public/cost_pilot/all_candidates_202306_hourly_cost.csv",
+    "hourly_cost_raw_csv": "data/research/binance_public/cost_pilot/all_candidates_202306_hourly_cost_raw.csv",
+    "summary_json": "data/research/binance_public/cost_pilot/all_candidates_202306_summary.json"
+  },
+  "raw_hourly_rows": 10827,
+  "symbols": [
+    "ADAUSDT",
+    "ARBUSDT",
+    "ATOMUSDT",
+    "AVAXUSDT",
+    "BTCUSDT",
+    "DOGEUSDT",
+    "DOTUSDT",
+    "ETCUSDT",
+    "ETHUSDT",
+    "LINKUSDT",
+    "LTCUSDT",
+    "OPUSDT",
+    "SOLUSDT",
+    "UNIUSDT",
+    "XRPUSDT"
+  ]
+}

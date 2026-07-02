@@ -1,0 +1,1014 @@
+{
+  "bars_csv": "data/research/binance_public/cost_pilot/all_candidates_202306_bars.csv",
+  "cost_gate_reason": "at least one candidate pair has complete execution-cost evidence within thresholds",
+  "cost_gated_pass": true,
+  "cost_hourly_csv": "data/research/binance_public/cost_pilot/all_candidates_202306_hourly_cost.csv",
+  "dataset_version": "sprint7_cost_all_candidates_202306",
+  "gate_note": "Cost-gated Sprint 7 PASS requires complete verified historical top-of-book/bookTicker evidence. Missing or incomplete evidence fails closed.",
+  "generated_at_utc": "2026-07-02T14:31:43.443518+00:00",
+  "hourly_cost_schema": [
+    "venue",
+    "market_type",
+    "contract_type",
+    "symbol",
+    "interval",
+    "open_time",
+    "close_time",
+    "cost_available_time",
+    "spread_sample_count_1h",
+    "median_spread_bps_1h",
+    "p95_spread_bps_1h",
+    "p99_spread_bps_1h",
+    "min_spread_bps_1h",
+    "max_spread_bps_1h",
+    "first_event_time",
+    "last_event_time",
+    "max_sample_gap_ms",
+    "stale_gap_count_1h",
+    "source_path",
+    "source_checksum",
+    "dataset_version",
+    "execution_cost_quality",
+    "normalized_at"
+  ],
+  "join_policy": "hourly cost joins as-of with cost_available_time <= bar open_time",
+  "normalized_cost_rows": 10800,
+  "pair_cost_results": [
+    {
+      "combined_median_spread_bps": 1.650881189729628,
+      "combined_p95_spread_bps": 4.768241965667548,
+      "combined_p99_spread_bps": 15.525922405184804,
+      "cost_gated_pass": true,
+      "pair": "ARBUSDT/OPUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 0.09145749091631819,
+      "combined_p95_spread_bps": 0.10052063118926029,
+      "combined_p99_spread_bps": 2.597328260332328,
+      "cost_gated_pass": true,
+      "pair": "BTCUSDT/ETHUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 0.9470029956287237,
+      "combined_p95_spread_bps": 2.0376899744688983,
+      "combined_p99_spread_bps": 7.622710316666308,
+      "cost_gated_pass": true,
+      "pair": "ARBUSDT/ETHUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 5.531191175032886,
+      "combined_p95_spread_bps": 6.176801748070391,
+      "combined_p99_spread_bps": 12.713424900320689,
+      "cost_gated_pass": false,
+      "pair": "ADAUSDT/DOTUSDT",
+      "reasons": [
+        "LEG_COST_EVIDENCE_INCOMPLETE"
+      ]
+    },
+    {
+      "combined_median_spread_bps": 1.4825268529789053,
+      "combined_p95_spread_bps": 4.297173688899218,
+      "combined_p99_spread_bps": 14.949652224343065,
+      "cost_gated_pass": true,
+      "pair": "ARBUSDT/ETCUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 0.6438952787225527,
+      "combined_p95_spread_bps": 2.3811220878027295,
+      "combined_p99_spread_bps": 10.12857289099258,
+      "cost_gated_pass": true,
+      "pair": "ETCUSDT/ETHUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 2.902261673569754,
+      "combined_p95_spread_bps": 4.267611624185187,
+      "combined_p99_spread_bps": 10.916323920027192,
+      "cost_gated_pass": true,
+      "pair": "ARBUSDT/DOTUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 1.7406685507223536,
+      "combined_p95_spread_bps": 2.047192692852497,
+      "combined_p99_spread_bps": 8.146846578540933,
+      "cost_gated_pass": true,
+      "pair": "ETHUSDT/LINKUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 2.7849688370350223,
+      "combined_p95_spread_bps": 4.070575819956665,
+      "combined_p99_spread_bps": 11.72017040232028,
+      "cost_gated_pass": true,
+      "pair": "AVAXUSDT/DOTUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 2.5991539566635833,
+      "combined_p95_spread_bps": 4.611043737519018,
+      "combined_p99_spread_bps": 13.422186494353465,
+      "cost_gated_pass": true,
+      "pair": "DOTUSDT/ETCUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 3.097287739184133,
+      "combined_p95_spread_bps": 4.723712584673147,
+      "combined_p99_spread_bps": 13.111333910679127,
+      "cost_gated_pass": true,
+      "pair": "ATOMUSDT/DOTUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 4.297271234813476,
+      "combined_p95_spread_bps": 5.66589589522207,
+      "combined_p99_spread_bps": 15.044737112603377,
+      "cost_gated_pass": false,
+      "pair": "ADAUSDT/AVAXUSDT",
+      "reasons": [
+        "LEG_COST_EVIDENCE_INCOMPLETE"
+      ]
+    },
+    {
+      "combined_median_spread_bps": 4.111456354442037,
+      "combined_p95_spread_bps": 6.2063638127844225,
+      "combined_p99_spread_bps": 16.746753204636562,
+      "cost_gated_pass": false,
+      "pair": "ADAUSDT/ETCUSDT",
+      "reasons": [
+        "LEG_COST_EVIDENCE_INCOMPLETE"
+      ]
+    },
+    {
+      "combined_median_spread_bps": 5.208229626441838,
+      "combined_p95_spread_bps": 5.87243441783419,
+      "combined_p99_spread_bps": 14.765026892184915,
+      "cost_gated_pass": false,
+      "pair": "ADAUSDT/LINKUSDT",
+      "reasons": [
+        "LEG_COST_EVIDENCE_INCOMPLETE"
+      ]
+    },
+    {
+      "combined_median_spread_bps": 5.051851598584711,
+      "combined_p95_spread_bps": 5.5534501178275395,
+      "combined_p99_spread_bps": 15.427860943026603,
+      "cost_gated_pass": false,
+      "pair": "ADAUSDT/DOGEUSDT",
+      "reasons": [
+        "LEG_COST_EVIDENCE_INCOMPLETE"
+      ]
+    },
+    {
+      "combined_median_spread_bps": 3.695927228663384,
+      "combined_p95_spread_bps": 4.277114342568785,
+      "combined_p99_spread_bps": 11.440460181901818,
+      "cost_gated_pass": true,
+      "pair": "DOTUSDT/LINKUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 2.579300124978706,
+      "combined_p95_spread_bps": 3.9632442939489856,
+      "combined_p99_spread_bps": 12.96792591189142,
+      "cost_gated_pass": true,
+      "pair": "ARBUSDT/LINKUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 2.4620072884439743,
+      "combined_p95_spread_bps": 3.766208489720464,
+      "combined_p99_spread_bps": 13.771772394184506,
+      "cost_gated_pass": true,
+      "pair": "AVAXUSDT/LINKUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 1.6683417333503443,
+      "combined_p95_spread_bps": 3.7567057713368652,
+      "combined_p99_spread_bps": 13.247636132309882,
+      "cost_gated_pass": true,
+      "pair": "ARBUSDT/AVAXUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 3.575932497091855,
+      "combined_p95_spread_bps": 3.946880098354103,
+      "combined_p99_spread_bps": 9.419811296959804,
+      "cost_gated_pass": false,
+      "pair": "ADAUSDT/ETHUSDT",
+      "reasons": [
+        "LEG_COST_EVIDENCE_INCOMPLETE"
+      ]
+    },
+    {
+      "combined_median_spread_bps": 2.276192408072535,
+      "combined_p95_spread_bps": 4.306676407282817,
+      "combined_p99_spread_bps": 15.47378848621769,
+      "cost_gated_pass": true,
+      "pair": "ETCUSDT/LINKUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 4.414564071348208,
+      "combined_p95_spread_bps": 5.862931699450591,
+      "combined_p99_spread_bps": 14.24089063031029,
+      "cost_gated_pass": false,
+      "pair": "ADAUSDT/ARBUSDT",
+      "reasons": [
+        "LEG_COST_EVIDENCE_INCOMPLETE"
+      ]
+    },
+    {
+      "combined_median_spread_bps": 1.3726284937884432,
+      "combined_p95_spread_bps": 3.172548563355277,
+      "combined_p99_spread_bps": 15.013180502065824,
+      "cost_gated_pass": true,
+      "pair": "AVAXUSDT/SOLUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 1.3477734728234572,
+      "combined_p95_spread_bps": 5.1116740790013795,
+      "combined_p99_spread_bps": 18.031784979511077,
+      "cost_gated_pass": true,
+      "pair": "ETCUSDT/OPUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 0.6512897560668227,
+      "combined_p95_spread_bps": 1.45353276648731,
+      "combined_p99_spread_bps": 9.38825468642225,
+      "cost_gated_pass": true,
+      "pair": "ETHUSDT/SOLUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 2.1198143802154084,
+      "combined_p95_spread_bps": 3.9876921072761666,
+      "combined_p99_spread_bps": 16.13662253705938,
+      "cost_gated_pass": true,
+      "pair": "DOGEUSDT/ETCUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 0.8297101590939918,
+      "combined_p95_spread_bps": 1.8406541702403767,
+      "combined_p99_spread_bps": 8.426556798959394,
+      "cost_gated_pass": true,
+      "pair": "AVAXUSDT/ETHUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 1.5842905228652269,
+      "combined_p95_spread_bps": 1.7282083928458472,
+      "combined_p99_spread_bps": 8.80968062938262,
+      "cost_gated_pass": true,
+      "pair": "DOGEUSDT/ETHUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 1.3652340164441732,
+      "combined_p95_spread_bps": 4.100137884670696,
+      "combined_p99_spread_bps": 15.753498706636153,
+      "cost_gated_pass": true,
+      "pair": "AVAXUSDT/ETCUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 2.0636300993134014,
+      "combined_p95_spread_bps": 2.3515600230886986,
+      "combined_p99_spread_bps": 6.095244586676706,
+      "cost_gated_pass": true,
+      "pair": "DOTUSDT/ETHUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 1.9806606354994551,
+      "combined_p95_spread_bps": 4.409842536053347,
+      "combined_p99_spread_bps": 14.63879964066873,
+      "cost_gated_pass": true,
+      "pair": "ARBUSDT/ATOMUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 2.767508293414306,
+      "combined_p95_spread_bps": 5.082112014287349,
+      "combined_p99_spread_bps": 13.998456675195204,
+      "cost_gated_pass": true,
+      "pair": "DOTUSDT/OPUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 0.8122496154732757,
+      "combined_p95_spread_bps": 2.8521903645710602,
+      "combined_p99_spread_bps": 10.704843071834318,
+      "cost_gated_pass": true,
+      "pair": "ETHUSDT/OPUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 5.5368601365325105,
+      "combined_p95_spread_bps": 6.021672230407652,
+      "combined_p99_spread_bps": 15.676639486228689,
+      "cost_gated_pass": false,
+      "pair": "ADAUSDT/XRPUSDT",
+      "reasons": [
+        "LEG_COST_EVIDENCE_INCOMPLETE"
+      ]
+    },
+    {
+      "combined_median_spread_bps": 4.609590136962587,
+      "combined_p95_spread_bps": 6.319032659938552,
+      "combined_p99_spread_bps": 16.435900620962222,
+      "cost_gated_pass": false,
+      "pair": "ADAUSDT/ATOMUSDT",
+      "reasons": [
+        "LEG_COST_EVIDENCE_INCOMPLETE"
+      ]
+    },
+    {
+      "combined_median_spread_bps": 1.7431786262294713,
+      "combined_p95_spread_bps": 4.179653043155951,
+      "combined_p99_spread_bps": 14.931199949780378,
+      "cost_gated_pass": true,
+      "pair": "ETCUSDT/LTCUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 2.1735032904262175,
+      "combined_p95_spread_bps": 4.164057637162516,
+      "combined_p99_spread_bps": 14.055804284093053,
+      "cost_gated_pass": true,
+      "pair": "ETHUSDT/UNIUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 3.539549200806257,
+      "combined_p95_spread_bps": 3.9581300425621357,
+      "combined_p99_spread_bps": 12.103294232743506,
+      "cost_gated_pass": true,
+      "pair": "DOGEUSDT/DOTUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 0.6343758256107697,
+      "combined_p95_spread_bps": 1.4324150243041605,
+      "combined_p99_spread_bps": 9.183951963438757,
+      "cost_gated_pass": true,
+      "pair": "BTCUSDT/SOLUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 4.118850831786307,
+      "combined_p95_spread_bps": 5.278774491469003,
+      "combined_p99_spread_bps": 16.006435000066233,
+      "cost_gated_pass": false,
+      "pair": "ADAUSDT/SOLUSDT",
+      "reasons": [
+        "LEG_COST_EVIDENCE_INCOMPLETE"
+      ]
+    },
+    {
+      "combined_median_spread_bps": 1.677552918593284,
+      "combined_p95_spread_bps": 4.753274649387178,
+      "combined_p99_spread_bps": 17.144662214995,
+      "cost_gated_pass": true,
+      "pair": "ATOMUSDT/ETCUSDT",
+      "reasons": []
+    }
+  ],
+  "pairs_failed": 10,
+  "pairs_passed": 31,
+  "source_review": {
+    "archive_bytes": 17984161977,
+    "archive_count": 450,
+    "archive_manifest_csv": "data/research/binance_public/cost_pilot/all_candidates_202306_archive_manifest.csv",
+    "base_url": "https://data.binance.vision",
+    "complete_for_window": true,
+    "decision": "SOURCE_COMPLETE",
+    "generated_at_utc": "2026-07-02T14:31:34.155276+00:00",
+    "granularity_evaluated": [
+      "daily/bookTicker local ZIP + .CHECKSUM"
+    ],
+    "period": {
+      "end_month_exclusive": "2023-07",
+      "months_required": 1,
+      "start_month": "2023-06"
+    },
+    "review_mode": "local checksum-verified archive manifest",
+    "source": "Binance Public Data bookTicker",
+    "source_exists": true,
+    "symbol_reviews": [
+      {
+        "available_compressed_bytes": 832718370,
+        "complete_for_window": true,
+        "coverage": 1.0,
+        "covered_months": 1,
+        "missing_months": [],
+        "month_reviews": [
+          {
+            "archive_key": "",
+            "archive_size_bytes": 832718370,
+            "checksum_key": "",
+            "covered": true,
+            "daily_archive_count": 30,
+            "daily_checksum_count": 30,
+            "granularity": "daily-local-checksum-verified",
+            "month": "2023-06"
+          }
+        ],
+        "required_months": 1,
+        "symbol": "ADAUSDT"
+      },
+      {
+        "available_compressed_bytes": 973767567,
+        "complete_for_window": true,
+        "coverage": 1.0,
+        "covered_months": 1,
+        "missing_months": [],
+        "month_reviews": [
+          {
+            "archive_key": "",
+            "archive_size_bytes": 973767567,
+            "checksum_key": "",
+            "covered": true,
+            "daily_archive_count": 30,
+            "daily_checksum_count": 30,
+            "granularity": "daily-local-checksum-verified",
+            "month": "2023-06"
+          }
+        ],
+        "required_months": 1,
+        "symbol": "ARBUSDT"
+      },
+      {
+        "available_compressed_bytes": 427184060,
+        "complete_for_window": true,
+        "coverage": 1.0,
+        "covered_months": 1,
+        "missing_months": [],
+        "month_reviews": [
+          {
+            "archive_key": "",
+            "archive_size_bytes": 427184060,
+            "checksum_key": "",
+            "covered": true,
+            "daily_archive_count": 30,
+            "daily_checksum_count": 30,
+            "granularity": "daily-local-checksum-verified",
+            "month": "2023-06"
+          }
+        ],
+        "required_months": 1,
+        "symbol": "ATOMUSDT"
+      },
+      {
+        "available_compressed_bytes": 450494491,
+        "complete_for_window": true,
+        "coverage": 1.0,
+        "covered_months": 1,
+        "missing_months": [],
+        "month_reviews": [
+          {
+            "archive_key": "",
+            "archive_size_bytes": 450494491,
+            "checksum_key": "",
+            "covered": true,
+            "daily_archive_count": 30,
+            "daily_checksum_count": 30,
+            "granularity": "daily-local-checksum-verified",
+            "month": "2023-06"
+          }
+        ],
+        "required_months": 1,
+        "symbol": "AVAXUSDT"
+      },
+      {
+        "available_compressed_bytes": 4444572629,
+        "complete_for_window": true,
+        "coverage": 1.0,
+        "covered_months": 1,
+        "missing_months": [],
+        "month_reviews": [
+          {
+            "archive_key": "",
+            "archive_size_bytes": 4444572629,
+            "checksum_key": "",
+            "covered": true,
+            "daily_archive_count": 30,
+            "daily_checksum_count": 30,
+            "granularity": "daily-local-checksum-verified",
+            "month": "2023-06"
+          }
+        ],
+        "required_months": 1,
+        "symbol": "BTCUSDT"
+      },
+      {
+        "available_compressed_bytes": 799785143,
+        "complete_for_window": true,
+        "coverage": 1.0,
+        "covered_months": 1,
+        "missing_months": [],
+        "month_reviews": [
+          {
+            "archive_key": "",
+            "archive_size_bytes": 799785143,
+            "checksum_key": "",
+            "covered": true,
+            "daily_archive_count": 30,
+            "daily_checksum_count": 30,
+            "granularity": "daily-local-checksum-verified",
+            "month": "2023-06"
+          }
+        ],
+        "required_months": 1,
+        "symbol": "DOGEUSDT"
+      },
+      {
+        "available_compressed_bytes": 571385282,
+        "complete_for_window": true,
+        "coverage": 1.0,
+        "covered_months": 1,
+        "missing_months": [],
+        "month_reviews": [
+          {
+            "archive_key": "",
+            "archive_size_bytes": 571385282,
+            "checksum_key": "",
+            "covered": true,
+            "daily_archive_count": 30,
+            "daily_checksum_count": 30,
+            "granularity": "daily-local-checksum-verified",
+            "month": "2023-06"
+          }
+        ],
+        "required_months": 1,
+        "symbol": "DOTUSDT"
+      },
+      {
+        "available_compressed_bytes": 600115791,
+        "complete_for_window": true,
+        "coverage": 1.0,
+        "covered_months": 1,
+        "missing_months": [],
+        "month_reviews": [
+          {
+            "archive_key": "",
+            "archive_size_bytes": 600115791,
+            "checksum_key": "",
+            "covered": true,
+            "daily_archive_count": 30,
+            "daily_checksum_count": 30,
+            "granularity": "daily-local-checksum-verified",
+            "month": "2023-06"
+          }
+        ],
+        "required_months": 1,
+        "symbol": "ETCUSDT"
+      },
+      {
+        "available_compressed_bytes": 3244116697,
+        "complete_for_window": true,
+        "coverage": 1.0,
+        "covered_months": 1,
+        "missing_months": [],
+        "month_reviews": [
+          {
+            "archive_key": "",
+            "archive_size_bytes": 3244116697,
+            "checksum_key": "",
+            "covered": true,
+            "daily_archive_count": 30,
+            "daily_checksum_count": 30,
+            "granularity": "daily-local-checksum-verified",
+            "month": "2023-06"
+          }
+        ],
+        "required_months": 1,
+        "symbol": "ETHUSDT"
+      },
+      {
+        "available_compressed_bytes": 671132103,
+        "complete_for_window": true,
+        "coverage": 1.0,
+        "covered_months": 1,
+        "missing_months": [],
+        "month_reviews": [
+          {
+            "archive_key": "",
+            "archive_size_bytes": 671132103,
+            "checksum_key": "",
+            "covered": true,
+            "daily_archive_count": 30,
+            "daily_checksum_count": 30,
+            "granularity": "daily-local-checksum-verified",
+            "month": "2023-06"
+          }
+        ],
+        "required_months": 1,
+        "symbol": "LINKUSDT"
+      },
+      {
+        "available_compressed_bytes": 1117044910,
+        "complete_for_window": true,
+        "coverage": 1.0,
+        "covered_months": 1,
+        "missing_months": [],
+        "month_reviews": [
+          {
+            "archive_key": "",
+            "archive_size_bytes": 1117044910,
+            "checksum_key": "",
+            "covered": true,
+            "daily_archive_count": 30,
+            "daily_checksum_count": 30,
+            "granularity": "daily-local-checksum-verified",
+            "month": "2023-06"
+          }
+        ],
+        "required_months": 1,
+        "symbol": "LTCUSDT"
+      },
+      {
+        "available_compressed_bytes": 1021032415,
+        "complete_for_window": true,
+        "coverage": 1.0,
+        "covered_months": 1,
+        "missing_months": [],
+        "month_reviews": [
+          {
+            "archive_key": "",
+            "archive_size_bytes": 1021032415,
+            "checksum_key": "",
+            "covered": true,
+            "daily_archive_count": 30,
+            "daily_checksum_count": 30,
+            "granularity": "daily-local-checksum-verified",
+            "month": "2023-06"
+          }
+        ],
+        "required_months": 1,
+        "symbol": "OPUSDT"
+      },
+      {
+        "available_compressed_bytes": 1167136861,
+        "complete_for_window": true,
+        "coverage": 1.0,
+        "covered_months": 1,
+        "missing_months": [],
+        "month_reviews": [
+          {
+            "archive_key": "",
+            "archive_size_bytes": 1167136861,
+            "checksum_key": "",
+            "covered": true,
+            "daily_archive_count": 30,
+            "daily_checksum_count": 30,
+            "granularity": "daily-local-checksum-verified",
+            "month": "2023-06"
+          }
+        ],
+        "required_months": 1,
+        "symbol": "SOLUSDT"
+      },
+      {
+        "available_compressed_bytes": 297335289,
+        "complete_for_window": true,
+        "coverage": 1.0,
+        "covered_months": 1,
+        "missing_months": [],
+        "month_reviews": [
+          {
+            "archive_key": "",
+            "archive_size_bytes": 297335289,
+            "checksum_key": "",
+            "covered": true,
+            "daily_archive_count": 30,
+            "daily_checksum_count": 30,
+            "granularity": "daily-local-checksum-verified",
+            "month": "2023-06"
+          }
+        ],
+        "required_months": 1,
+        "symbol": "UNIUSDT"
+      },
+      {
+        "available_compressed_bytes": 1366340369,
+        "complete_for_window": true,
+        "coverage": 1.0,
+        "covered_months": 1,
+        "missing_months": [],
+        "month_reviews": [
+          {
+            "archive_key": "",
+            "archive_size_bytes": 1366340369,
+            "checksum_key": "",
+            "covered": true,
+            "daily_archive_count": 30,
+            "daily_checksum_count": 30,
+            "granularity": "daily-local-checksum-verified",
+            "month": "2023-06"
+          }
+        ],
+        "required_months": 1,
+        "symbol": "XRPUSDT"
+      }
+    ],
+    "symbols_required": [
+      "ADAUSDT",
+      "ARBUSDT",
+      "ATOMUSDT",
+      "AVAXUSDT",
+      "BTCUSDT",
+      "DOGEUSDT",
+      "DOTUSDT",
+      "ETCUSDT",
+      "ETHUSDT",
+      "LINKUSDT",
+      "LTCUSDT",
+      "OPUSDT",
+      "SOLUSDT",
+      "UNIUSDT",
+      "XRPUSDT"
+    ]
+  },
+  "summary_json": "data/research/binance_public/cost_pilot/all_candidates_202306_summary.json",
+  "symbol_cost_stats": [
+    {
+      "cost_coverage": 0.9986111111111111,
+      "cost_gated_symbol_pass": false,
+      "execution_cost_quality": "INCOMPLETE",
+      "expected_bars": 720,
+      "longest_missing_cost_gap_hours": 1.0,
+      "max_sample_gap_ms": 7975.0,
+      "median_sample_count_1h": 74371.0,
+      "median_spread_bps": 3.5217467864056697,
+      "min_sample_count_1h": 23532.0,
+      "p95_spread_bps": 3.8860609116678977,
+      "p99_spread_bps": 8.018995805301893,
+      "reasons": [
+        "WIDE_MEDIAN_SPREAD"
+      ],
+      "stale_hours": 0,
+      "symbol": "ADAUSDT",
+      "valid_bars": 720
+    },
+    {
+      "cost_coverage": 0.9986111111111111,
+      "cost_gated_symbol_pass": true,
+      "execution_cost_quality": "VERIFIED",
+      "expected_bars": 720,
+      "longest_missing_cost_gap_hours": 1.0,
+      "max_sample_gap_ms": 8221.0,
+      "median_sample_count_1h": 88975.0,
+      "median_spread_bps": 0.8928172849425381,
+      "min_sample_count_1h": 27577.0,
+      "p95_spread_bps": 1.9768707877826934,
+      "p99_spread_bps": 6.221894825008397,
+      "reasons": [],
+      "stale_hours": 0,
+      "symbol": "ARBUSDT",
+      "valid_bars": 720
+    },
+    {
+      "cost_coverage": 0.9986111111111111,
+      "cost_gated_symbol_pass": true,
+      "execution_cost_quality": "VERIFIED",
+      "expected_bars": 720,
+      "longest_missing_cost_gap_hours": 1.0,
+      "max_sample_gap_ms": 10747.0,
+      "median_sample_count_1h": 34613.0,
+      "median_spread_bps": 1.087843350556917,
+      "min_sample_count_1h": 14433.0,
+      "p95_spread_bps": 2.4329717482706537,
+      "p99_spread_bps": 8.416904815660331,
+      "reasons": [],
+      "stale_hours": 0,
+      "symbol": "ATOMUSDT",
+      "valid_bars": 720
+    },
+    {
+      "cost_coverage": 0.9986111111111111,
+      "cost_gated_symbol_pass": true,
+      "execution_cost_quality": "VERIFIED",
+      "expected_bars": 720,
+      "longest_missing_cost_gap_hours": 1.0,
+      "max_sample_gap_ms": 19023.0,
+      "median_sample_count_1h": 39874.0,
+      "median_spread_bps": 0.7755244484078062,
+      "min_sample_count_1h": 12870.0,
+      "p95_spread_bps": 1.7798349835541718,
+      "p99_spread_bps": 7.025741307301484,
+      "reasons": [],
+      "stale_hours": 0,
+      "symbol": "AVAXUSDT",
+      "valid_bars": 720
+    },
+    {
+      "cost_coverage": 0.9986111111111111,
+      "cost_gated_symbol_pass": true,
+      "execution_cost_quality": "VERIFIED",
+      "expected_bars": 720,
+      "longest_missing_cost_gap_hours": 1.0,
+      "max_sample_gap_ms": 8003.0,
+      "median_sample_count_1h": 435526.0,
+      "median_spread_bps": 0.0372717802301326,
+      "min_sample_count_1h": 179172.0,
+      "p95_spread_bps": 0.039701444503055364,
+      "p99_spread_bps": 1.1965127686744172,
+      "reasons": [],
+      "stale_hours": 0,
+      "symbol": "BTCUSDT",
+      "valid_bars": 720
+    },
+    {
+      "cost_coverage": 0.9986111111111111,
+      "cost_gated_symbol_pass": true,
+      "execution_cost_quality": "VERIFIED",
+      "expected_bars": 720,
+      "longest_missing_cost_gap_hours": 1.0,
+      "max_sample_gap_ms": 8041.0,
+      "median_sample_count_1h": 66401.0,
+      "median_spread_bps": 1.5301048121790413,
+      "min_sample_count_1h": 26520.0,
+      "p95_spread_bps": 1.6673892061596423,
+      "p99_spread_bps": 7.40886513772471,
+      "reasons": [],
+      "stale_hours": 0,
+      "symbol": "DOGEUSDT",
+      "valid_bars": 720
+    },
+    {
+      "cost_coverage": 0.9986111111111111,
+      "cost_gated_symbol_pass": true,
+      "execution_cost_quality": "VERIFIED",
+      "expected_bars": 720,
+      "longest_missing_cost_gap_hours": 1.0,
+      "max_sample_gap_ms": 8580.0,
+      "median_sample_count_1h": 50414.0,
+      "median_spread_bps": 2.009444388627216,
+      "min_sample_count_1h": 22267.0,
+      "p95_spread_bps": 2.2907408364024935,
+      "p99_spread_bps": 4.694429095018796,
+      "reasons": [],
+      "stale_hours": 0,
+      "symbol": "DOTUSDT",
+      "valid_bars": 720
+    },
+    {
+      "cost_coverage": 0.9986111111111111,
+      "cost_gated_symbol_pass": true,
+      "execution_cost_quality": "VERIFIED",
+      "expected_bars": 720,
+      "longest_missing_cost_gap_hours": 1.0,
+      "max_sample_gap_ms": 17440.0,
+      "median_sample_count_1h": 45310.0,
+      "median_spread_bps": 0.5897095680363671,
+      "min_sample_count_1h": 14420.0,
+      "p95_spread_bps": 2.3203029011165244,
+      "p99_spread_bps": 8.727757399334669,
+      "reasons": [],
+      "stale_hours": 0,
+      "symbol": "ETCUSDT",
+      "valid_bars": 720
+    },
+    {
+      "cost_coverage": 0.9986111111111111,
+      "cost_gated_symbol_pass": true,
+      "execution_cost_quality": "VERIFIED",
+      "expected_bars": 720,
+      "longest_missing_cost_gap_hours": 1.0,
+      "max_sample_gap_ms": 8028.0,
+      "median_sample_count_1h": 290918.0,
+      "median_spread_bps": 0.0541857106861856,
+      "min_sample_count_1h": 150940.0,
+      "p95_spread_bps": 0.060819186686204924,
+      "p99_spread_bps": 1.4008154916579107,
+      "reasons": [],
+      "stale_hours": 0,
+      "symbol": "ETHUSDT",
+      "valid_bars": 720
+    },
+    {
+      "cost_coverage": 0.9986111111111111,
+      "cost_gated_symbol_pass": true,
+      "execution_cost_quality": "VERIFIED",
+      "expected_bars": 720,
+      "longest_missing_cost_gap_hours": 1.0,
+      "max_sample_gap_ms": 8074.0,
+      "median_sample_count_1h": 58162.0,
+      "median_spread_bps": 1.686482840036168,
+      "min_sample_count_1h": 19145.0,
+      "p95_spread_bps": 1.986373506166292,
+      "p99_spread_bps": 6.746031086883022,
+      "reasons": [],
+      "stale_hours": 0,
+      "symbol": "LINKUSDT",
+      "valid_bars": 720
+    },
+    {
+      "cost_coverage": 0.9986111111111111,
+      "cost_gated_symbol_pass": true,
+      "execution_cost_quality": "VERIFIED",
+      "expected_bars": 720,
+      "longest_missing_cost_gap_hours": 1.0,
+      "max_sample_gap_ms": 8097.0,
+      "median_sample_count_1h": 90287.0,
+      "median_spread_bps": 1.1534690581931042,
+      "min_sample_count_1h": 34870.0,
+      "p95_spread_bps": 1.8593501420394267,
+      "p99_spread_bps": 6.203442550445709,
+      "reasons": [],
+      "stale_hours": 0,
+      "symbol": "LTCUSDT",
+      "valid_bars": 720
+    },
+    {
+      "cost_coverage": 0.9986111111111111,
+      "cost_gated_symbol_pass": true,
+      "execution_cost_quality": "VERIFIED",
+      "expected_bars": 720,
+      "longest_missing_cost_gap_hours": 1.0,
+      "max_sample_gap_ms": 8513.0,
+      "median_sample_count_1h": 89427.0,
+      "median_spread_bps": 0.7580639047870901,
+      "min_sample_count_1h": 35159.0,
+      "p95_spread_bps": 2.791371177884855,
+      "p99_spread_bps": 9.304027580176408,
+      "reasons": [],
+      "stale_hours": 0,
+      "symbol": "OPUSDT",
+      "valid_bars": 720
+    },
+    {
+      "cost_coverage": 0.9986111111111111,
+      "cost_gated_symbol_pass": true,
+      "execution_cost_quality": "VERIFIED",
+      "expected_bars": 720,
+      "longest_missing_cost_gap_hours": 1.0,
+      "max_sample_gap_ms": 8010.0,
+      "median_sample_count_1h": 104394.0,
+      "median_spread_bps": 0.5971040453806371,
+      "min_sample_count_1h": 30667.0,
+      "p95_spread_bps": 1.392713579801105,
+      "p99_spread_bps": 7.98743919476434,
+      "reasons": [],
+      "stale_hours": 0,
+      "symbol": "SOLUSDT",
+      "valid_bars": 720
+    },
+    {
+      "cost_coverage": 0.9986111111111111,
+      "cost_gated_symbol_pass": true,
+      "execution_cost_quality": "VERIFIED",
+      "expected_bars": 720,
+      "longest_missing_cost_gap_hours": 1.0,
+      "max_sample_gap_ms": 23587.0,
+      "median_sample_count_1h": 25801.0,
+      "median_spread_bps": 2.119317579740032,
+      "min_sample_count_1h": 5769.0,
+      "p95_spread_bps": 4.1032384504763115,
+      "p99_spread_bps": 12.654988792435143,
+      "reasons": [],
+      "stale_hours": 0,
+      "symbol": "UNIUSDT",
+      "valid_bars": 720
+    },
+    {
+      "cost_coverage": 0.9986111111111111,
+      "cost_gated_symbol_pass": true,
+      "execution_cost_quality": "VERIFIED",
+      "expected_bars": 720,
+      "longest_missing_cost_gap_hours": 1.0,
+      "max_sample_gap_ms": 8256.0,
+      "median_sample_count_1h": 121445.0,
+      "median_spread_bps": 2.015113350126841,
+      "min_sample_count_1h": 45775.0,
+      "p95_spread_bps": 2.135611318739754,
+      "p99_spread_bps": 7.657643680926796,
+      "reasons": [],
+      "stale_hours": 0,
+      "symbol": "XRPUSDT",
+      "valid_bars": 720
+    }
+  ],
+  "symbol_count": 15,
+  "thresholds": {
+    "max_longest_gap_hours": 6.0,
+    "max_median_spread_bps": 3.0,
+    "max_p95_spread_bps": 8.0,
+    "max_p99_spread_bps": 15.0,
+    "max_pair_median_spread_bps": 6.0,
+    "max_pair_p95_spread_bps": 10.0,
+    "max_stale_hours": 0,
+    "min_hourly_coverage": 0.99,
+    "stale_gap_threshold_ms": 60000
+  }
+}

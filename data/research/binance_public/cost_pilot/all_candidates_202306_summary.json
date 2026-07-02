@@ -1,0 +1,317 @@
+{
+  "accepted_symbols": [
+    "ADAUSDT",
+    "ARBUSDT",
+    "ATOMUSDT",
+    "AVAXUSDT",
+    "BTCUSDT",
+    "DOGEUSDT",
+    "DOTUSDT",
+    "ETCUSDT",
+    "ETHUSDT",
+    "LINKUSDT",
+    "LTCUSDT",
+    "OPUSDT",
+    "SOLUSDT",
+    "UNIUSDT",
+    "XRPUSDT"
+  ],
+  "bars_csv": "data/research/binance_public/cost_pilot/all_candidates_202306_bars.csv",
+  "candidate_pairs": [
+    {
+      "correlation": 0.8439346329534084,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ARBUSDT/OPUSDT",
+      "score": 0.843934632953
+    },
+    {
+      "correlation": 0.8290515269853589,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 4.0707,
+      "pair": "BTCUSDT/ETHUSDT",
+      "score": 0.829051526985
+    },
+    {
+      "correlation": 0.8151444353787677,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 5.0808,
+      "pair": "ARBUSDT/ETHUSDT",
+      "score": 0.815144435379
+    },
+    {
+      "correlation": 0.8120815292958644,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ADAUSDT/DOTUSDT",
+      "score": 0.812081529296
+    },
+    {
+      "correlation": 0.8110143629896615,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ARBUSDT/ETCUSDT",
+      "score": 0.81101436299
+    },
+    {
+      "correlation": 0.8065388204197638,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 5.0808,
+      "pair": "ETCUSDT/ETHUSDT",
+      "score": 0.80653882042
+    },
+    {
+      "correlation": 0.7952312903451715,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ARBUSDT/DOTUSDT",
+      "score": 0.795231290345
+    },
+    {
+      "correlation": 0.7947813853860217,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 5.0808,
+      "pair": "ETHUSDT/LINKUSDT",
+      "score": 0.794781385386
+    },
+    {
+      "correlation": 0.7916530303707854,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "AVAXUSDT/DOTUSDT",
+      "score": 0.791653030371
+    },
+    {
+      "correlation": 0.79162477918689,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "DOTUSDT/ETCUSDT",
+      "score": 0.791624779187
+    },
+    {
+      "correlation": 0.7888531131411533,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ATOMUSDT/DOTUSDT",
+      "score": 0.788853113141
+    },
+    {
+      "correlation": 0.786639377246175,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ADAUSDT/AVAXUSDT",
+      "score": 0.786639377246
+    },
+    {
+      "correlation": 0.7852243047228031,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ADAUSDT/ETCUSDT",
+      "score": 0.785224304723
+    },
+    {
+      "correlation": 0.7810993820467727,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ADAUSDT/LINKUSDT",
+      "score": 0.781099382047
+    },
+    {
+      "correlation": 0.7799508880164205,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 5.8266,
+      "pair": "ADAUSDT/DOGEUSDT",
+      "score": 0.779950888016
+    },
+    {
+      "correlation": 0.7772655921509842,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "DOTUSDT/LINKUSDT",
+      "score": 0.777265592151
+    },
+    {
+      "correlation": 0.7768680980660289,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ARBUSDT/LINKUSDT",
+      "score": 0.776868098066
+    },
+    {
+      "correlation": 0.7744694558737862,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "AVAXUSDT/LINKUSDT",
+      "score": 0.774469455874
+    },
+    {
+      "correlation": 0.7720363159480187,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ARBUSDT/AVAXUSDT",
+      "score": 0.772036315948
+    },
+    {
+      "correlation": 0.771514620053295,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 5.0808,
+      "pair": "ADAUSDT/ETHUSDT",
+      "score": 0.771514620053
+    },
+    {
+      "correlation": 0.7713764918965008,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ETCUSDT/LINKUSDT",
+      "score": 0.771376491897
+    },
+    {
+      "correlation": 0.7711182941281094,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ADAUSDT/ARBUSDT",
+      "score": 0.771118294128
+    },
+    {
+      "correlation": 0.7688698331753107,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 5.603400000000001,
+      "pair": "AVAXUSDT/SOLUSDT",
+      "score": 0.768869833175
+    },
+    {
+      "correlation": 0.7680720324179535,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ETCUSDT/OPUSDT",
+      "score": 0.768072032418
+    },
+    {
+      "correlation": 0.766112965983648,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 4.684200000000001,
+      "pair": "ETHUSDT/SOLUSDT",
+      "score": 0.766112965984
+    },
+    {
+      "correlation": 0.7658060075669098,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 5.8266,
+      "pair": "DOGEUSDT/ETCUSDT",
+      "score": 0.765806007567
+    },
+    {
+      "correlation": 0.764206282383254,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 5.0808,
+      "pair": "AVAXUSDT/ETHUSDT",
+      "score": 0.764206282383
+    },
+    {
+      "correlation": 0.7624619156334715,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 4.9074,
+      "pair": "DOGEUSDT/ETHUSDT",
+      "score": 0.762461915633
+    },
+    {
+      "correlation": 0.7614499378604256,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "AVAXUSDT/ETCUSDT",
+      "score": 0.76144993786
+    },
+    {
+      "correlation": 0.7600951515210366,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 5.0808,
+      "pair": "DOTUSDT/ETHUSDT",
+      "score": 0.760095151521
+    },
+    {
+      "correlation": 0.7597806354866519,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ARBUSDT/ATOMUSDT",
+      "score": 0.759780635487
+    },
+    {
+      "correlation": 0.7595088156447138,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "DOTUSDT/OPUSDT",
+      "score": 0.759508815645
+    },
+    {
+      "correlation": 0.7591063944565987,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 5.0808,
+      "pair": "ETHUSDT/OPUSDT",
+      "score": 0.759106394457
+    },
+    {
+      "correlation": 0.7558327140741242,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ADAUSDT/XRPUSDT",
+      "score": 0.755832714074
+    },
+    {
+      "correlation": 0.7555017671629769,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ADAUSDT/ATOMUSDT",
+      "score": 0.755501767163
+    },
+    {
+      "correlation": 0.7551443574505229,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 5.83245,
+      "pair": "ETCUSDT/LTCUSDT",
+      "score": 0.755144357451
+    },
+    {
+      "correlation": 0.7541372734429782,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 5.0808,
+      "pair": "ETHUSDT/UNIUSDT",
+      "score": 0.754137273443
+    },
+    {
+      "correlation": 0.753881371926357,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 5.8266,
+      "pair": "DOGEUSDT/DOTUSDT",
+      "score": 0.753881371926
+    },
+    {
+      "correlation": 0.7537780429359535,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 4.5933,
+      "pair": "BTCUSDT/SOLUSDT",
+      "score": 0.753778042936
+    },
+    {
+      "correlation": 0.7535710146316928,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 5.603400000000001,
+      "pair": "ADAUSDT/SOLUSDT",
+      "score": 0.753571014632
+    },
+    {
+      "correlation": 0.7532572646972621,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ATOMUSDT/ETCUSDT",
+      "score": 0.753257264697
+    }
+  ],
+  "dataset_version": "sprint7_cost_all_candidates_202306",
+  "duplicate_hours_csv": "data/research/binance_public/cost_pilot/all_candidates_202306_duplicate_hours.csv",
+  "end_month_exclusive": "2023-07",
+  "evidence_scope": "June 2023 only; Binance daily bookTicker archives; all 41 Sprint 7 candidate pairs",
+  "expected_bars": 720,
+  "hourly_cost_csv": "data/research/binance_public/cost_pilot/all_candidates_202306_hourly_cost.csv",
+  "hourly_cost_raw_csv": "data/research/binance_public/cost_pilot/all_candidates_202306_hourly_cost_raw.csv",
+  "start_month": "2023-06"
+}

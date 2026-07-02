@@ -1,0 +1,105 @@
+{
+  "sprint": "Sprint 8 - Backtest walk-forward cost-aware",
+  "evidence_scope": "2023-06",
+  "cost_gate": {
+    "venue": "BINANCE",
+    "market_type": "USD_M_FUTURES",
+    "contract_type": "PERPETUAL",
+    "cost_gated_pass": true,
+    "approved_pair_count": 31,
+    "blocked_pair_count": 10,
+    "symbol_count": 15,
+    "normalized_cost_rows": 10800,
+    "source_window_complete": true,
+    "join_policy": "hourly cost joins as-of with cost_available_time <= bar open_time"
+  },
+  "artifacts": {
+    "execution_cost_gate_json": "data/research/binance_public/cost_pilot/all_candidates_202306_execution_cost_gate.json",
+    "execution_cost_gate_csv": "data/research/binance_public/cost_pilot/all_candidates_202306_execution_cost_gate.csv",
+    "manifest_json": "data/research/binance_public/cost_pilot/all_candidates_202306_manifest.json",
+    "source_review_json": "data/research/binance_public/cost_pilot/all_candidates_202306_source_review.json",
+    "hourly_cost_csv": "data/research/binance_public/cost_pilot/all_candidates_202306_hourly_cost.csv",
+    "bars_csv": "data/research/binance_public/cost_pilot/all_candidates_202306_bars.csv"
+  },
+  "approved_pairs": [
+    "ARBUSDT/OPUSDT",
+    "BTCUSDT/ETHUSDT",
+    "ARBUSDT/ETHUSDT",
+    "ARBUSDT/ETCUSDT",
+    "ETCUSDT/ETHUSDT",
+    "ARBUSDT/DOTUSDT",
+    "ETHUSDT/LINKUSDT",
+    "AVAXUSDT/DOTUSDT",
+    "DOTUSDT/ETCUSDT",
+    "ATOMUSDT/DOTUSDT",
+    "DOTUSDT/LINKUSDT",
+    "ARBUSDT/LINKUSDT",
+    "AVAXUSDT/LINKUSDT",
+    "ARBUSDT/AVAXUSDT",
+    "ETCUSDT/LINKUSDT",
+    "AVAXUSDT/SOLUSDT",
+    "ETCUSDT/OPUSDT",
+    "ETHUSDT/SOLUSDT",
+    "DOGEUSDT/ETCUSDT",
+    "AVAXUSDT/ETHUSDT",
+    "DOGEUSDT/ETHUSDT",
+    "AVAXUSDT/ETCUSDT",
+    "DOTUSDT/ETHUSDT",
+    "ARBUSDT/ATOMUSDT",
+    "DOTUSDT/OPUSDT",
+    "ETHUSDT/OPUSDT",
+    "ETCUSDT/LTCUSDT",
+    "ETHUSDT/UNIUSDT",
+    "DOGEUSDT/DOTUSDT",
+    "BTCUSDT/SOLUSDT",
+    "ATOMUSDT/ETCUSDT"
+  ],
+  "blocked_pairs": [
+    {
+      "pair": "ADAUSDT/DOTUSDT",
+      "reason": "ADAUSDT WIDE_MEDIAN_SPREAD: median_spread_bps_1h=3.52 > 3.0"
+    },
+    {
+      "pair": "ADAUSDT/AVAXUSDT",
+      "reason": "ADAUSDT WIDE_MEDIAN_SPREAD: median_spread_bps_1h=3.52 > 3.0"
+    },
+    {
+      "pair": "ADAUSDT/ETCUSDT",
+      "reason": "ADAUSDT WIDE_MEDIAN_SPREAD: median_spread_bps_1h=3.52 > 3.0"
+    },
+    {
+      "pair": "ADAUSDT/LINKUSDT",
+      "reason": "ADAUSDT WIDE_MEDIAN_SPREAD: median_spread_bps_1h=3.52 > 3.0"
+    },
+    {
+      "pair": "ADAUSDT/DOGEUSDT",
+      "reason": "ADAUSDT WIDE_MEDIAN_SPREAD: median_spread_bps_1h=3.52 > 3.0"
+    },
+    {
+      "pair": "ADAUSDT/ETHUSDT",
+      "reason": "ADAUSDT WIDE_MEDIAN_SPREAD: median_spread_bps_1h=3.52 > 3.0"
+    },
+    {
+      "pair": "ADAUSDT/ARBUSDT",
+      "reason": "ADAUSDT WIDE_MEDIAN_SPREAD: median_spread_bps_1h=3.52 > 3.0"
+    },
+    {
+      "pair": "ADAUSDT/XRPUSDT",
+      "reason": "ADAUSDT WIDE_MEDIAN_SPREAD: median_spread_bps_1h=3.52 > 3.0"
+    },
+    {
+      "pair": "ADAUSDT/ATOMUSDT",
+      "reason": "ADAUSDT WIDE_MEDIAN_SPREAD: median_spread_bps_1h=3.52 > 3.0"
+    },
+    {
+      "pair": "ADAUSDT/SOLUSDT",
+      "reason": "ADAUSDT WIDE_MEDIAN_SPREAD: median_spread_bps_1h=3.52 > 3.0"
+    }
+  ],
+  "rules": [
+    "Sprint 8 may backtest only approved_pairs.",
+    "Blocked pairs fail closed, even if they pass statistical research.",
+    "This contract proves cost evidence only for 2023-06.",
+    "Historical ZIP and CHECKSUM files are not required to consume this contract."
+  ]
+}

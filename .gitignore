@@ -38,11 +38,35 @@ site/
 *.db
 *.sqlite
 *.sqlite3
-data/
 db.sqlite3-journal
 db.sqlite-journal
 db.sqlite3-wal
 db.sqlite3-shm
+
+# research data: ignore large/regenerable raw archives by default, but keep
+# small derived summaries/results (and a compressed bars.csv backup) tracked
+# so switching machines doesn't lose anything the reports depend on. Raw
+# archives are regenerable via scripts/run_sprint7_historical_dataset.py and
+# scripts/run_sprint7_execution_cost_download.py, with one caveat: Binance
+# has already removed some historical bookTicker coverage once (see
+# BLOCKER-2026-06-30-S7-REAL-DATASET-GATE), so re-downloading is not
+# guaranteed to work forever.
+data/*
+!data/research/
+data/research/*
+!data/research/binance_public/
+data/research/binance_public/*
+!data/research/binance_public/normalized/
+!data/research/binance_public/cost_pilot/
+data/research/binance_public/normalized/*
+!data/research/binance_public/normalized/*.json
+!data/research/binance_public/normalized/*.csv
+!data/research/binance_public/normalized/*.csv.gz
+data/research/binance_public/normalized/*_bars.csv
+data/research/binance_public/cost_pilot/*
+!data/research/binance_public/cost_pilot/*.json
+!data/research/binance_public/cost_pilot/*.csv
+data/research/binance_public/cost_pilot/raw/
 
 # Pytest temporary directories
 pytest_temp*/

@@ -1,0 +1,32 @@
+{
+  "dataset_version": "sprint7_cost_pilot_202306",
+  "accepted_symbols": [
+    "ARBUSDT",
+    "OPUSDT",
+    "ADAUSDT",
+    "DOTUSDT",
+    "ETCUSDT",
+    "AVAXUSDT"
+  ],
+  "candidate_pairs": [
+    {
+      "pair": "ARBUSDT/OPUSDT"
+    },
+    {
+      "pair": "ADAUSDT/DOTUSDT"
+    },
+    {
+      "pair": "ARBUSDT/ETCUSDT"
+    },
+    {
+      "pair": "ARBUSDT/DOTUSDT"
+    },
+    {
+      "pair": "AVAXUSDT/DOTUSDT"
+    },
+    {
+      "pair": "DOTUSDT/ETCUSDT"
+    }
+  ],
+  "expected_bars": 720
+}

@@ -1,21 +1,23 @@
 # Blockers
 
-Last updated: 2026-07-01
+Last updated: 2026-07-02
 
 ## Active Blockers
 
 ### BLOCKER-2026-06-30-S7-REAL-DATASET-GATE
 
-Status: ACTIVE
+Status: PARTIALLY RESOLVED (scoped)
 
-Severity: P1
+Severity: P2 (downgraded from P1 now that genuine scoped cost-gated evidence exists)
 
 Owner: PM Agent
 
 Blocked scope:
 
 ```text
-Sprint 8 start
+Sprint 8 start for any pair/claim WITHOUT a real verified cost-gated evidence
+window. Sprint 8 start is NOT blocked for the 31 pairs with genuine June 2023
+cost-gated evidence (see Resolution).
 ```
 
 Reason:
@@ -25,52 +27,67 @@ Sprint 7 technical research base is implemented. The documented 2023-06 through
 2026-05 Binance USD-M dataset has been downloaded, checksumed, normalized, and
 run through pair selection, stationarity, Kalman, OU, and z-score checks.
 
-TASK-007-09 (loader/normalizer) passed Market Data Agent + QA Agent review and
-is DONE. TASK-007-10 (execution-cost evidence) is also DONE, but with a
-definitive negative finding: Binance Public Data bookTicker (top-of-book/L2)
-coverage exists for only 11 of the 36 required months (2023-06 through
-approximately 2024-04), identically for all 20 accepted symbols. This was
-verified directly against the live Binance S3 endpoint (KeyCount << MaxKeys,
-IsTruncated=false on both monthly and daily prefixes for the checked symbol,
-ruling out a pagination artifact) and independently re-verified by QA Agent.
-cost_gated_pass=false for all 41 candidate pairs, enforced unconditionally
-when the source is incomplete.
-
-This is no longer a "pending execution" blocker. It is a real data-availability
-limit of the current source. Sprint 8 cannot start from statistical-only
-candidates per ADR-0002 (Safety Before Edge).
+TASK-007-09 and TASK-007-10 are both DONE. TASK-007-10 first proved that
+Binance Public Data bookTicker (top-of-book/L2) coverage exists for only 11 of
+the 36 required months (2023-06 through approximately 2024-04), identically
+for all 20 accepted symbols — verified directly against the live Binance S3
+endpoint (ruling out a pagination artifact) and independently re-verified by
+QA Agent. This remains true: the full 36-month window cannot be cost-gated
+from this source.
 ```
 
-Required correction (decision, not execution):
+Resolution (scoped, per ADR-0007):
 
 ```text
-1. Dataset and cost-evidence artifacts are preserved under
-   data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_*
-   including the execution-cost source review and gate outputs.
-2. TASK-007-09 and TASK-007-10 are DONE; no further execution work unblocks
-   this on its own.
-3. PM/stakeholder must choose a path forward before Sprint 8 can open:
-   a. Locate and verify an alternative historical top-of-book/L2 source
-      (e.g. a paid tick-data vendor) covering the full 2023-06 through 2026-05
-      window, then rerun the cost gate.
-   b. Shrink the Sprint 7 research window to the verified-covered sub-period
-      (2023-06 through ~2024-04, ~11 months) and rerun the full statistical +
-      cost gate on that sub-window only.
-   c. Redefine cost-gated PASS policy via a new ADR in DECISIONS.md (for
-      example: accept forward-collected execution-cost evidence from live
-      market-data capture going forward, instead of requiring retroactive
-      historical top-of-book coverage for the full backtest window).
-   d. Keep Sprint 8 blocked indefinitely until (a) or (c) is resolved.
-4. Whichever path is chosen requires an ADR entry and a rerun of the affected
-   gate before Sprint 8 opens.
+Per ADR-0007 (Cost-Gated PASS Scoped To Verified Evidence), memory-safe
+daily-bookTicker pilots were run for real inside June 2023. The first 6-symbol
+pilot proved the path and was reviewed by Market Data Agent and QA Agent. On
+2026-07-02 the scope was expanded to all 15 symbols appearing in the 41 Sprint
+7 candidate pairs. The runner was hardened to stream-read each ZIP member with
+numeric dtypes before processing BTCUSDT/ETHUSDT, avoiding the prior
+decompressed whole-file load. The expanded run verified 450 Binance daily ZIPs
+and .CHECKSUM files (17.98GB compressed), produced 10827 raw hourly rows,
+isolated 27 duplicate symbol-hours at day boundaries, and wrote a deduplicated
+10800-row hourly-cost file for the gate.
+
+The scoped June-2023 cost gate produced `cost_gated_pass=true`: 31 of 41
+candidate pairs pass with genuine verified top-of-book evidence. The 10
+failures are all ADAUSDT pairs, correctly blocked because ADAUSDT fails the
+symbol-level spread gate (`WIDE_MEDIAN_SPREAD`, median spread 3.52bps >
+3.0bps threshold).
+
+Sprint 8 may now open, SCOPED to these 31 pairs, explicitly labeled as backed
+by a single verified month (June 2023) of real top-of-book evidence -- not a
+multi-year backtest validation. Any work claiming cost-gated status for the 10
+failed ADAUSDT pairs or for months outside this verified June-2023 window
+remains statistical-only and blocked from cost-gated claims.
+```
+
+Residual blocker (kept open, downgraded severity):
+
+```text
+1. The remaining ~10 verified months (2023-07 through ~2024-04) have not been
+   processed; extending the pilot is possible with the same daily-download
+   tooling but was not run in this pass (time/resource scoping choice, not a
+   source limitation).
+2. The window 2024-05 through 2026-05 (25 of 36 months) has NO verified
+   top-of-book source on Binance Public Data at all. Closing this permanently
+   requires either an alternative source (paid vendor) or reliance on the
+   live Market Data Plane (Sprint 5/6 BookFeatures) for forward evidence once
+   paper/live trading exists, per ADR-0007.
+3. Any pair/claim outside the 31 passed pairs and verified June-2023 window
+   must not be presented as cost-gated without repeating this same
+   real-download-and-verify process.
 ```
 
 Gate policy:
 
 ```text
-Do not start Sprint 8 from statistical-only candidates. Sprint 8 may start only
-after either verified execution-cost evidence exists and passes cost-gated
-review, or an ADR explicitly redefines the cost-gated PASS requirement.
+Do not present statistical-only candidates as cost-gated. Cost-gated PASS
+claims must always cite the exact symbols/dates/granularity of the verified
+evidence they rest on (ADR-0007). Sprint 8 may open only for the specific
+scope that has real verified cost-gated evidence; broader claims require
+repeating this process or an alternative source.
 ```
 
 ## Resolved Blockers

@@ -1,0 +1,354 @@
+{
+  "archive_bytes": 17984161977,
+  "archive_count": 450,
+  "archive_manifest_csv": "data/research/binance_public/cost_pilot/all_candidates_202306_archive_manifest.csv",
+  "base_url": "https://data.binance.vision",
+  "complete_for_window": true,
+  "decision": "SOURCE_COMPLETE",
+  "generated_at_utc": "2026-07-02T14:31:34.155276+00:00",
+  "granularity_evaluated": [
+    "daily/bookTicker local ZIP + .CHECKSUM"
+  ],
+  "period": {
+    "end_month_exclusive": "2023-07",
+    "months_required": 1,
+    "start_month": "2023-06"
+  },
+  "review_mode": "local checksum-verified archive manifest",
+  "source": "Binance Public Data bookTicker",
+  "source_exists": true,
+  "symbol_reviews": [
+    {
+      "available_compressed_bytes": 832718370,
+      "complete_for_window": true,
+      "coverage": 1.0,
+      "covered_months": 1,
+      "missing_months": [],
+      "month_reviews": [
+        {
+          "archive_key": "",
+          "archive_size_bytes": 832718370,
+          "checksum_key": "",
+          "covered": true,
+          "daily_archive_count": 30,
+          "daily_checksum_count": 30,
+          "granularity": "daily-local-checksum-verified",
+          "month": "2023-06"
+        }
+      ],
+      "required_months": 1,
+      "symbol": "ADAUSDT"
+    },
+    {
+      "available_compressed_bytes": 973767567,
+      "complete_for_window": true,
+      "coverage": 1.0,
+      "covered_months": 1,
+      "missing_months": [],
+      "month_reviews": [
+        {
+          "archive_key": "",
+          "archive_size_bytes": 973767567,
+          "checksum_key": "",
+          "covered": true,
+          "daily_archive_count": 30,
+          "daily_checksum_count": 30,
+          "granularity": "daily-local-checksum-verified",
+          "month": "2023-06"
+        }
+      ],
+      "required_months": 1,
+      "symbol": "ARBUSDT"
+    },
+    {
+      "available_compressed_bytes": 427184060,
+      "complete_for_window": true,
+      "coverage": 1.0,
+      "covered_months": 1,
+      "missing_months": [],
+      "month_reviews": [
+        {
+          "archive_key": "",
+          "archive_size_bytes": 427184060,
+          "checksum_key": "",
+          "covered": true,
+          "daily_archive_count": 30,
+          "daily_checksum_count": 30,
+          "granularity": "daily-local-checksum-verified",
+          "month": "2023-06"
+        }
+      ],
+      "required_months": 1,
+      "symbol": "ATOMUSDT"
+    },
+    {
+      "available_compressed_bytes": 450494491,
+      "complete_for_window": true,
+      "coverage": 1.0,
+      "covered_months": 1,
+      "missing_months": [],
+      "month_reviews": [
+        {
+          "archive_key": "",
+          "archive_size_bytes": 450494491,
+          "checksum_key": "",
+          "covered": true,
+          "daily_archive_count": 30,
+          "daily_checksum_count": 30,
+          "granularity": "daily-local-checksum-verified",
+          "month": "2023-06"
+        }
+      ],
+      "required_months": 1,
+      "symbol": "AVAXUSDT"
+    },
+    {
+      "available_compressed_bytes": 4444572629,
+      "complete_for_window": true,
+      "coverage": 1.0,
+      "covered_months": 1,
+      "missing_months": [],
+      "month_reviews": [
+        {
+          "archive_key": "",
+          "archive_size_bytes": 4444572629,
+          "checksum_key": "",
+          "covered": true,
+          "daily_archive_count": 30,
+          "daily_checksum_count": 30,
+          "granularity": "daily-local-checksum-verified",
+          "month": "2023-06"
+        }
+      ],
+      "required_months": 1,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "available_compressed_bytes": 799785143,
+      "complete_for_window": true,
+      "coverage": 1.0,
+      "covered_months": 1,
+      "missing_months": [],
+      "month_reviews": [
+        {
+          "archive_key": "",
+          "archive_size_bytes": 799785143,
+          "checksum_key": "",
+          "covered": true,
+          "daily_archive_count": 30,
+          "daily_checksum_count": 30,
+          "granularity": "daily-local-checksum-verified",
+          "month": "2023-06"
+        }
+      ],
+      "required_months": 1,
+      "symbol": "DOGEUSDT"
+    },
+    {
+      "available_compressed_bytes": 571385282,
+      "complete_for_window": true,
+      "coverage": 1.0,
+      "covered_months": 1,
+      "missing_months": [],
+      "month_reviews": [
+        {
+          "archive_key": "",
+          "archive_size_bytes": 571385282,
+          "checksum_key": "",
+          "covered": true,
+          "daily_archive_count": 30,
+          "daily_checksum_count": 30,
+          "granularity": "daily-local-checksum-verified",
+          "month": "2023-06"
+        }
+      ],
+      "required_months": 1,
+      "symbol": "DOTUSDT"
+    },
+    {
+      "available_compressed_bytes": 600115791,
+      "complete_for_window": true,
+      "coverage": 1.0,
+      "covered_months": 1,
+      "missing_months": [],
+      "month_reviews": [
+        {
+          "archive_key": "",
+          "archive_size_bytes": 600115791,
+          "checksum_key": "",
+          "covered": true,
+          "daily_archive_count": 30,
+          "daily_checksum_count": 30,
+          "granularity": "daily-local-checksum-verified",
+          "month": "2023-06"
+        }
+      ],
+      "required_months": 1,
+      "symbol": "ETCUSDT"
+    },
+    {
+      "available_compressed_bytes": 3244116697,
+      "complete_for_window": true,
+      "coverage": 1.0,
+      "covered_months": 1,
+      "missing_months": [],
+      "month_reviews": [
+        {
+          "archive_key": "",
+          "archive_size_bytes": 3244116697,
+          "checksum_key": "",
+          "covered": true,
+          "daily_archive_count": 30,
+          "daily_checksum_count": 30,
+          "granularity": "daily-local-checksum-verified",
+          "month": "2023-06"
+        }
+      ],
+      "required_months": 1,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "available_compressed_bytes": 671132103,
+      "complete_for_window": true,
+      "coverage": 1.0,
+      "covered_months": 1,
+      "missing_months": [],
+      "month_reviews": [
+        {
+          "archive_key": "",
+          "archive_size_bytes": 671132103,
+          "checksum_key": "",
+          "covered": true,
+          "daily_archive_count": 30,
+          "daily_checksum_count": 30,
+          "granularity": "daily-local-checksum-verified",
+          "month": "2023-06"
+        }
+      ],
+      "required_months": 1,
+      "symbol": "LINKUSDT"
+    },
+    {
+      "available_compressed_bytes": 1117044910,
+      "complete_for_window": true,
+      "coverage": 1.0,
+      "covered_months": 1,
+      "missing_months": [],
+      "month_reviews": [
+        {
+          "archive_key": "",
+          "archive_size_bytes": 1117044910,
+          "checksum_key": "",
+          "covered": true,
+          "daily_archive_count": 30,
+          "daily_checksum_count": 30,
+          "granularity": "daily-local-checksum-verified",
+          "month": "2023-06"
+        }
+      ],
+      "required_months": 1,
+      "symbol": "LTCUSDT"
+    },
+    {
+      "available_compressed_bytes": 1021032415,
+      "complete_for_window": true,
+      "coverage": 1.0,
+      "covered_months": 1,
+      "missing_months": [],
+      "month_reviews": [
+        {
+          "archive_key": "",
+          "archive_size_bytes": 1021032415,
+          "checksum_key": "",
+          "covered": true,
+          "daily_archive_count": 30,
+          "daily_checksum_count": 30,
+          "granularity": "daily-local-checksum-verified",
+          "month": "2023-06"
+        }
+      ],
+      "required_months": 1,
+      "symbol": "OPUSDT"
+    },
+    {
+      "available_compressed_bytes": 1167136861,
+      "complete_for_window": true,
+      "coverage": 1.0,
+      "covered_months": 1,
+      "missing_months": [],
+      "month_reviews": [
+        {
+          "archive_key": "",
+          "archive_size_bytes": 1167136861,
+          "checksum_key": "",
+          "covered": true,
+          "daily_archive_count": 30,
+          "daily_checksum_count": 30,
+          "granularity": "daily-local-checksum-verified",
+          "month": "2023-06"
+        }
+      ],
+      "required_months": 1,
+      "symbol": "SOLUSDT"
+    },
+    {
+      "available_compressed_bytes": 297335289,
+      "complete_for_window": true,
+      "coverage": 1.0,
+      "covered_months": 1,
+      "missing_months": [],
+      "month_reviews": [
+        {
+          "archive_key": "",
+          "archive_size_bytes": 297335289,
+          "checksum_key": "",
+          "covered": true,
+          "daily_archive_count": 30,
+          "daily_checksum_count": 30,
+          "granularity": "daily-local-checksum-verified",
+          "month": "2023-06"
+        }
+      ],
+      "required_months": 1,
+      "symbol": "UNIUSDT"
+    },
+    {
+      "available_compressed_bytes": 1366340369,
+      "complete_for_window": true,
+      "coverage": 1.0,
+      "covered_months": 1,
+      "missing_months": [],
+      "month_reviews": [
+        {
+          "archive_key": "",
+          "archive_size_bytes": 1366340369,
+          "checksum_key": "",
+          "covered": true,
+          "daily_archive_count": 30,
+          "daily_checksum_count": 30,
+          "granularity": "daily-local-checksum-verified",
+          "month": "2023-06"
+        }
+      ],
+      "required_months": 1,
+      "symbol": "XRPUSDT"
+    }
+  ],
+  "symbols_required": [
+    "ADAUSDT",
+    "ARBUSDT",
+    "ATOMUSDT",
+    "AVAXUSDT",
+    "BTCUSDT",
+    "DOGEUSDT",
+    "DOTUSDT",
+    "ETCUSDT",
+    "ETHUSDT",
+    "LINKUSDT",
+    "LTCUSDT",
+    "OPUSDT",
+    "SOLUSDT",
+    "UNIUSDT",
+    "XRPUSDT"
+  ]
+}

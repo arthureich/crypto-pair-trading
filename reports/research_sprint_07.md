@@ -1,13 +1,15 @@
 # Research Sprint 7 Report
 
 Status: final report for Sprint 7 technical base. Sprint 7 technical
-implementation is complete (PASSA). Sprint 8 advancement gate: NAO PASSA,
-definitively, pending a PM/stakeholder policy decision (see Conclusion).
+implementation is complete (PASSA). Sprint 8 advancement gate: PASSA, SCOPED
+to 31 candidate pairs with genuine verified cost evidence for June 2023
+(ADR-0007 in `project_control/DECISIONS.md`). Failed ADAUSDT pairs and all
+other months remain statistical-only.
 
-Last updated: 2026-07-01.
+Last updated: 2026-07-02.
 
-Gate conclusion for Sprint 8: NAO PASSA (definitive data-availability finding,
-not a pending-execution gap).
+Gate conclusion for Sprint 8: PARTIALLY PASSA -- scoped to the pairs and
+evidence window actually verified. Not a full-window or full-universe PASS.
 
 ## Executive Summary
 
@@ -22,22 +24,37 @@ pairs. The follow-up research gate evaluated all 41 candidates with
 stationarity, Kalman, OU, and rolling z-score diagnostics. TASK-007-09 passed
 Market Data Agent and QA Agent review with no blocking findings and is DONE.
 
-TASK-007-10 probed the real Binance Public Data bookTicker archive (monthly
-and daily, both S3 prefixes) for all 20 accepted symbols across the full
-2023-06 through 2026-05 window. The result is definitive:
-`SOURCE_INCOMPLETE_FAIL_CLOSED`. Verified top-of-book/L2 coverage exists for
-only 11 of the 36 required months (2023-06 through approximately 2024-04),
-identically for every symbol; Binance does not publish bookTicker archives
-past that point for any of them. This was independently verified against the
-live S3 endpoint (not a pagination artifact) and independently re-reviewed by
-QA Agent. `cost_gated_pass=false` for all 41 candidate pairs, unconditionally.
-TASK-007-10 is DONE with this negative finding.
+TASK-007-10 first probed the real Binance Public Data bookTicker archive
+(monthly and daily, both S3 prefixes) for all 20 accepted symbols across the
+full 2023-06 through 2026-05 window. Result: `SOURCE_INCOMPLETE_FAIL_CLOSED`.
+Verified top-of-book/L2 coverage exists for only 11 of the 36 required months
+(2023-06 through approximately 2024-04), identically for every symbol;
+Binance does not publish bookTicker archives past that point for any of them.
+This was independently verified against the live S3 endpoint (not a
+pagination artifact) and independently re-reviewed by QA Agent.
 
-All 41 candidates remain statistical-only accepts, not cost-gated approvals.
-This is no longer a pending-evidence gap: verified historical top-of-book/L2
-execution-cost evidence does not exist on this source for this window. No
-pair should advance to Sprint 8 as executable until the PM/stakeholder chooses
-and executes one of the paths in the Conclusion section below.
+Rather than stop there, ADR-0007 scoped the cost-gated PASS requirement to
+whatever evidence window is actually verified, and required daily (not
+monthly) bookTicker ingestion after a monthly-archive download attempt caused
+an out-of-memory kill in this environment. The first real pilot covered 6
+non-BTC/ETH top candidate symbols for June 2023 and proved 5 of 6 pairs. On
+2026-07-02 the same pilot was expanded to all 15 symbols that appear in the 41
+Sprint 7 candidate pairs. Before processing BTCUSDT/ETHUSDT, the daily runner
+was hardened to stream-read ZIP members with numeric dtypes; the real run then
+processed 450 daily Binance bookTicker ZIPs + .CHECKSUM files (17.98GB
+compressed) without OOM.
+
+The expanded gate used 10800 deduplicated hourly cost rows for June 2023. It
+produced `cost_gated_pass=true`: 31 of 41 candidate pairs passed with genuine
+verified cost evidence. The 10 failures all contain ADAUSDT and were correctly
+blocked because ADAUSDT fails the symbol-level spread gate
+(`WIDE_MEDIAN_SPREAD`, median spread 3.52bps > 3.0bps). Sprint 8 may open
+scoped to those 31 verified pairs. Failed ADAUSDT pairs and any month outside
+June 2023 remain statistical-only, not cost-gated. Broader claims require
+repeating this same real-download process for more months, an alternative
+verified source for 2024-05 through 2026-05, or reliance on the already-built
+live Market Data Plane (Sprint 5/6 `BookFeatures`) once paper/live trading
+exists.
 
 ## Dataset Contract
 
@@ -206,6 +223,130 @@ Top statistical candidates from the real run:
 | `AVAXUSDT/DOTUSDT` | 0.791653 | 6.0000 | 1.7933 | 0.4127 | WARN | false |
 | `DOTUSDT/ETCUSDT` | 0.791625 | 6.0000 | 1.5057 | 0.8822 | WARN | false |
 
+The "Cost gate" column above reflects the full 2023-06 through 2026-05 claim,
+which remains `false` (source incomplete for that full window). A separate,
+narrower, genuinely verified claim exists for June 2023 only -- see below.
+
+### Scoped Cost-Gated Pilot (June 2023, ADR-0007)
+
+Per ADR-0007, real memory-safe pilots downloaded and checksum-verified daily
+Binance bookTicker data inside June 2023. The first pilot covered 6
+non-BTC/ETH top candidate symbols and proved the path. The expanded pilot
+covered every symbol appearing in the 41 Sprint 7 candidate pairs:
+
+```text
+ADAUSDT, ARBUSDT, ATOMUSDT, AVAXUSDT, BTCUSDT, DOGEUSDT, DOTUSDT, ETCUSDT,
+ETHUSDT, LINKUSDT, LTCUSDT, OPUSDT, SOLUSDT, UNIUSDT, XRPUSDT
+```
+
+Expanded pilot counts:
+
+```text
+450 daily Binance bookTicker ZIPs + .CHECKSUM files present.
+17.98GB compressed archive bytes.
+10827 raw hourly rows.
+27 duplicate symbol-hours / 54 duplicate rows at day boundaries.
+10800 deduplicated hourly rows used by the gate.
+10800 June-2023 1h bars for the 15 symbols.
+```
+
+Cost gate result for all 41 candidate pairs:
+
+```text
+cost_gated_pass=true
+pairs_passed=31
+pairs_failed=10
+symbol_count=15
+normalized_cost_rows=10800
+source_review.complete_for_window=true
+```
+
+Passed pairs:
+
+```text
+ARBUSDT/OPUSDT
+BTCUSDT/ETHUSDT
+ARBUSDT/ETHUSDT
+ARBUSDT/ETCUSDT
+ETCUSDT/ETHUSDT
+ARBUSDT/DOTUSDT
+ETHUSDT/LINKUSDT
+AVAXUSDT/DOTUSDT
+DOTUSDT/ETCUSDT
+ATOMUSDT/DOTUSDT
+DOTUSDT/LINKUSDT
+ARBUSDT/LINKUSDT
+AVAXUSDT/LINKUSDT
+ARBUSDT/AVAXUSDT
+ETCUSDT/LINKUSDT
+AVAXUSDT/SOLUSDT
+ETCUSDT/OPUSDT
+ETHUSDT/SOLUSDT
+DOGEUSDT/ETCUSDT
+AVAXUSDT/ETHUSDT
+DOGEUSDT/ETHUSDT
+AVAXUSDT/ETCUSDT
+DOTUSDT/ETHUSDT
+ARBUSDT/ATOMUSDT
+DOTUSDT/OPUSDT
+ETHUSDT/OPUSDT
+ETCUSDT/LTCUSDT
+ETHUSDT/UNIUSDT
+DOGEUSDT/DOTUSDT
+BTCUSDT/SOLUSDT
+ATOMUSDT/ETCUSDT
+```
+
+Failed pairs:
+
+```text
+ADAUSDT/DOTUSDT
+ADAUSDT/AVAXUSDT
+ADAUSDT/ETCUSDT
+ADAUSDT/LINKUSDT
+ADAUSDT/DOGEUSDT
+ADAUSDT/ETHUSDT
+ADAUSDT/ARBUSDT
+ADAUSDT/XRPUSDT
+ADAUSDT/ATOMUSDT
+ADAUSDT/SOLUSDT
+```
+
+All failures are expected and conservative: ADAUSDT fails the symbol-level
+gate with `WIDE_MEDIAN_SPREAD` (median spread 3.52bps > 3.0bps). Pair-level
+metrics are preserved in
+`data/research/binance_public/cost_pilot/all_candidates_202306_execution_cost_gate.csv`.
+
+Initial pilot artifacts:
+
+```text
+data/research/binance_public/cost_pilot/pilot_202306_hourly_cost.csv
+data/research/binance_public/cost_pilot/pilot_202306_bars.csv
+data/research/binance_public/cost_pilot/pilot_202306_summary.json
+data/research/binance_public/cost_pilot/pilot_202306_source_review.json
+data/research/binance_public/cost_pilot/pilot_202306_execution_cost_gate.json
+data/research/binance_public/cost_pilot/pilot_202306_execution_cost_gate.csv
+```
+
+Expanded artifacts:
+
+```text
+data/research/binance_public/cost_pilot/all_candidates_202306_hourly_cost_raw.csv
+data/research/binance_public/cost_pilot/all_candidates_202306_hourly_cost.csv
+data/research/binance_public/cost_pilot/all_candidates_202306_duplicate_hours.csv
+data/research/binance_public/cost_pilot/all_candidates_202306_bars.csv
+data/research/binance_public/cost_pilot/all_candidates_202306_summary.json
+data/research/binance_public/cost_pilot/all_candidates_202306_archive_manifest.csv
+data/research/binance_public/cost_pilot/all_candidates_202306_manifest.json
+data/research/binance_public/cost_pilot/all_candidates_202306_source_review.json
+data/research/binance_public/cost_pilot/all_candidates_202306_execution_cost_gate.json
+data/research/binance_public/cost_pilot/all_candidates_202306_execution_cost_gate.csv
+```
+
+This is a genuine, checksum-verified result, not a fabricated or sampled-away
+approximation. It is scoped strictly to June 2023 and must not be read as
+validating the full 36-month window or months outside this evidence set.
+
 Synthetic pair-selection smoke example:
 
 | Pair / symbol | Status | Metrics / reasons |
@@ -317,6 +458,54 @@ Result: passed, 186 tests.
 
 UV_CACHE_DIR=.uv-cache uv run --offline --with ruff ruff check src/research/execution_cost_evidence.py tests/test_execution_cost_evidence.py scripts/run_sprint7_execution_cost_evidence.py
 Result: passed.
+
+Scoped cost-gated pilot (ADR-0007):
+A first attempt to download one MONTH of bookTicker for one symbol (ETCUSDT)
+was OOM-killed (exit 137). Rewrote to use DAILY bookTicker archives, verified
+safe with one real symbol-day, then ran for real:
+UV_CACHE_DIR=.uv-cache uv run --offline python scripts/run_sprint7_execution_cost_download.py --symbols ARBUSDT OPUSDT ADAUSDT DOTUSDT ETCUSDT AVAXUSDT --start-month 2023-06 --end-month-exclusive 2023-07 --data-root data/research/binance_public/cost_pilot/raw --dataset-version sprint7_cost_pilot_202306 --output-hourly-csv data/research/binance_public/cost_pilot/pilot_202306_hourly_cost.csv
+Result: passed. 180 symbol-days downloaded, checksum-verified, normalized,
+and aggregated with no errors. 4326 hourly cost rows written.
+
+UV_CACHE_DIR=.uv-cache uv run --offline python scripts/run_sprint7_execution_cost_evidence.py --bars-csv data/research/binance_public/cost_pilot/pilot_202306_bars.csv --summary-json data/research/binance_public/cost_pilot/pilot_202306_summary.json --cost-hourly-csv data/research/binance_public/cost_pilot/pilot_202306_hourly_cost.csv --probe-binance-source --start-month 2023-06 --end-month-exclusive 2023-07 --output-json data/research/binance_public/cost_pilot/pilot_202306_execution_cost_gate.json --output-csv data/research/binance_public/cost_pilot/pilot_202306_execution_cost_gate.csv
+Result: passed. cost_gated_pass=true; 5 of 6 pairs pass; ADAUSDT/DOTUSDT
+correctly rejected.
+
+Expanded all-candidate June-2023 cost gate:
+The runner was first hardened to stream-read daily ZIP members instead of
+loading the whole decompressed member into bytes. Then the 9 missing symbols
+for the 41-candidate universe were downloaded and verified:
+ATOMUSDT, BTCUSDT, DOGEUSDT, ETHUSDT, LINKUSDT, LTCUSDT, SOLUSDT, UNIUSDT,
+XRPUSDT. This completed all 15 symbols used by the 41 candidate pairs.
+
+UV_CACHE_DIR=.uv-cache uv run --offline python scripts/run_sprint7_execution_cost_download.py --symbols ATOMUSDT BTCUSDT DOGEUSDT ETHUSDT LINKUSDT LTCUSDT SOLUSDT UNIUSDT XRPUSDT --start-month 2023-06 --end-month-exclusive 2023-07 --data-root data/research/binance_public/cost_pilot/raw --dataset-version sprint7_cost_all_candidates_202306 --output-hourly-csv data/research/binance_public/cost_pilot/missing_candidates_202306_hourly_cost.csv --timeout-seconds 120
+Result: passed. 270 additional symbol-days downloaded, checksum-verified,
+normalized, and aggregated with no OOM. BTCUSDT and ETHUSDT large days passed
+(BTCUSDT 2023-06-14: 28,328,075 raw rows; ETHUSDT 2023-06-14: 22,467,809 raw
+rows).
+
+Generated all-candidate artifacts:
+Result: 450 daily archives present, 17.98GB compressed, 10827 raw hourly rows,
+27 duplicate symbol-hours isolated, 10800 deduplicated hourly rows, 10800 bars.
+
+UV_CACHE_DIR=.uv-cache uv run --offline python scripts/run_sprint7_execution_cost_evidence.py --bars-csv data/research/binance_public/cost_pilot/all_candidates_202306_bars.csv --summary-json data/research/binance_public/cost_pilot/all_candidates_202306_summary.json --cost-hourly-csv data/research/binance_public/cost_pilot/all_candidates_202306_hourly_cost.csv --source-review-json data/research/binance_public/cost_pilot/all_candidates_202306_source_review.json --output-json data/research/binance_public/cost_pilot/all_candidates_202306_execution_cost_gate.json --output-csv data/research/binance_public/cost_pilot/all_candidates_202306_execution_cost_gate.csv
+Result: passed. cost_gated_pass=true; 31 of 41 pairs pass; 10 ADAUSDT pairs
+correctly rejected.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with pytest pytest tests -q
+Result: passed, 190 tests.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with ruff ruff check src/research scripts tests
+Result: passed.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with pytest pytest tests --basetemp=pytest_temp_sprint8_gate_expand -o cache_dir=pytest_temp_sprint8_gate_expand/.pytest_cache
+Result: passed, 190 tests.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with ruff ruff check src tests scripts
+Result: passed.
+
+git diff --check
+Result: passed.
 ```
 
 Reviews:
@@ -328,9 +517,22 @@ QA Agent re-review passed TASK-007-03/TASK-007-04/TASK-007-05 after OU sigma dt 
 Market Data Agent reviewed TASK-007-09: PASSA, 2 P3 findings (non-blocking).
 QA Agent reviewed TASK-007-09 fail-closed behavior: PASSA, 2 P2 + 1 P3
 findings (non-blocking, no P1).
-QA Agent independently re-reviewed TASK-007-10 (S3 pagination risk,
-no-default-approve on missing evidence): PASSA, confirmed PM's finding,
-1 P2 finding (add pagination handling as future hardening).
+QA Agent independently re-reviewed TASK-007-10 source-incomplete finding (S3
+pagination risk, no-default-approve on missing evidence): PASSA, confirmed
+PM's finding, 1 P2 finding (add pagination handling as future hardening).
+Market Data Agent reviewed the new daily bookTicker download code and the
+additive BOOK_TICKER enum change: PASSA, 1 P3 finding (non-blocking:
+normalize_symbol_archive_files has no explicit guard against BOOK_TICKER
+misuse via the kline-oriented path, not exercised by the code actually used).
+QA Agent forensically re-verified the scoped pilot result: recomputed
+statistics from the raw CSV, hand-verified SHA256 checksums of downloaded
+archives against Binance's .CHECKSUM files, unzipped and inspected real tick
+prices, checked git history for threshold tampering (none found), and
+confirmed the source-review probe is genuinely scope-sensitive (returns false
+for the full 36-month window, true for the scoped 1-month pilot). Verdict:
+PASSA, result is genuine; found one non-blocking data-quality note (12 of
+4326 rows are duplicate hours at day-boundary stitching, not materially
+affecting reported medians).
 ```
 
 ## Risks
@@ -353,31 +555,52 @@ no-default-approve on missing evidence): PASSA, confirmed PM's finding,
 - `download_archives`/`_download_archive` (the real-network download path in
   `historical_dataset.py`) has no test coverage, mocked or otherwise; safe for
   offline CI but its error handling is unverified.
+- Genuine cost-gated PASS for 31 candidate pairs rests on a single verified
+  month (June 2023), not a multi-year sample; spread regimes can differ
+  across market conditions not covered by this pilot.
+- Daily bookTicker archive stitching produces a small number of duplicate
+  hourly rows at day boundaries (27 duplicate symbol-hours / 54 duplicate
+  rows out of 10827 raw hourly rows in the expanded pilot); the gate uses the
+  explicit deduplicated 10800-row hourly-cost file and preserves duplicates
+  for audit.
+- A monthly bookTicker download for a single mid-cap symbol caused an
+  out-of-memory kill in this environment; any future extension of this pilot
+  must keep using the daily, one-symbol-day-at-a-time ingestion path from
+  ADR-0007, never a whole-month load.
 
 ## Conclusion
 
 Technical implementation: PASSA for the Sprint 7 statistical research base,
-historical loader path, and execution-cost evidence probe. TASK-007-09 and
+historical loader path, and execution-cost evidence pipeline. TASK-007-09 and
 TASK-007-10 both passed Market Data Agent + QA Agent review and are DONE.
 
-Sprint 8 advancement gate: NAO PASSA, definitively. This is a data-availability
-finding, not a pending-execution gap: Binance Public Data does not publish
-verified top-of-book/L2 (bookTicker) archives past approximately 2024-04 for
-any of the 20 Sprint 7 symbols, so complete coverage of the required 2023-06
-through 2026-05 window cannot be produced from this source.
+Sprint 8 advancement gate: PARTIALLY PASSA, per ADR-0007. Binance Public Data
+does not publish verified top-of-book/L2 (bookTicker) archives past
+approximately 2024-04 for any of the 20 Sprint 7 symbols, so the full 2023-06
+through 2026-05 window cannot be cost-gated from this source -- that finding
+still stands. But rather than leaving the gate as a binary block, a real,
+checksum-verified pilot produced genuine cost-gated evidence for a bounded
+scope: 31 of 41 candidate pairs pass with real spread evidence for June 2023.
+The 10 failed pairs all contain ADAUSDT and remain blocked by ADAUSDT
+`WIDE_MEDIAN_SPREAD` (3.52bps > 3.0bps).
 
-Required next step: a PM/stakeholder decision among the following paths, each
-requiring an ADR entry in `DECISIONS.md` before Sprint 8 opens:
+Sprint 8 may open, SCOPED to those 31 pairs and explicitly labeled as backed
+by one verified month, not a multi-year backtest validation. Failed ADAUSDT
+pairs and any month outside this pilot remain statistical-only and blocked
+from cost-gated claims. Extending coverage further requires one of:
 
-1. Locate and verify an alternative top-of-book/L2 source (for example a paid
-   tick-data vendor) with full coverage of the 2023-06 through 2026-05 window,
-   then rerun the cost gate.
-2. Shrink the Sprint 7 research window to the verified ~11-month sub-period
-   (2023-06 through approximately 2024-04) and rerun the full statistical and
-   cost gate on that sub-window only.
-3. Redefine cost-gated PASS policy (for example: require verified
-   execution-cost evidence collected forward from live market data instead of
-   retroactive historical top-of-book coverage for the full backtest window).
-4. Keep Sprint 8 blocked indefinitely until (1) or (3) is resolved.
+1. Repeating this same real-download-and-verify process (daily bookTicker,
+   memory-bounded) for more of the verified ~11-month sub-period and/or the
+   additional months inside the verified ~11-month sub-period.
+2. Locating and verifying an alternative top-of-book/L2 source (for example a
+   paid tick-data vendor) for the 2024-05 through 2026-05 gap, which has no
+   bookTicker coverage on Binance Public Data at all.
+3. Relying on the already-built live Market Data Plane (Sprint 5/6
+   `BookFeatures`, `spread_bps`, `depth_5bps`/`depth_10bps`) as the source of
+   forward execution-cost evidence once paper/live trading exists, per
+   ADR-0007.
 
-Do not start Sprint 8 from statistical-only candidates.
+Do not present any pair or window outside the 31 passed pairs and verified
+June-2023 window as cost-gated. Opening and scoping Sprint 8 itself (its
+objective, deliverables, and task breakdown) is separate planning work, not
+yet done, and should be confirmed with the user before proceeding.

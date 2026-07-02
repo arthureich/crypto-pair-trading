@@ -1,0 +1,383 @@
+{
+  "bars_csv": "data/research/binance_public/cost_pilot/pilot_202306_bars.csv",
+  "cost_gate_reason": "at least one candidate pair has complete execution-cost evidence within thresholds",
+  "cost_gated_pass": true,
+  "cost_hourly_csv": "data/research/binance_public/cost_pilot/pilot_202306_hourly_cost.csv",
+  "dataset_version": "sprint7_cost_pilot_202306",
+  "gate_note": "Cost-gated Sprint 7 PASS requires complete verified historical top-of-book/bookTicker evidence. Missing or incomplete evidence fails closed.",
+  "generated_at_utc": "2026-07-02T12:00:40.524160+00:00",
+  "hourly_cost_schema": [
+    "venue",
+    "market_type",
+    "contract_type",
+    "symbol",
+    "interval",
+    "open_time",
+    "close_time",
+    "cost_available_time",
+    "spread_sample_count_1h",
+    "median_spread_bps_1h",
+    "p95_spread_bps_1h",
+    "p99_spread_bps_1h",
+    "min_spread_bps_1h",
+    "max_spread_bps_1h",
+    "first_event_time",
+    "last_event_time",
+    "max_sample_gap_ms",
+    "stale_gap_count_1h",
+    "source_path",
+    "source_checksum",
+    "dataset_version",
+    "execution_cost_quality",
+    "normalized_at"
+  ],
+  "join_policy": "hourly cost joins as-of with cost_available_time <= bar open_time",
+  "normalized_cost_rows": 4326,
+  "pair_cost_results": [
+    {
+      "combined_median_spread_bps": 1.650881189729628,
+      "combined_p95_spread_bps": 4.768241965667548,
+      "combined_p99_spread_bps": 15.525922405184804,
+      "cost_gated_pass": true,
+      "pair": "ARBUSDT/OPUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 5.531191175032886,
+      "combined_p95_spread_bps": 6.176801748070391,
+      "combined_p99_spread_bps": 12.713424900320689,
+      "cost_gated_pass": false,
+      "pair": "ADAUSDT/DOTUSDT",
+      "reasons": [
+        "LEG_COST_EVIDENCE_INCOMPLETE"
+      ]
+    },
+    {
+      "combined_median_spread_bps": 1.4825268529789053,
+      "combined_p95_spread_bps": 4.297173688899218,
+      "combined_p99_spread_bps": 14.949652224343065,
+      "cost_gated_pass": true,
+      "pair": "ARBUSDT/ETCUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 2.902261673569754,
+      "combined_p95_spread_bps": 4.267611624185187,
+      "combined_p99_spread_bps": 10.916323920027192,
+      "cost_gated_pass": true,
+      "pair": "ARBUSDT/DOTUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 2.7849688370350223,
+      "combined_p95_spread_bps": 4.070575819956665,
+      "combined_p99_spread_bps": 11.72017040232028,
+      "cost_gated_pass": true,
+      "pair": "AVAXUSDT/DOTUSDT",
+      "reasons": []
+    },
+    {
+      "combined_median_spread_bps": 2.5991539566635833,
+      "combined_p95_spread_bps": 4.611043737519018,
+      "combined_p99_spread_bps": 13.422186494353465,
+      "cost_gated_pass": true,
+      "pair": "DOTUSDT/ETCUSDT",
+      "reasons": []
+    }
+  ],
+  "pairs_failed": 1,
+  "pairs_passed": 5,
+  "source_review": {
+    "base_url": "https://data.binance.vision",
+    "complete_for_window": true,
+    "decision": "SOURCE_COMPLETE",
+    "fields": [
+      "update_id",
+      "best_bid_price",
+      "best_bid_qty",
+      "best_ask_price",
+      "best_ask_qty",
+      "transaction_time",
+      "event_time"
+    ],
+    "generated_at_utc": "2026-07-02T12:00:40.472603+00:00",
+    "granularity_evaluated": [
+      "monthly/bookTicker",
+      "daily/bookTicker"
+    ],
+    "limits": {
+      "max_longest_gap_hours": 6.0,
+      "max_median_spread_bps": 3.0,
+      "max_p95_spread_bps": 8.0,
+      "max_p99_spread_bps": 15.0,
+      "max_pair_median_spread_bps": 6.0,
+      "max_pair_p95_spread_bps": 10.0,
+      "max_stale_hours": 0,
+      "min_hourly_coverage": 0.99,
+      "stale_gap_threshold_ms": 60000
+    },
+    "period": {
+      "end_month_exclusive": "2023-07",
+      "months_required": 1,
+      "start_month": "2023-06"
+    },
+    "s3_list_endpoint": "https://s3-ap-northeast-1.amazonaws.com/data.binance.vision",
+    "source": "Binance Public Data bookTicker",
+    "source_exists": true,
+    "symbol_reviews": [
+      {
+        "available_compressed_bytes": 832710508,
+        "complete_for_window": true,
+        "coverage": 1.0,
+        "covered_months": 1,
+        "missing_months": [],
+        "month_reviews": [
+          {
+            "archive_etag": "2b3e5c93d4b9830a565a880c11f757af-100",
+            "archive_key": "data/futures/um/monthly/bookTicker/ADAUSDT/ADAUSDT-bookTicker-2023-06.zip",
+            "archive_last_modified": "2023-07-17T12:42:37.000Z",
+            "archive_size_bytes": 832710508,
+            "checksum_key": "data/futures/um/monthly/bookTicker/ADAUSDT/ADAUSDT-bookTicker-2023-06.zip.CHECKSUM",
+            "covered": true,
+            "granularity": "monthly",
+            "month": "2023-06"
+          }
+        ],
+        "required_months": 1,
+        "symbol": "ADAUSDT"
+      },
+      {
+        "available_compressed_bytes": 978211760,
+        "complete_for_window": true,
+        "coverage": 1.0,
+        "covered_months": 1,
+        "missing_months": [],
+        "month_reviews": [
+          {
+            "archive_etag": "02d720e391083cca35c1521ffabf54dc-117",
+            "archive_key": "data/futures/um/monthly/bookTicker/ARBUSDT/ARBUSDT-bookTicker-2023-06.zip",
+            "archive_last_modified": "2023-07-17T12:42:55.000Z",
+            "archive_size_bytes": 978211760,
+            "checksum_key": "data/futures/um/monthly/bookTicker/ARBUSDT/ARBUSDT-bookTicker-2023-06.zip.CHECKSUM",
+            "covered": true,
+            "granularity": "monthly",
+            "month": "2023-06"
+          }
+        ],
+        "required_months": 1,
+        "symbol": "ARBUSDT"
+      },
+      {
+        "available_compressed_bytes": 450488686,
+        "complete_for_window": true,
+        "coverage": 1.0,
+        "covered_months": 1,
+        "missing_months": [],
+        "month_reviews": [
+          {
+            "archive_etag": "eee02b46e1f9841625bc6464d488c6b2-54",
+            "archive_key": "data/futures/um/monthly/bookTicker/AVAXUSDT/AVAXUSDT-bookTicker-2023-06.zip",
+            "archive_last_modified": "2023-07-17T12:43:06.000Z",
+            "archive_size_bytes": 450488686,
+            "checksum_key": "data/futures/um/monthly/bookTicker/AVAXUSDT/AVAXUSDT-bookTicker-2023-06.zip.CHECKSUM",
+            "covered": true,
+            "granularity": "monthly",
+            "month": "2023-06"
+          }
+        ],
+        "required_months": 1,
+        "symbol": "AVAXUSDT"
+      },
+      {
+        "available_compressed_bytes": 571376443,
+        "complete_for_window": true,
+        "coverage": 1.0,
+        "covered_months": 1,
+        "missing_months": [],
+        "month_reviews": [
+          {
+            "archive_etag": "bc6c16a8d3e2a07247f9c3a7fb86e5cb-69",
+            "archive_key": "data/futures/um/monthly/bookTicker/DOTUSDT/DOTUSDT-bookTicker-2023-06.zip",
+            "archive_last_modified": "2023-07-17T12:44:02.000Z",
+            "archive_size_bytes": 571376443,
+            "checksum_key": "data/futures/um/monthly/bookTicker/DOTUSDT/DOTUSDT-bookTicker-2023-06.zip.CHECKSUM",
+            "covered": true,
+            "granularity": "monthly",
+            "month": "2023-06"
+          }
+        ],
+        "required_months": 1,
+        "symbol": "DOTUSDT"
+      },
+      {
+        "available_compressed_bytes": 600107798,
+        "complete_for_window": true,
+        "coverage": 1.0,
+        "covered_months": 1,
+        "missing_months": [],
+        "month_reviews": [
+          {
+            "archive_etag": "2d14457f3f7b3324bb8a96c028ad2b23-72",
+            "archive_key": "data/futures/um/monthly/bookTicker/ETCUSDT/ETCUSDT-bookTicker-2023-06.zip",
+            "archive_last_modified": "2023-07-17T12:44:17.000Z",
+            "archive_size_bytes": 600107798,
+            "checksum_key": "data/futures/um/monthly/bookTicker/ETCUSDT/ETCUSDT-bookTicker-2023-06.zip.CHECKSUM",
+            "covered": true,
+            "granularity": "monthly",
+            "month": "2023-06"
+          }
+        ],
+        "required_months": 1,
+        "symbol": "ETCUSDT"
+      },
+      {
+        "available_compressed_bytes": 1027096794,
+        "complete_for_window": true,
+        "coverage": 1.0,
+        "covered_months": 1,
+        "missing_months": [],
+        "month_reviews": [
+          {
+            "archive_etag": "880c013d56cd0e05ab60cc0896a3072b-123",
+            "archive_key": "data/futures/um/monthly/bookTicker/OPUSDT/OPUSDT-bookTicker-2023-06.zip",
+            "archive_last_modified": "2023-07-17T12:46:00.000Z",
+            "archive_size_bytes": 1027096794,
+            "checksum_key": "data/futures/um/monthly/bookTicker/OPUSDT/OPUSDT-bookTicker-2023-06.zip.CHECKSUM",
+            "covered": true,
+            "granularity": "monthly",
+            "month": "2023-06"
+          }
+        ],
+        "required_months": 1,
+        "symbol": "OPUSDT"
+      }
+    ],
+    "symbols_required": [
+      "ADAUSDT",
+      "ARBUSDT",
+      "AVAXUSDT",
+      "DOTUSDT",
+      "ETCUSDT",
+      "OPUSDT"
+    ]
+  },
+  "summary_json": "data/research/binance_public/cost_pilot/pilot_202306_summary.json",
+  "symbol_cost_stats": [
+    {
+      "cost_coverage": 0.9986111111111111,
+      "cost_gated_symbol_pass": false,
+      "execution_cost_quality": "INCOMPLETE",
+      "expected_bars": 720,
+      "longest_missing_cost_gap_hours": 1.0,
+      "max_sample_gap_ms": 7975.0,
+      "median_sample_count_1h": 74371.0,
+      "median_spread_bps": 3.5217467864056697,
+      "min_sample_count_1h": 23532.0,
+      "p95_spread_bps": 3.8860609116678977,
+      "p99_spread_bps": 8.018995805301893,
+      "reasons": [
+        "WIDE_MEDIAN_SPREAD"
+      ],
+      "stale_hours": 0,
+      "symbol": "ADAUSDT",
+      "valid_bars": 720
+    },
+    {
+      "cost_coverage": 0.9986111111111111,
+      "cost_gated_symbol_pass": true,
+      "execution_cost_quality": "VERIFIED",
+      "expected_bars": 720,
+      "longest_missing_cost_gap_hours": 1.0,
+      "max_sample_gap_ms": 8221.0,
+      "median_sample_count_1h": 88975.0,
+      "median_spread_bps": 0.8928172849425381,
+      "min_sample_count_1h": 27577.0,
+      "p95_spread_bps": 1.9768707877826934,
+      "p99_spread_bps": 6.221894825008397,
+      "reasons": [],
+      "stale_hours": 0,
+      "symbol": "ARBUSDT",
+      "valid_bars": 720
+    },
+    {
+      "cost_coverage": 0.9986111111111111,
+      "cost_gated_symbol_pass": true,
+      "execution_cost_quality": "VERIFIED",
+      "expected_bars": 720,
+      "longest_missing_cost_gap_hours": 1.0,
+      "max_sample_gap_ms": 19023.0,
+      "median_sample_count_1h": 39874.0,
+      "median_spread_bps": 0.7755244484078062,
+      "min_sample_count_1h": 12870.0,
+      "p95_spread_bps": 1.7798349835541718,
+      "p99_spread_bps": 7.025741307301484,
+      "reasons": [],
+      "stale_hours": 0,
+      "symbol": "AVAXUSDT",
+      "valid_bars": 720
+    },
+    {
+      "cost_coverage": 0.9986111111111111,
+      "cost_gated_symbol_pass": true,
+      "execution_cost_quality": "VERIFIED",
+      "expected_bars": 720,
+      "longest_missing_cost_gap_hours": 1.0,
+      "max_sample_gap_ms": 8580.0,
+      "median_sample_count_1h": 50414.0,
+      "median_spread_bps": 2.009444388627216,
+      "min_sample_count_1h": 22267.0,
+      "p95_spread_bps": 2.2907408364024935,
+      "p99_spread_bps": 4.694429095018796,
+      "reasons": [],
+      "stale_hours": 0,
+      "symbol": "DOTUSDT",
+      "valid_bars": 720
+    },
+    {
+      "cost_coverage": 0.9986111111111111,
+      "cost_gated_symbol_pass": true,
+      "execution_cost_quality": "VERIFIED",
+      "expected_bars": 720,
+      "longest_missing_cost_gap_hours": 1.0,
+      "max_sample_gap_ms": 17440.0,
+      "median_sample_count_1h": 45310.0,
+      "median_spread_bps": 0.5897095680363671,
+      "min_sample_count_1h": 14420.0,
+      "p95_spread_bps": 2.3203029011165244,
+      "p99_spread_bps": 8.727757399334669,
+      "reasons": [],
+      "stale_hours": 0,
+      "symbol": "ETCUSDT",
+      "valid_bars": 720
+    },
+    {
+      "cost_coverage": 0.9986111111111111,
+      "cost_gated_symbol_pass": true,
+      "execution_cost_quality": "VERIFIED",
+      "expected_bars": 720,
+      "longest_missing_cost_gap_hours": 1.0,
+      "max_sample_gap_ms": 8513.0,
+      "median_sample_count_1h": 89427.0,
+      "median_spread_bps": 0.7580639047870901,
+      "min_sample_count_1h": 35159.0,
+      "p95_spread_bps": 2.791371177884855,
+      "p99_spread_bps": 9.304027580176408,
+      "reasons": [],
+      "stale_hours": 0,
+      "symbol": "OPUSDT",
+      "valid_bars": 720
+    }
+  ],
+  "symbol_count": 6,
+  "thresholds": {
+    "max_longest_gap_hours": 6.0,
+    "max_median_spread_bps": 3.0,
+    "max_p95_spread_bps": 8.0,
+    "max_p99_spread_bps": 15.0,
+    "max_pair_median_spread_bps": 6.0,
+    "max_pair_p95_spread_bps": 10.0,
+    "max_stale_hours": 0,
+    "min_hourly_coverage": 0.99,
+    "stale_gap_threshold_ms": 60000
+  }
+}

@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+import zipfile
 from datetime import date, timedelta
 from pathlib import Path
 from urllib.request import urlopen
@@ -34,6 +35,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.research.execution_cost_evidence import (  # noqa: E402
+    BOOK_TICKER_COLUMNS,
     HOURLY_COST_COLUMNS,
     aggregate_book_ticker_hourly,
     normalize_book_ticker_frame,
@@ -41,7 +43,6 @@ from src.research.execution_cost_evidence import (  # noqa: E402
 from src.research.historical_dataset import (  # noqa: E402
     BINANCE_PUBLIC_DATA_BASE_URL,
     HistoricalDatasetError,
-    read_zip_csv,
     sha256_file,
     verify_checksum_file,
 )
@@ -109,7 +110,7 @@ def _process_one_symbol_day(
     )
     verify_checksum_file(archive_path, checksum_path)
 
-    raw = read_zip_csv(archive_path)
+    raw = _read_book_ticker_zip_csv(archive_path)
     normalized = normalize_book_ticker_frame(
         raw,
         symbol,
@@ -128,6 +129,24 @@ def _process_one_symbol_day(
     )
     del raw, normalized
     return hourly
+
+
+def _read_book_ticker_zip_csv(path: Path) -> pd.DataFrame:
+    """Read one Binance bookTicker CSV directly from its ZIP member."""
+
+    with zipfile.ZipFile(path) as archive:
+        csv_names = [name for name in archive.namelist() if name.lower().endswith(".csv")]
+        if len(csv_names) != 1:
+            raise HistoricalDatasetError(f"{path} must contain exactly one CSV; got {csv_names}")
+        with archive.open(csv_names[0]) as handle:
+            return pd.read_csv(
+                handle,
+                header=None,
+                names=BOOK_TICKER_COLUMNS,
+                usecols=range(len(BOOK_TICKER_COLUMNS)),
+                dtype=dict.fromkeys(BOOK_TICKER_COLUMNS, "float64"),
+                na_values=BOOK_TICKER_COLUMNS,
+            )
 
 
 def _download_url(url: str, path: Path, overwrite: bool, timeout_seconds: float) -> None:

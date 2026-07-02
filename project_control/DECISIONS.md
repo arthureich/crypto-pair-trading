@@ -278,3 +278,95 @@ evidence window explicitly whenever `cost_gated_pass` is reported.
 memory-bounded ingestion path. Any future cost-gated claim must record the
 evidence window (symbols, dates, granularity) alongside `cost_gated_pass` and
 must not silently imply full-window coverage.
+
+## Addendum 2026-07-02
+
+The June-2023 evidence scope was expanded from the initial 6-symbol pilot to
+all 15 symbols that appear in the 41 Sprint 7 statistical candidate pairs.
+The runner was hardened to stream-read daily ZIP members before processing
+BTCUSDT/ETHUSDT. The expanded run verified 450 daily Binance bookTicker ZIPs
+and .CHECKSUM files (17.98GB compressed), produced 10800 deduplicated hourly
+cost rows, and ran the cost gate for all 41 candidate pairs.
+
+Result: 31 pairs are cost-gated PASS for June 2023 only; 10 pairs fail, all
+containing ADAUSDT, because ADAUSDT fails the symbol-level spread gate
+(`WIDE_MEDIAN_SPREAD`, median spread 3.52bps > 3.0bps). This addendum does
+not change the ADR rule: the PASS remains scoped to the exact June-2023
+evidence window and does not imply full-window validation.
+
+## ADR-0008 - Adopt External Master Roadmap; Reconcile Sprint Numbering
+
+## Status
+
+Accepted
+
+## Context
+
+The user provided the full 28-sprint master roadmap for this project on
+2026-07-02 (now stored verbatim in `project_control/ROADMAP.md`). This
+roadmap predates and supersedes the ad hoc sprint definitions this project
+had been improvising sprint-by-sprint. Comparing it against what was actually
+built exposes a numbering and scope mismatch:
+
+- Roadmap Sprint 7 ("Research base: pair selection, Kalman e OU") matches
+  what this project built and closed as Sprint 7. No discrepancy there.
+- Roadmap Sprint 8 ("Triple Barrier direcional e backtest estatistico") calls
+  for a directional triple-barrier exit (separate profit/stop conditions for
+  long vs short spread), a candle-based statistical backtest with
+  conservative fixed fee/funding/slippage assumptions, and Sharpe/Sortino/
+  profit-factor metrics gated at profit factor > 1.10.
+- What this project actually built and closed as "Sprint 8" ("Backtest
+  walk-forward cost-aware") is a different, hybrid design: a fixed 1-hour
+  holding period (not a triple barrier), real verified June-2023 top-of-book
+  cost evidence (more rigorous than the roadmap's conservative-estimate
+  assumption), a causal walk-forward split, and per-pair net-PnL/hit-rate/
+  drawdown metrics (no Sharpe/Sortino/profit-factor). It does not implement
+  triple-barrier direction-aware exits at all.
+
+## Decision
+
+1. `project_control/ROADMAP.md` is now the authoritative source of truth for
+   sprint sequencing, objectives, and gates. Every future `CURRENT_SPRINT.md`
+   must trace back to it.
+2. The already-completed "Sprint 8" (walk-forward cost-aware backtest, gate
+   PASSA scoped to 13 pairs) is accepted as valid, real technical work and is
+   NOT redone or reverted. It is recorded as a documented deviation from the
+   roadmap's canonical Sprint 8, not a silent substitution: the roadmap's
+   Sprint 8 requirements (directional triple barrier, Sharpe/Sortino/profit
+   factor) remain **outstanding technical debt**, tracked in
+   `project_control/RISKS.md`, to be picked up explicitly later rather than
+   skipped permanently.
+3. Per explicit user instruction, the project proceeds directly to the
+   roadmap's Sprint 9 ("Backtest executavel com simulacao de ordens"), using
+   the 13 backtest-approved pairs and the already-downloaded, checksum-verified
+   raw June-2023 tick-level bookTicker archives
+   (`data/research/binance_public/cost_pilot/raw/`) as its input. Sprint 9's
+   fill/execution realism work does not depend on the roadmap's Sprint 8
+   triple-barrier gap being closed first, since it targets a different axis
+   (execution realism vs. exit-strategy sophistication) and reuses the same
+   signals already generated and reviewed in the completed Sprint 8.
+4. From Sprint 9 onward, sprint numbers in `CURRENT_SPRINT.md`/
+   `TASK_BOARD.md`/`tasks/` follow `ROADMAP.md` numbering exactly. No further
+   ad hoc sprint content is invented without checking `ROADMAP.md` first.
+
+## Consequences
+
+The roadmap's canonical Sprint 8 scope (triple barrier, profit factor gate)
+is not lost -- it is explicitly logged as deferred technical debt rather than
+silently dropped. Sprint 9 can start immediately since it does not strictly
+require the triple-barrier exit to exist first (it can be layered on top of
+Sprint 9's execution simulator later). Future PM sessions must read
+`ROADMAP.md` before opening any new sprint.
+
+## Agent Impact
+
+- PM Agent
+- Backtest Agent
+- Documentation Agent
+
+## Migration
+
+Add "Sprint 8 canonical gap: directional triple barrier + Sharpe/Sortino/
+profit-factor metrics" to `project_control/RISKS.md` as open technical debt.
+Any future sprint that revisits exit-strategy sophistication should close
+this gap explicitly and reference this ADR.

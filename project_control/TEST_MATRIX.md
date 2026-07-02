@@ -83,7 +83,30 @@ documentation review
 | TASK-007-09 Market Data Agent review | documentation review | 7 | market_data | passed (2 P3, non-blocking) | sim |
 | TASK-007-09 QA Agent fail-closed review | documentation review | 7 | research | passed (2 P2 + 1 P3, non-blocking) | sim |
 | TASK-007-10 QA Agent independent re-review (S3 pagination, no-default-approve) | documentation review | 7 | research/market_data | passed (1 P2, non-blocking) | sim |
-| Backtest sem look-ahead bias | backtest | 8 | backtest | pending | sim |
+| Historical dataset bookTicker daily archive path (BinanceDataFamily.BOOK_TICKER) | unit | 7 | research | passed | sim |
+| Execution-cost daily download fails closed on checksum mismatch | unit | 7 | research | passed | sim |
+| Execution-cost daily download never calls real network in tests (mocked urlopen) | unit | 7 | research | passed | sim |
+| Execution-cost daily download day-range is half-open and ordered | unit | 7 | research | passed | sim |
+| Real memory-safe pilot: 6 symbols x June 2023 daily bookTicker, real network | integration | 7 | research/market_data | passed (4326 hourly rows, checksum-verified) | sim |
+| Real cost gate on pilot: 5/6 candidate pairs cost_gated_pass, 1 correctly rejected | integration | 7 | research/market_data | passed | sim |
+| TASK-007-10 pilot code review (Market Data Agent: memory safety, checksum, paths) | documentation review | 7 | market_data | passed (1 P3, non-blocking) | sim |
+| TASK-007-10 pilot result genuineness review (QA Agent: statistical plausibility) | documentation review | 7 | research | passed | sim |
+| Expanded real memory-safe pilot: all 15 symbols used by 41 Sprint 7 candidate pairs, June 2023 daily bookTicker | integration | 7 | research/market_data | passed (450 archives, 17.98GB, checksum-verified, no OOM) | sim |
+| Expanded duplicate-hour audit and deduplication | data quality | 7 | market_data | passed (10827 raw hourly rows, 27 duplicate symbol-hours, 10800 deduped rows used by gate) | sim |
+| Expanded real cost gate on all 41 candidate pairs | integration | 7 | research/market_data | passed (31/41 cost_gated_pass, 10 ADAUSDT pairs correctly rejected) | sim |
+| Sprint 8 universe contract: 31 approved pairs / ADAUSDT fail-closed | unit | 8 | research/backtest | passed (5 tests) | sim |
+| Sprint 8 walk-forward split no-look-ahead | unit/integration | 8 | backtest | passed (3 tests) | sim |
+| Sprint 8 offline SignalIntent schema and plane-boundary test | unit | 8 | research/architecture | passed (does not import live/ledger/execution/recovery) | sim |
+| Sprint 8 cost-aware backtest PnL net of cost | unit/integration | 8 | backtest | passed | sim |
+| Sprint 8 fail-closed for missing cost/out-of-universe pair | unit | 8 | backtest/qa | passed | sim |
+| Sprint 8 metrics and deterministic ranking | unit/integration | 8 | backtest | passed | sim |
+| Sprint 8 causal-safety regression: appended future bars do not change past signals | unit | 8 | backtest/qa | passed (dedicated no-look-ahead proof, added after P1 finding) | sim |
+| Sprint 8 backtest runner: beta-weighted gross edge, walk-forward window inclusivity, round-trip cost | unit | 8 | backtest | passed (6 tests, added after QA P2 coverage gap finding) | sim |
+| Sprint 8 first-pass review (Backtest/Quant Research/Market Data Agent) | documentation review | 8 | backtest/research/market_data | changes requested -> 3 P1 findings (beta weighting, OU look-ahead, missing exit cost), all fixed | sim |
+| Sprint 8 first-pass review (QA Agent) | documentation review | 8 | backtest | passed (1 P2: runner test coverage gap, addressed) | sim |
+| Sprint 8 confirmation review after P1 fixes (Backtest + QA combined) | documentation review | 8 | backtest | passed (1 P3 investigated and explained, not a bug) | sim |
+| Sprint 8 real backtest run: 31 pairs, corrected methodology | integration | 8 | backtest | passed (622 trades, 13 approved, 18 rejected, portfolio net negative) | sim |
+| Backtest sem look-ahead bias | backtest | 8 | backtest | passed (see causal-safety regression above) | sim |
 | Kill switch trigger fails closed | live readiness | 14 | execution | pending | sim |
 
 ## Sprint 1 Review Checks

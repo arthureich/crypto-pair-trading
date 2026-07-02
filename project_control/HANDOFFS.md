@@ -1,6 +1,446 @@
 # Handoffs
 
-Last updated: 2026-07-01
+Last updated: 2026-07-02
+
+## HANDOFF - Sprint 8 Backtest Walk-Forward Cost-Aware (Closure)
+
+### Status
+
+DONE (gate PASSA, scoped). TASK-008-08 (raw evidence cleanup) remains BLOCKED.
+
+### Agente
+
+Backtest Agent, Quant Research Agent, Market Data Agent, QA Agent (review), PM Agent (orchestration, fixes)
+
+### Contexto
+
+The previous PM session (quota exhausted mid-task) had already: opened Sprint
+8, created TASK-008-01 through TASK-008-08, implemented
+`project_control/SPRINT8_UNIVERSE.json`, `src/research/sprint8.py`,
+`scripts/run_sprint8_backtest.py`, and 3 test files (14 tests), and run a
+first backtest (31 evaluated, 17 approved, portfolio net_pnl_bps=-125.83). It
+was interrupted while fixing a ruff issue on the runner. This session:
+finished the ruff fix (2 remaining auto-fixable import-order issues), then
+dispatched the mandatory reviews the sprint's own `CURRENT_SPRINT.md` calls
+for (Backtest Agent, Quant Research Agent, Market Data Agent, QA Agent) before
+accepting any of the prior session's unreviewed work as done.
+
+### O que foi encontrado e corrigido
+
+The parallel review returned **three blocking (P1) findings**:
+
+1. **Backtest Agent**: `_one_hour_gross_edge_bps` combined both legs' returns
+   1:1, but the entry signal was generated from a beta-weighted Kalman
+   spread -- pricing a different, uncontrolled exposure than the one that
+   triggered the signal.
+2. **Quant Research Agent**: `generate_pair_signal_intents` fit `estimate_ou`
+   once on each pair's *entire* 30-day spread series to gate every signal in
+   that series, so a regime that only became mean-reverting later in the
+   month could retroactively "approve" signals earlier in the same month --
+   genuine look-ahead in the trust gate, not just in z-score (which was
+   already correctly causal).
+3. **Market Data Agent**: execution cost was charged only for opening the
+   position (`_causal_symbol_cost_map`), never for closing it one hour later
+   -- understating round-trip cost by roughly half.
+
+QA Agent returned PASSA with one P2 (the runner script had zero direct test
+coverage, though manual line review found no bugs).
+
+All three P1s were fixed:
+
+1. `_one_hour_gross_edge_bps` now weights leg B's return by `abs(intent.beta)`
+   and also returns the exit bar's `open_time`.
+2. `generate_pair_signal_intents` now refits OU on a trailing causal window
+   (`ou_window`, default 168h) ending at each candidate index, and uses the
+   Kalman result's per-index `unstable_points[position]` instead of the
+   aggregate `beta_unstable` flag (same class of bug). A new regression test
+   (`test_generate_pair_signal_intents_is_causal_across_appended_future_bars`)
+   builds a 60-bar prefix and a 100-bar extended version with a sharply
+   different trend, and asserts the intents generated inside the original
+   60-bar window are identical between the two -- a direct proof of no
+   look-ahead, not just a manual code read.
+3. `_round_trip_symbol_cost_map` (replacing `_causal_symbol_cost_map`) now
+   sums causal cost at both the entry time and the exit time per leg.
+
+Also fixed the P2: renamed the misleading `gate_pass` (`bool(approved)`, true
+with just 1 of 31 pairs positive) to `any_pair_backtest_approved`, and added
+an explicit `portfolio_gate_pass` (`portfolio_net_pnl_quote > 0`, currently
+false) so the two very different claims can never be collapsed into one
+"Sprint 8 passed" statement.
+
+Added 6 new tests for the runner (`tests/test_sprint8_backtest_runner.py`)
+covering beta-weighted edge, missing-next-bar handling, walk-forward-window
+boundary inclusivity, round-trip cost summation, and fail-closed missing-cost
+behavior -- closing QA's P2 coverage gap.
+
+A second, independent confirmation review (Backtest Agent + QA Agent
+combined) re-verified all three fixes against the Kalman spread definition
+and the causal-window logic, judged the new regression test genuine (not a
+tautology), and confirmed the round-trip cost sums correctly. One P3 was
+investigated further by the PM (not just accepted): `total_trades` stayed at
+622 before and after the OU-gate fix, which could have indicated the fix was
+a silent no-op. Independently reproduced: for these specific pairs the
+full-sample half-life is very short (~1-1.5h), so the pair is strongly
+mean-reverting through nearly the entire 30-day window and the causal
+trailing-window fit agrees with the full-sample fit at almost every index.
+Confirmed not a bug.
+
+### Resultado final
+
+Corrected backtest run: 31 pairs evaluated, 622 trades, **13 pairs
+backtest-approved** (net PnL positive after real, causal, round-trip cost),
+18 rejected. Portfolio net PnL across all 31 pairs equal-weighted is negative
+(`total_net_pnl_bps=-1716.67`, `portfolio_net_pnl_quote=-$171.67`) and is
+reported as a separate, explicit `portfolio_gate_pass=false` -- never
+collapsed with the pair-level result.
+
+### Arquivos alterados
+
+```text
+src/research/sprint8.py
+scripts/run_sprint8_backtest.py
+tests/test_sprint8_universe.py (pre-existing, unmodified)
+tests/test_sprint8_walk_forward.py (pre-existing, unmodified)
+tests/test_sprint8_signal_backtest.py (added causal-safety regression test)
+tests/test_sprint8_backtest_runner.py (new)
+reports/sprint_08_backtest.md (new)
+project_control/TASK_BOARD.md
+project_control/CURRENT_SPRINT.md
+project_control/PROJECT_STATE.md
+project_control/RISKS.md
+project_control/TEST_MATRIX.md
+project_control/DAILY_LOG.md
+data/research/binance_public/cost_pilot/sprint8_backtest_results.json (regenerated)
+data/research/binance_public/cost_pilot/sprint8_backtest_pair_results.csv (regenerated)
+```
+
+### Testes rodados
+
+```text
+UV_CACHE_DIR=.uv-cache uv run --offline --with pytest pytest tests -q
+Result: passed, 211 tests.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with ruff ruff check src scripts tests
+Result: passed.
+
+UV_CACHE_DIR=.uv-cache uv run --offline python scripts/run_sprint8_backtest.py
+Result: passed. 31 pairs, 622 trades, 13 approved, 18 rejected, portfolio
+net PnL negative.
+```
+
+### Pendencias
+
+```text
+TASK-008-08: 17GB of raw checksum-verified Binance archives remain under
+data/research/binance_public/cost_pilot/raw/. Do NOT delete without explicit
+user acceptance -- disk has 353GB free, not urgent.
+
+Sprint 9 scope/tasks are not yet defined in project_control. Recommend the
+user confirm what Sprint 9 should build (e.g. extend backtest window,
+paper-trading design, barrier-policy exit modeling) before opening it.
+
+Known limitations carried forward (documented in reports/sprint_08_backtest.md
+and RISKS.md): fixed 1-hour exit horizon with no stop/take-profit, cost uses
+median spread only (no p95/p99 tail sensitivity run), max_drawdown_bps is
+per-pair only.
+```
+
+## HANDOFF - Sprint 8 Opening / Next Dispatch
+
+### Status
+
+OPENED
+
+### Agente
+
+PM Agent
+
+### Contexto
+
+Sprint 7 is complete for the research base and execution-cost evidence gate.
+Sprint 8 is now opened as a scoped offline backtest sprint. The only
+cost-gated universe allowed for Sprint 8 is the 31 pairs that passed the
+expanded June-2023 cost gate. The 10 ADAUSDT pairs remain blocked by
+`WIDE_MEDIAN_SPREAD`.
+
+### O que foi feito
+
+- Replaced `project_control/CURRENT_SPRINT.md` with Sprint 8 scope, gates,
+  allowed/prohibited work, universe, evidence artifacts, and tasks.
+- Updated `project_control/PROJECT_STATE.md` from Sprint 7 to Sprint 8.
+- Added Sprint 8 rows to `project_control/TASK_BOARD.md`.
+- Created 8 task files in `tasks/sprint_08/`.
+- Marked only TASK-008-01 as READY; all later tasks are BLOCKED by explicit
+  dependencies.
+
+### Proxima tarefa executavel
+
+```text
+TASK-008-01 - Congelar universo e contrato de evidencia
+Agent: PM Agent
+Reviewer: Backtest Agent + Market Data Agent
+Status: READY
+```
+
+### Arquivos criados
+
+```text
+tasks/sprint_08/TASK-008-01-freeze-universe-evidence.md
+tasks/sprint_08/TASK-008-02-walk-forward-split.md
+tasks/sprint_08/TASK-008-03-offline-signal-intent.md
+tasks/sprint_08/TASK-008-04-cost-aware-backtest.md
+tasks/sprint_08/TASK-008-05-metrics-ranking.md
+tasks/sprint_08/TASK-008-06-qa-tests.md
+tasks/sprint_08/TASK-008-07-report-gate.md
+tasks/sprint_08/TASK-008-08-evidence-cleanup-plan.md
+```
+
+### Gate policy
+
+```text
+Sprint 8 does not authorize paper/live trading.
+Sprint 8 does not touch ledger, recovery, execution engine, live engine, ML,
+or exchange trading endpoints.
+Sprint 8 decides only which of the 31 cost-gated pairs survive offline
+walk-forward backtest with cost.
+```
+
+## HANDOFF - TASK-007-10 Expanded All-Candidate Cost Gate (Sprint 8 Scoped Unblock)
+
+### Status
+
+DONE
+
+### Agente
+
+PM Agent, Market Data Agent, QA Agent
+
+### Contexto
+
+After the 6-symbol June-2023 pilot unlocked only 5 pairs, the user asked to do
+what was necessary to unblock Sprint 8 while avoiding memory blow-up. The full
+36-month cost gate remains impossible from Binance Public Data because
+bookTicker coverage does not exist past ~2024-04, but June 2023 can be
+expanded to every symbol used by the 41 Sprint 7 statistical candidate pairs.
+
+### O que foi feito
+
+- Hardened `scripts/run_sprint7_execution_cost_download.py` before processing
+  BTCUSDT/ETHUSDT: the runner now stream-reads the single CSV member directly
+  from each daily ZIP with `zipfile.open`, `BOOK_TICKER_COLUMNS`, and numeric
+  dtypes instead of reading the full decompressed member into bytes first.
+- Downloaded and verified the 9 missing symbols for June 2023:
+  ATOMUSDT, BTCUSDT, DOGEUSDT, ETHUSDT, LINKUSDT, LTCUSDT, SOLUSDT, UNIUSDT,
+  XRPUSDT.
+- Combined those with the existing 6-symbol pilot, covering all 15 symbols
+  that appear in the 41 Sprint 7 candidate pairs.
+- Preserved a raw hourly-cost CSV, a duplicate-hour CSV, a deduplicated
+  hourly-cost CSV for the gate, a bars CSV, a summary JSON, a local
+  checksum-verified source_review JSON, and an archive manifest CSV/JSON.
+- Ran the existing cost gate against the 41 candidate pairs, scoped strictly
+  to June 2023.
+
+### Evidencia
+
+```text
+450 Binance daily bookTicker ZIPs + .CHECKSUM files present.
+17.98GB compressed archive bytes.
+10827 raw hourly rows.
+27 duplicate symbol-hours / 54 duplicate rows at day boundaries.
+10800 deduplicated hourly rows used by the gate.
+10800 June-2023 1h bars for 15 symbols.
+```
+
+Artifacts:
+
+```text
+data/research/binance_public/cost_pilot/all_candidates_202306_hourly_cost_raw.csv
+data/research/binance_public/cost_pilot/all_candidates_202306_hourly_cost.csv
+data/research/binance_public/cost_pilot/all_candidates_202306_duplicate_hours.csv
+data/research/binance_public/cost_pilot/all_candidates_202306_bars.csv
+data/research/binance_public/cost_pilot/all_candidates_202306_summary.json
+data/research/binance_public/cost_pilot/all_candidates_202306_archive_manifest.csv
+data/research/binance_public/cost_pilot/all_candidates_202306_manifest.json
+data/research/binance_public/cost_pilot/all_candidates_202306_source_review.json
+data/research/binance_public/cost_pilot/all_candidates_202306_execution_cost_gate.json
+data/research/binance_public/cost_pilot/all_candidates_202306_execution_cost_gate.csv
+```
+
+### Resultado
+
+```text
+cost_gated_pass=true
+pairs_passed=31
+pairs_failed=10
+symbol_count=15
+normalized_cost_rows=10800
+source_review.complete_for_window=true
+```
+
+Failed pairs:
+
+```text
+ADAUSDT/DOTUSDT
+ADAUSDT/AVAXUSDT
+ADAUSDT/ETCUSDT
+ADAUSDT/LINKUSDT
+ADAUSDT/DOGEUSDT
+ADAUSDT/ETHUSDT
+ADAUSDT/ARBUSDT
+ADAUSDT/XRPUSDT
+ADAUSDT/ATOMUSDT
+ADAUSDT/SOLUSDT
+```
+
+All failures are expected and conservative: ADAUSDT fails the symbol-level
+spread gate (`WIDE_MEDIAN_SPREAD`, median spread 3.52bps > 3.0bps).
+
+### Testes rodados
+
+```text
+UV_CACHE_DIR=.uv-cache uv run --offline --with pytest pytest tests --basetemp=pytest_temp_sprint8_gate_expand -o cache_dir=pytest_temp_sprint8_gate_expand/.pytest_cache
+Result: 190 passed, 1 pytest config warning.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with ruff ruff check src tests scripts
+Result: passed.
+
+git diff --check
+Result: passed.
+```
+
+### Decisao e proximo passo
+
+```text
+Sprint 8 may now open, SCOPED to the 31 candidate pairs with genuine
+June-2023 cost-gated evidence. The 10 ADAUSDT failed pairs and any month
+outside June 2023 remain statistical-only / blocked from cost-gated claims.
+
+Do not delete raw ZIPs yet unless the user explicitly approves after accepting
+the evidence state. For future cleanup, keep the manifest, source_review,
+summary, gate JSON/CSV, bars CSV, deduped hourly-cost CSV, and duplicate-hours
+CSV.
+```
+
+## HANDOFF - TASK-007-10 Real Cost-Gated Pilot (ADR-0007, Sprint 8 Scoped Unblock)
+
+### Status
+
+DONE
+
+### Agente
+
+Market Data Agent (implementation + review), QA Agent (independent genuineness review), PM Agent (ADR-0007, orchestration)
+
+### Contexto
+
+Following the definitive `SOURCE_INCOMPLETE_FAIL_CLOSED` finding (see the
+TASK-007-10 closure handoff below), the user asked to do what's needed to
+advance safely. Downloading the full verified ~11-month/20-symbol bookTicker
+set was estimated at ~273GB compressed and infeasible in this session. A first
+attempt to download one MONTH of bookTicker for one symbol (ETCUSDT, the
+smallest target) caused an out-of-memory kill (exit 137) because
+`read_zip_csv` loads the whole decompressed CSV into memory at once, and a
+monthly archive for a mid-cap symbol decompresses into multiple GB.
+
+### O que foi feito
+
+- Wrote ADR-0007 in `DECISIONS.md`: cost-gated PASS claims must be scoped to
+  the exact verified evidence window (symbols/dates/granularity), not implied
+  to cover the full 36-month backtest window; historical bookTicker ingestion
+  must use daily archives processed one symbol-day at a time, never a whole
+  month in memory; going forward, the existing live Market Data Plane
+  (Sprint 5/6 `BookFeatures`) is the source of truth for forward cost
+  evidence.
+- Added `BinanceDataFamily.BOOK_TICKER` to `src/research/historical_dataset.py`
+  (purely additive: new enum member + filename/relative_path branches; default
+  families list in `build_archive_plan` unchanged, so existing callers are
+  unaffected).
+- Wrote `scripts/run_sprint7_execution_cost_download.py`: downloads daily
+  bookTicker archives (not monthly), verifies SHA256 checksum before
+  normalizing (reusing `verify_checksum_file`/`read_zip_csv` from
+  `historical_dataset.py`), normalizes and aggregates one symbol-day at a
+  time, and frees the raw tick-level frame (`del raw, normalized`) before the
+  next day -- bounding peak memory to one symbol-day regardless of scope.
+- Ran it for real (live network, real checksums) for 6 non-BTC/ETH top
+  candidate symbols (ARBUSDT, OPUSDT, ADAUSDT, DOTUSDT, ETCUSDT, AVAXUSDT) for
+  June 2023 (within the verified sub-window). Produced 4326 real hourly spread
+  rows with no errors.
+- Built a scoped bars/summary input (6 symbols, June 2023, 4320 bars) and ran
+  the existing `scripts/run_sprint7_execution_cost_evidence.py` against the
+  real hourly cost data with a scoped `--probe-binance-source` (returns
+  `complete_for_window=true` for this narrow scope, correctly, since the
+  archives really do exist for it).
+- Result: `cost_gated_pass=true` overall; 5 of 6 candidate pairs pass
+  (ARBUSDT/OPUSDT, ARBUSDT/ETCUSDT, ARBUSDT/DOTUSDT, AVAXUSDT/DOTUSDT,
+  DOTUSDT/ETCUSDT); ADAUSDT/DOTUSDT correctly rejected because ADAUSDT's
+  median spread (3.52bps) exceeds the 3.0bps threshold.
+- Market Data Agent reviewed the new download code and enum change: PASSA.
+  One P3 (non-blocking): `normalize_symbol_archive_files` has no explicit
+  guard against `BOOK_TICKER` being misused via the kline-oriented
+  `build_archive_plan`/`normalize_archive_plan` path; not exercised by the
+  actual code path used here.
+- QA Agent independently re-verified the result was not fabricated: checked
+  sample counts (tens of thousands to ~560k ticks/hour, consistent with real
+  bookTicker volume), spread variance across hours/symbols (hundreds of
+  distinct values, no repeated/interpolated pattern), and confirmed the
+  ADAUSDT rejection arithmetic matches the stated threshold exactly. PASSA,
+  explicitly confirmed the result is genuine and correctly scoped to
+  June 2023 / 6 symbols only.
+
+### Arquivos alterados
+
+```text
+src/research/historical_dataset.py
+scripts/run_sprint7_execution_cost_download.py
+tests/test_historical_dataset.py
+tests/test_execution_cost_download.py
+data/research/binance_public/cost_pilot/raw/ (real downloaded archives, checksummed)
+data/research/binance_public/cost_pilot/pilot_202306_hourly_cost.csv
+data/research/binance_public/cost_pilot/pilot_202306_bars.csv
+data/research/binance_public/cost_pilot/pilot_202306_summary.json
+data/research/binance_public/cost_pilot/pilot_202306_source_review.json
+data/research/binance_public/cost_pilot/pilot_202306_execution_cost_gate.json
+data/research/binance_public/cost_pilot/pilot_202306_execution_cost_gate.csv
+project_control/DECISIONS.md (ADR-0007)
+project_control/TASK_BOARD.md
+project_control/CURRENT_SPRINT.md
+project_control/PROJECT_STATE.md
+project_control/BLOCKERS.md
+project_control/RISKS.md
+project_control/TEST_MATRIX.md
+project_control/DAILY_LOG.md
+reports/research_sprint_07.md
+```
+
+### Testes rodados
+
+```text
+UV_CACHE_DIR=.uv-cache uv run --offline --with pytest pytest tests -q
+Result: passed, 190 tests.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with ruff ruff check src/research scripts tests
+Result: passed.
+
+Real network run (not a test): scripts/run_sprint7_execution_cost_download.py
+for 6 symbols x 30 days = 180 symbol-days, June 2023. No errors, no OOM.
+```
+
+### Decisao e proximo passo
+
+```text
+At this handoff's original close, BLOCKER-2026-06-30-S7-REAL-DATASET-GATE was
+downgraded from ACTIVE/P1 to PARTIALLY RESOLVED/P2 with a 5-pair scope. This
+was superseded by the 2026-07-02 expanded all-candidate June-2023 run recorded
+above: Sprint 8 may now open for 31 cost-gated pairs. Any broader claim
+(failed ADAUSDT pairs, other months, the full 36-month window) remains
+statistical-only and requires either repeating this same real-download
+process for more scope, an alternative verified source for 2024-05 through
+2026-05, or live Market Data Plane capture once paper/live trading exists.
+
+This older note is superseded by `HANDOFF - Sprint 8 Opening / Next Dispatch`
+above. Sprint 8 is now opened in `CURRENT_SPRINT.md`, and TASK-008-01 is the
+next READY task.
+```
 
 ## HANDOFF - TASK-007-10 Historical Execution-Cost Evidence (Closure)
 
@@ -486,10 +926,9 @@ Synthetic smoke example only:
 ### Pendencias
 
 ```text
-TASK-007-09 Market Data Agent + QA Agent review is still required.
-Verified historical execution-cost evidence is still required for cost-gated
-PASS.
-Sprint 8 remains blocked by BLOCKER-2026-06-30-S7-REAL-DATASET-GATE.
+Historical note: at this earlier point, TASK-007-09 review and verified
+execution-cost evidence were still required, so Sprint 8 remained blocked.
+This was superseded by TASK-007-10 and the 2026-07-02 Sprint 8 opening handoff.
 ```
 
 ### Riscos

@@ -1,0 +1,174 @@
+{
+  "base_url": "https://data.binance.vision",
+  "complete_for_window": true,
+  "decision": "SOURCE_COMPLETE",
+  "fields": [
+    "update_id",
+    "best_bid_price",
+    "best_bid_qty",
+    "best_ask_price",
+    "best_ask_qty",
+    "transaction_time",
+    "event_time"
+  ],
+  "generated_at_utc": "2026-07-02T12:00:40.472603+00:00",
+  "granularity_evaluated": [
+    "monthly/bookTicker",
+    "daily/bookTicker"
+  ],
+  "limits": {
+    "max_longest_gap_hours": 6.0,
+    "max_median_spread_bps": 3.0,
+    "max_p95_spread_bps": 8.0,
+    "max_p99_spread_bps": 15.0,
+    "max_pair_median_spread_bps": 6.0,
+    "max_pair_p95_spread_bps": 10.0,
+    "max_stale_hours": 0,
+    "min_hourly_coverage": 0.99,
+    "stale_gap_threshold_ms": 60000
+  },
+  "period": {
+    "end_month_exclusive": "2023-07",
+    "months_required": 1,
+    "start_month": "2023-06"
+  },
+  "s3_list_endpoint": "https://s3-ap-northeast-1.amazonaws.com/data.binance.vision",
+  "source": "Binance Public Data bookTicker",
+  "source_exists": true,
+  "symbol_reviews": [
+    {
+      "available_compressed_bytes": 832710508,
+      "complete_for_window": true,
+      "coverage": 1.0,
+      "covered_months": 1,
+      "missing_months": [],
+      "month_reviews": [
+        {
+          "archive_etag": "2b3e5c93d4b9830a565a880c11f757af-100",
+          "archive_key": "data/futures/um/monthly/bookTicker/ADAUSDT/ADAUSDT-bookTicker-2023-06.zip",
+          "archive_last_modified": "2023-07-17T12:42:37.000Z",
+          "archive_size_bytes": 832710508,
+          "checksum_key": "data/futures/um/monthly/bookTicker/ADAUSDT/ADAUSDT-bookTicker-2023-06.zip.CHECKSUM",
+          "covered": true,
+          "granularity": "monthly",
+          "month": "2023-06"
+        }
+      ],
+      "required_months": 1,
+      "symbol": "ADAUSDT"
+    },
+    {
+      "available_compressed_bytes": 978211760,
+      "complete_for_window": true,
+      "coverage": 1.0,
+      "covered_months": 1,
+      "missing_months": [],
+      "month_reviews": [
+        {
+          "archive_etag": "02d720e391083cca35c1521ffabf54dc-117",
+          "archive_key": "data/futures/um/monthly/bookTicker/ARBUSDT/ARBUSDT-bookTicker-2023-06.zip",
+          "archive_last_modified": "2023-07-17T12:42:55.000Z",
+          "archive_size_bytes": 978211760,
+          "checksum_key": "data/futures/um/monthly/bookTicker/ARBUSDT/ARBUSDT-bookTicker-2023-06.zip.CHECKSUM",
+          "covered": true,
+          "granularity": "monthly",
+          "month": "2023-06"
+        }
+      ],
+      "required_months": 1,
+      "symbol": "ARBUSDT"
+    },
+    {
+      "available_compressed_bytes": 450488686,
+      "complete_for_window": true,
+      "coverage": 1.0,
+      "covered_months": 1,
+      "missing_months": [],
+      "month_reviews": [
+        {
+          "archive_etag": "eee02b46e1f9841625bc6464d488c6b2-54",
+          "archive_key": "data/futures/um/monthly/bookTicker/AVAXUSDT/AVAXUSDT-bookTicker-2023-06.zip",
+          "archive_last_modified": "2023-07-17T12:43:06.000Z",
+          "archive_size_bytes": 450488686,
+          "checksum_key": "data/futures/um/monthly/bookTicker/AVAXUSDT/AVAXUSDT-bookTicker-2023-06.zip.CHECKSUM",
+          "covered": true,
+          "granularity": "monthly",
+          "month": "2023-06"
+        }
+      ],
+      "required_months": 1,
+      "symbol": "AVAXUSDT"
+    },
+    {
+      "available_compressed_bytes": 571376443,
+      "complete_for_window": true,
+      "coverage": 1.0,
+      "covered_months": 1,
+      "missing_months": [],
+      "month_reviews": [
+        {
+          "archive_etag": "bc6c16a8d3e2a07247f9c3a7fb86e5cb-69",
+          "archive_key": "data/futures/um/monthly/bookTicker/DOTUSDT/DOTUSDT-bookTicker-2023-06.zip",
+          "archive_last_modified": "2023-07-17T12:44:02.000Z",
+          "archive_size_bytes": 571376443,
+          "checksum_key": "data/futures/um/monthly/bookTicker/DOTUSDT/DOTUSDT-bookTicker-2023-06.zip.CHECKSUM",
+          "covered": true,
+          "granularity": "monthly",
+          "month": "2023-06"
+        }
+      ],
+      "required_months": 1,
+      "symbol": "DOTUSDT"
+    },
+    {
+      "available_compressed_bytes": 600107798,
+      "complete_for_window": true,
+      "coverage": 1.0,
+      "covered_months": 1,
+      "missing_months": [],
+      "month_reviews": [
+        {
+          "archive_etag": "2d14457f3f7b3324bb8a96c028ad2b23-72",
+          "archive_key": "data/futures/um/monthly/bookTicker/ETCUSDT/ETCUSDT-bookTicker-2023-06.zip",
+          "archive_last_modified": "2023-07-17T12:44:17.000Z",
+          "archive_size_bytes": 600107798,
+          "checksum_key": "data/futures/um/monthly/bookTicker/ETCUSDT/ETCUSDT-bookTicker-2023-06.zip.CHECKSUM",
+          "covered": true,
+          "granularity": "monthly",
+          "month": "2023-06"
+        }
+      ],
+      "required_months": 1,
+      "symbol": "ETCUSDT"
+    },
+    {
+      "available_compressed_bytes": 1027096794,
+      "complete_for_window": true,
+      "coverage": 1.0,
+      "covered_months": 1,
+      "missing_months": [],
+      "month_reviews": [
+        {
+          "archive_etag": "880c013d56cd0e05ab60cc0896a3072b-123",
+          "archive_key": "data/futures/um/monthly/bookTicker/OPUSDT/OPUSDT-bookTicker-2023-06.zip",
+          "archive_last_modified": "2023-07-17T12:46:00.000Z",
+          "archive_size_bytes": 1027096794,
+          "checksum_key": "data/futures/um/monthly/bookTicker/OPUSDT/OPUSDT-bookTicker-2023-06.zip.CHECKSUM",
+          "covered": true,
+          "granularity": "monthly",
+          "month": "2023-06"
+        }
+      ],
+      "required_months": 1,
+      "symbol": "OPUSDT"
+    }
+  ],
+  "symbols_required": [
+    "ADAUSDT",
+    "ARBUSDT",
+    "AVAXUSDT",
+    "DOTUSDT",
+    "ETCUSDT",
+    "OPUSDT"
+  ]
+}

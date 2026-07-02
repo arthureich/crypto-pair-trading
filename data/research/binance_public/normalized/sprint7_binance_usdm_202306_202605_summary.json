@@ -1,0 +1,1386 @@
+{
+  "accepted_symbols": [
+    "ADAUSDT",
+    "APTUSDT",
+    "ARBUSDT",
+    "ATOMUSDT",
+    "AVAXUSDT",
+    "BCHUSDT",
+    "BNBUSDT",
+    "BTCUSDT",
+    "DOGEUSDT",
+    "DOTUSDT",
+    "ETCUSDT",
+    "ETHUSDT",
+    "LINKUSDT",
+    "LTCUSDT",
+    "OPUSDT",
+    "SOLUSDT",
+    "SUIUSDT",
+    "TRXUSDT",
+    "UNIUSDT",
+    "XRPUSDT"
+  ],
+  "candidate_pairs": [
+    {
+      "correlation": 0.8439346329534084,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ARBUSDT/OPUSDT",
+      "score": 0.843934632953
+    },
+    {
+      "correlation": 0.8290515269853589,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 4.0707,
+      "pair": "BTCUSDT/ETHUSDT",
+      "score": 0.829051526985
+    },
+    {
+      "correlation": 0.8151444353787677,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 5.0808,
+      "pair": "ARBUSDT/ETHUSDT",
+      "score": 0.815144435379
+    },
+    {
+      "correlation": 0.8120815292958644,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ADAUSDT/DOTUSDT",
+      "score": 0.812081529296
+    },
+    {
+      "correlation": 0.8110143629896615,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ARBUSDT/ETCUSDT",
+      "score": 0.81101436299
+    },
+    {
+      "correlation": 0.8065388204197638,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 5.0808,
+      "pair": "ETCUSDT/ETHUSDT",
+      "score": 0.80653882042
+    },
+    {
+      "correlation": 0.7952312903451715,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ARBUSDT/DOTUSDT",
+      "score": 0.795231290345
+    },
+    {
+      "correlation": 0.7947813853860217,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 5.0808,
+      "pair": "ETHUSDT/LINKUSDT",
+      "score": 0.794781385386
+    },
+    {
+      "correlation": 0.7916530303707854,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "AVAXUSDT/DOTUSDT",
+      "score": 0.791653030371
+    },
+    {
+      "correlation": 0.79162477918689,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "DOTUSDT/ETCUSDT",
+      "score": 0.791624779187
+    },
+    {
+      "correlation": 0.7888531131411533,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ATOMUSDT/DOTUSDT",
+      "score": 0.788853113141
+    },
+    {
+      "correlation": 0.786639377246175,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ADAUSDT/AVAXUSDT",
+      "score": 0.786639377246
+    },
+    {
+      "correlation": 0.7852243047228031,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ADAUSDT/ETCUSDT",
+      "score": 0.785224304723
+    },
+    {
+      "correlation": 0.7810993820467727,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ADAUSDT/LINKUSDT",
+      "score": 0.781099382047
+    },
+    {
+      "correlation": 0.7799508880164205,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 5.8266,
+      "pair": "ADAUSDT/DOGEUSDT",
+      "score": 0.779950888016
+    },
+    {
+      "correlation": 0.7772655921509842,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "DOTUSDT/LINKUSDT",
+      "score": 0.777265592151
+    },
+    {
+      "correlation": 0.7768680980660289,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ARBUSDT/LINKUSDT",
+      "score": 0.776868098066
+    },
+    {
+      "correlation": 0.7744694558737862,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "AVAXUSDT/LINKUSDT",
+      "score": 0.774469455874
+    },
+    {
+      "correlation": 0.7720363159480187,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ARBUSDT/AVAXUSDT",
+      "score": 0.772036315948
+    },
+    {
+      "correlation": 0.771514620053295,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 5.0808,
+      "pair": "ADAUSDT/ETHUSDT",
+      "score": 0.771514620053
+    },
+    {
+      "correlation": 0.7713764918965008,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ETCUSDT/LINKUSDT",
+      "score": 0.771376491897
+    },
+    {
+      "correlation": 0.7711182941281094,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ADAUSDT/ARBUSDT",
+      "score": 0.771118294128
+    },
+    {
+      "correlation": 0.7688698331753107,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 5.603400000000001,
+      "pair": "AVAXUSDT/SOLUSDT",
+      "score": 0.768869833175
+    },
+    {
+      "correlation": 0.7680720324179535,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ETCUSDT/OPUSDT",
+      "score": 0.768072032418
+    },
+    {
+      "correlation": 0.766112965983648,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 4.684200000000001,
+      "pair": "ETHUSDT/SOLUSDT",
+      "score": 0.766112965984
+    },
+    {
+      "correlation": 0.7658060075669098,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 5.8266,
+      "pair": "DOGEUSDT/ETCUSDT",
+      "score": 0.765806007567
+    },
+    {
+      "correlation": 0.764206282383254,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 5.0808,
+      "pair": "AVAXUSDT/ETHUSDT",
+      "score": 0.764206282383
+    },
+    {
+      "correlation": 0.7624619156334715,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 4.9074,
+      "pair": "DOGEUSDT/ETHUSDT",
+      "score": 0.762461915633
+    },
+    {
+      "correlation": 0.7614499378604256,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "AVAXUSDT/ETCUSDT",
+      "score": 0.76144993786
+    },
+    {
+      "correlation": 0.7600951515210366,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 5.0808,
+      "pair": "DOTUSDT/ETHUSDT",
+      "score": 0.760095151521
+    },
+    {
+      "correlation": 0.7597806354866519,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ARBUSDT/ATOMUSDT",
+      "score": 0.759780635487
+    },
+    {
+      "correlation": 0.7595088156447138,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "DOTUSDT/OPUSDT",
+      "score": 0.759508815645
+    },
+    {
+      "correlation": 0.7591063944565987,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 5.0808,
+      "pair": "ETHUSDT/OPUSDT",
+      "score": 0.759106394457
+    },
+    {
+      "correlation": 0.7558327140741242,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ADAUSDT/XRPUSDT",
+      "score": 0.755832714074
+    },
+    {
+      "correlation": 0.7555017671629769,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ADAUSDT/ATOMUSDT",
+      "score": 0.755501767163
+    },
+    {
+      "correlation": 0.7551443574505229,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 5.83245,
+      "pair": "ETCUSDT/LTCUSDT",
+      "score": 0.755144357451
+    },
+    {
+      "correlation": 0.7541372734429782,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 5.0808,
+      "pair": "ETHUSDT/UNIUSDT",
+      "score": 0.754137273443
+    },
+    {
+      "correlation": 0.753881371926357,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 5.8266,
+      "pair": "DOGEUSDT/DOTUSDT",
+      "score": 0.753881371926
+    },
+    {
+      "correlation": 0.7537780429359535,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 4.5933,
+      "pair": "BTCUSDT/SOLUSDT",
+      "score": 0.753778042936
+    },
+    {
+      "correlation": 0.7535710146316928,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 5.603400000000001,
+      "pair": "ADAUSDT/SOLUSDT",
+      "score": 0.753571014632
+    },
+    {
+      "correlation": 0.7532572646972621,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 6.0,
+      "pair": "ATOMUSDT/ETCUSDT",
+      "score": 0.753257264697
+    }
+  ],
+  "end_month_exclusive": "2026-06",
+  "expected_bars": 26304,
+  "gate_note": "Statistical-only run. Cost-gated Sprint 7 PASS still requires verified historical top-of-book/L2 execution-cost evidence.",
+  "normalized_path": "/home/arthur/Downloads/crypto-pair-trading/data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_bars.csv",
+  "rejected_pairs": [
+    {
+      "correlation": 0.7082775882360747,
+      "pair": "ADAUSDT/APTUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6341127336871535,
+      "pair": "ADAUSDT/BCHUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7086120310898751,
+      "pair": "ADAUSDT/BNBUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7436862586496821,
+      "pair": "ADAUSDT/BTCUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7382178735625528,
+      "pair": "ADAUSDT/LTCUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7305980840726712,
+      "pair": "ADAUSDT/OPUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7069810930206181,
+      "pair": "ADAUSDT/SUIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.472959458198845,
+      "pair": "ADAUSDT/TRXUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7145253531865754,
+      "pair": "ADAUSDT/UNIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7441287619334265,
+      "pair": "APTUSDT/ARBUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7046694015791849,
+      "pair": "APTUSDT/ATOMUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7144453361403956,
+      "pair": "APTUSDT/AVAXUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.5627885641089105,
+      "pair": "APTUSDT/BCHUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6272500170816148,
+      "pair": "APTUSDT/BNBUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6307629660866105,
+      "pair": "APTUSDT/BTCUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6768742669101655,
+      "pair": "APTUSDT/DOGEUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7403089945104474,
+      "pair": "APTUSDT/DOTUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7148351116749523,
+      "pair": "APTUSDT/ETCUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6830342861615166,
+      "pair": "APTUSDT/ETHUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.700665501286838,
+      "pair": "APTUSDT/LINKUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6499686959827539,
+      "pair": "APTUSDT/LTCUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7194459643294302,
+      "pair": "APTUSDT/OPUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6681707883899443,
+      "pair": "APTUSDT/SOLUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6829952967941089,
+      "pair": "APTUSDT/SUIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.4196289956247035,
+      "pair": "APTUSDT/TRXUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6575397949415983,
+      "pair": "APTUSDT/UNIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6071682691152401,
+      "pair": "APTUSDT/XRPUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6163825890367671,
+      "pair": "ARBUSDT/BCHUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6922589046689234,
+      "pair": "ARBUSDT/BNBUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7102143952793667,
+      "pair": "ARBUSDT/BTCUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7425599062554653,
+      "pair": "ARBUSDT/DOGEUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7135892790424334,
+      "pair": "ARBUSDT/LTCUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7253909574085096,
+      "pair": "ARBUSDT/SOLUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7073569804041002,
+      "pair": "ARBUSDT/SUIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.4537937436058642,
+      "pair": "ARBUSDT/TRXUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7413668913503858,
+      "pair": "ARBUSDT/UNIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6661006261536156,
+      "pair": "ARBUSDT/XRPUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7453146392634874,
+      "pair": "ATOMUSDT/AVAXUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.597186498524424,
+      "pair": "ATOMUSDT/BCHUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6551691982031784,
+      "pair": "ATOMUSDT/BNBUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6654187593872187,
+      "pair": "ATOMUSDT/BTCUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.709930694076709,
+      "pair": "ATOMUSDT/DOGEUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7163899811099137,
+      "pair": "ATOMUSDT/ETHUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7356360002848971,
+      "pair": "ATOMUSDT/LINKUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6898566255533648,
+      "pair": "ATOMUSDT/LTCUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7298790658462878,
+      "pair": "ATOMUSDT/OPUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6841467256141532,
+      "pair": "ATOMUSDT/SOLUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6665312977675282,
+      "pair": "ATOMUSDT/SUIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.46008369858592135,
+      "pair": "ATOMUSDT/TRXUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6851290359725609,
+      "pair": "ATOMUSDT/UNIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6547061293106157,
+      "pair": "ATOMUSDT/XRPUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6239824566638141,
+      "pair": "AVAXUSDT/BCHUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6932568817025043,
+      "pair": "AVAXUSDT/BNBUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7270540759624169,
+      "pair": "AVAXUSDT/BTCUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7439564872140457,
+      "pair": "AVAXUSDT/DOGEUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7057773957064929,
+      "pair": "AVAXUSDT/LTCUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7349761614925214,
+      "pair": "AVAXUSDT/OPUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6994122241648012,
+      "pair": "AVAXUSDT/SUIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.4544883943246252,
+      "pair": "AVAXUSDT/TRXUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7085914030615283,
+      "pair": "AVAXUSDT/UNIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6773678354018191,
+      "pair": "AVAXUSDT/XRPUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.5877381764195138,
+      "pair": "BCHUSDT/BNBUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6446863310705034,
+      "pair": "BCHUSDT/BTCUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6296566142959192,
+      "pair": "BCHUSDT/DOGEUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6310024356012872,
+      "pair": "BCHUSDT/DOTUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6780357348418637,
+      "pair": "BCHUSDT/ETCUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6475597059712861,
+      "pair": "BCHUSDT/ETHUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6201825106900972,
+      "pair": "BCHUSDT/LINKUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6502184404199362,
+      "pair": "BCHUSDT/LTCUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.5874006819915701,
+      "pair": "BCHUSDT/OPUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6091323070695601,
+      "pair": "BCHUSDT/SOLUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.5580676311566239,
+      "pair": "BCHUSDT/SUIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.41467867071774245,
+      "pair": "BCHUSDT/TRXUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.589482859811843,
+      "pair": "BCHUSDT/UNIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.5733940834788619,
+      "pair": "BCHUSDT/XRPUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7167509205823551,
+      "pair": "BNBUSDT/BTCUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6971822462107703,
+      "pair": "BNBUSDT/DOGEUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6932086218422642,
+      "pair": "BNBUSDT/DOTUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6958952762741653,
+      "pair": "BNBUSDT/ETCUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7447956889041625,
+      "pair": "BNBUSDT/ETHUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6942486467178944,
+      "pair": "BNBUSDT/LINKUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.663428352999209,
+      "pair": "BNBUSDT/LTCUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6561918130154049,
+      "pair": "BNBUSDT/OPUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6927534252911467,
+      "pair": "BNBUSDT/SOLUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6271609282593622,
+      "pair": "BNBUSDT/SUIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.4562944318720378,
+      "pair": "BNBUSDT/TRXUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6553844813804643,
+      "pair": "BNBUSDT/UNIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6381992279100224,
+      "pair": "BNBUSDT/XRPUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7391797955001197,
+      "pair": "BTCUSDT/DOGEUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7156084172071588,
+      "pair": "BTCUSDT/DOTUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.722873041576764,
+      "pair": "BTCUSDT/ETCUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7267507678144571,
+      "pair": "BTCUSDT/LINKUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6912100705844082,
+      "pair": "BTCUSDT/LTCUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6574151302796615,
+      "pair": "BTCUSDT/OPUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6512441562434056,
+      "pair": "BTCUSDT/SUIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.4571918777079474,
+      "pair": "BTCUSDT/TRXUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6694407288734868,
+      "pair": "BTCUSDT/UNIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6781489240241363,
+      "pair": "BTCUSDT/XRPUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7449266520787492,
+      "pair": "DOGEUSDT/LINKUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7158472280189606,
+      "pair": "DOGEUSDT/LTCUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7047997980516959,
+      "pair": "DOGEUSDT/OPUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7370796296997812,
+      "pair": "DOGEUSDT/SOLUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6806560383850133,
+      "pair": "DOGEUSDT/SUIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.4543385870631738,
+      "pair": "DOGEUSDT/TRXUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6973236945203406,
+      "pair": "DOGEUSDT/UNIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7023121508374124,
+      "pair": "DOGEUSDT/XRPUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7329524228940063,
+      "pair": "DOTUSDT/LTCUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7290294551527898,
+      "pair": "DOTUSDT/SOLUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6961663857152005,
+      "pair": "DOTUSDT/SUIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.4699392429270573,
+      "pair": "DOTUSDT/TRXUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7294247578052598,
+      "pair": "DOTUSDT/UNIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6955522378552156,
+      "pair": "DOTUSDT/XRPUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7200699229420299,
+      "pair": "ETCUSDT/SOLUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6771092572607537,
+      "pair": "ETCUSDT/SUIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.47147154436166705,
+      "pair": "ETCUSDT/TRXUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.738621552624002,
+      "pair": "ETCUSDT/UNIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.690114909199803,
+      "pair": "ETCUSDT/XRPUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7204376785888048,
+      "pair": "ETHUSDT/LTCUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6780328806660866,
+      "pair": "ETHUSDT/SUIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.4861489654138101,
+      "pair": "ETHUSDT/TRXUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6959233304952419,
+      "pair": "ETHUSDT/XRPUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.716588313737966,
+      "pair": "LINKUSDT/LTCUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7351152044883544,
+      "pair": "LINKUSDT/OPUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7415884448258999,
+      "pair": "LINKUSDT/SOLUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.692893469066476,
+      "pair": "LINKUSDT/SUIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.45719463521553044,
+      "pair": "LINKUSDT/TRXUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7289671607551447,
+      "pair": "LINKUSDT/UNIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6793683683156945,
+      "pair": "LINKUSDT/XRPUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6761550054459179,
+      "pair": "LTCUSDT/OPUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6777733747525001,
+      "pair": "LTCUSDT/SOLUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6391808021036262,
+      "pair": "LTCUSDT/SUIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.44542933278421204,
+      "pair": "LTCUSDT/TRXUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6684312072061052,
+      "pair": "LTCUSDT/UNIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6792161380302821,
+      "pair": "LTCUSDT/XRPUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6846046550891646,
+      "pair": "OPUSDT/SOLUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6774652505530336,
+      "pair": "OPUSDT/SUIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.4237752257297512,
+      "pair": "OPUSDT/TRXUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.7091506430203912,
+      "pair": "OPUSDT/UNIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6215579034739469,
+      "pair": "OPUSDT/XRPUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6860794288421778,
+      "pair": "SOLUSDT/SUIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.43837834408197496,
+      "pair": "SOLUSDT/TRXUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6743736584051284,
+      "pair": "SOLUSDT/UNIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6705765300848633,
+      "pair": "SOLUSDT/XRPUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.40810469614760536,
+      "pair": "SUIUSDT/TRXUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6405642497605494,
+      "pair": "SUIUSDT/UNIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6255561568577003,
+      "pair": "SUIUSDT/XRPUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.43331013318921197,
+      "pair": "TRXUSDT/UNIUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.4408966524434473,
+      "pair": "TRXUSDT/XRPUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    },
+    {
+      "correlation": 0.6189217594457109,
+      "pair": "UNIUSDT/XRPUSDT",
+      "reasons": [
+        "LOW_CORRELATION"
+      ]
+    }
+  ],
+  "rejected_symbols": [],
+  "start_month": "2023-06",
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT",
+    "BNBUSDT",
+    "SOLUSDT",
+    "XRPUSDT",
+    "ADAUSDT",
+    "DOGEUSDT",
+    "AVAXUSDT",
+    "LINKUSDT",
+    "LTCUSDT",
+    "BCHUSDT",
+    "DOTUSDT",
+    "TRXUSDT",
+    "ETCUSDT",
+    "UNIUSDT",
+    "ATOMUSDT",
+    "APTUSDT",
+    "ARBUSDT",
+    "OPUSDT",
+    "SUIUSDT"
+  ]
+}
