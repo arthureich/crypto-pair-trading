@@ -8,15 +8,24 @@ Sprint 9 - Backtest executavel com simulacao de ordens (ver `project_control/ROA
 
 ## Status geral
 
-ABERTA / EM EXECUCAO. Usuario forneceu o roadmap mestre de 28 sprints
-(`project_control/ROADMAP.md`, ADR-0008). Sprint 8 canonico do roadmap
-("Triple Barrier + backtest estatistico") diverge do "Sprint 8" ja
-executado neste projeto ("Backtest walk-forward cost-aware", gate PASSA
-escopado a 13 pares); a divergencia foi aceita e registrada como debito
-tecnico explicito (nao revertida). Por instrucao explicita do usuario, o
-projeto avanca direto para a Sprint 9 do roadmap, reusando os 13 pares e os
-17GB de dados brutos ja verificados. TASK-008-08 (limpeza de raw) permanece
-BLOCKED aguardando aceite explicito.
+SPRINT 9 FECHADA. Gate NAO PASSA para "PnL liquido positivo em cenario
+conservador": 0 dos 13 pares aprovados no Sprint 8 sao liquido-positivos
+com execucao realista (IOC agressivo contra dados tick reais de
+junho/2023). Um bug real de PnL (preenchimento parcial zerando PnL de
+perna) foi encontrado e corrigido durante o desenvolvimento, confirmado
+matematicamente correto por revisao independente do QA Agent. Resultado:
+247 sinais, 239 trades, portfolio -$2266.27. Ver
+`reports/backtest_executable_v1.md`. Usuario forneceu o roadmap mestre de
+28 sprints (`project_control/ROADMAP.md`, ADR-0008); Sprint 8 canonico do
+roadmap diverge do "Sprint 8" ja executado neste projeto, registrado como
+debito tecnico explicito. TASK-008-08 (limpeza de raw) permanece BLOCKED
+aguardando aceite explicito -- porem os dados derivados essenciais ja
+foram versionados no git (commit 174d327) para permitir alternar entre
+maquinas sem depender dos 17GB de dados brutos.
+
+Escopo do Sprint 10 ainda nao definido -- decisao pendente do usuario,
+mas Execution/Risk Agent recomenda testar uma variante de execucao
+LIMIT/maker antes de concluir que a estrategia nao tem edge.
 
 ## Ultimos sprints concluidos
 
@@ -29,6 +38,9 @@ BLOCKED aguardando aceite explicito.
 - Sprint 7 - Research base: pair selection, Kalman e OU
 - Sprint 8 (nao-canonico) - Backtest walk-forward cost-aware (gate PASSA,
   escopado a 13 pares; diverge do Sprint 8 do ROADMAP.md, ver ADR-0008)
+- Sprint 9 - Backtest executavel com simulacao de ordens (gate NAO PASSA
+  para "PnL positivo em cenario conservador": 0/13 pares; ver
+  `reports/backtest_executable_v1.md`)
 
 ## Componentes concluidos
 
@@ -89,37 +101,69 @@ BLOCKED aguardando aceite explicito.
 - 20 novos testes automatizados (universo, walk-forward, sinal/backtest,
   runner, incluindo teste dedicado de causalidade).
 
+## Componentes concluidos (Sprint 9)
+
+- `src/backtest/fill_model.py`: simulacao de fill MARKET/IOC e LIMIT+TTL
+  contra top-of-book real (nivel 1), latencia, ACK_UNKNOWN integrado com
+  `evaluate_ack_guard` (Sprint 3).
+- `src/backtest/execution_simulator.py`: round-trip por par com peso beta,
+  deteccao de LEG_FILL_MISMATCH, atraso de saida por ACK_UNKNOWN genuino.
+- `src/backtest/replay_engine.py`: replay causal dos mesmos sinais do
+  Sprint 8 contra dados tick reais, cache de dias limitado (memory-safe).
+- Bug real encontrado e corrigido: preenchimento parcial zerava
+  silenciosamente o PnL da perna (herdado de `estimate_slippage` do
+  Sprint 6); corrigido e confirmado matematicamente correto por revisao
+  independente do QA Agent.
+- Segundo problema real corrigido: checksum computado mas nunca verificado
+  antes de usar os dados (achado do Market Data Agent).
+- `reports/backtest_executable_v1.md`: resultado real -- 0 dos 13 pares
+  liquido-positivos com execucao realista, portfolio -$2266.27.
+- 34 novos testes automatizados (fill_model, execution_simulator,
+  replay_engine, chaos).
+- `.gitignore` corrigido para versionar dados derivados essenciais (antes
+  `data/` inteiro era ignorado, inclusive os resumos pequenos).
+
 ## Componentes em andamento
 
-- Sprint 9 (`project_control/ROADMAP.md`): fill_model.py,
-  execution_simulator.py, replay_engine.py em implementacao. TASK-009-01
-  esta READY.
+- Nenhum item tecnico do Sprint 9 em andamento -- sprint fechada.
 - TASK-008-08 (limpeza segura dos 17GB de arquivos raw preservados)
   permanece BLOCKED aguardando aceite explicito do usuario antes de
-  qualquer exclusao. Esses mesmos arquivos sao o insumo real da Sprint 9.
+  qualquer exclusao.
+- Escopo do Sprint 10 ainda nao definido -- decisao pendente do usuario.
 
 ## Objetivo atual
 
-Sprint 9: substituir o fill idealizado do Sprint 8 (mark-to-market 1 barra
-depois do sinal) por simulacao realista de execucao contra cotacoes reais
-tick-a-tick de junho/2023: partial fill, IOC, maker com TTL, latencia e
-ACK_UNKNOWN, medindo se o PnL liquido dos 13 pares aprovados sobrevive a
-essas condicoes.
+Nenhum objetivo tecnico ativo definido ainda. Antes de decidir o proximo
+sprint, o Execution/Risk Agent recomenda explicitamente testar uma
+variante de execucao passiva/maker (`simulate_limit_fill`, ja implementada
+e testada, mas nao usada no runner real) para separar "execucao cara
+demais" de "estrategia sem edge" -- o resultado atual (0/13) nao permite
+distinguir essas duas explicacoes.
 
 ## Proximo gate
 
 Sprint 8 (nao-canonico) PASSA (escopado) -- ja fechado, ver historico acima.
 Debito tecnico do Sprint 8 canonico do roadmap (triple barrier, Sharpe/
-Sortino/profit factor) registrado em RISKS.md, nao bloqueia Sprint 9.
+Sortino/profit factor) registrado em RISKS.md, nao bloqueia sprints futuros.
 
-Sprint 9 so passa se (ver `ROADMAP.md`):
+Sprint 9 FECHADA. Criterios do ROADMAP.md:
 
-- ordem nao tem fill garantido (demonstrado, nao assumido);
-- partial fill gera exposicao residual (LEG_FILL_MISMATCH detectado);
-- ACK_UNKNOWN forca reconciliacao simulada;
-- PnL liquido reportado honestamente (positivo ou negativo);
-- causalidade confirmada (nenhuma cotacao futura usada);
-- Backtest/QA/Execution-Risk Agent confirmam PASSA.
+- ordem nao tem fill garantido: demonstrado (fills parciais reais, 75
+  entradas parciais, 76 saidas parciais);
+- partial fill gera exposicao residual: demonstrado (11.470,92 unidades
+  nao fechadas, 70/239 trades com LEG_FILL_MISMATCH);
+- ACK_UNKNOWN forca reconciliacao simulada: demonstrado (integrado com
+  `evaluate_ack_guard` real);
+- PnL liquido reportado honestamente: demonstrado -- e negativo (0/13
+  pares positivos, portfolio -$2266.27);
+- causalidade confirmada: demonstrado e testado;
+- Backtest/QA/Market Data Agent confirmam PASSA (apos correcoes);
+  Execution/Risk Agent (consultivo) recomenda testar variante LIMIT/maker
+  antes de qualquer decisao definitiva sobre a estrategia.
+
+Gate para Sprint 10 (Execution Risk Gate, se for a proxima escolha): NAO
+PASSA para "PnL liquido positivo em cenario conservador" -- decisao de
+como prosseguir e do usuario.
 
 ## Bloqueadores atuais
 
@@ -178,6 +222,15 @@ Sprint 9 so passa se (ver `ROADMAP.md`):
   largo ou notional maior.
 - max_drawdown_bps e por-par, nao existe metrica de drawdown de portfolio
   combinado e alinhado no tempo.
+- Sprint 9 usa execucao MARKET_IOC agressiva sempre (nunca LIMIT/maker) --
+  e o cenario de custo mais caro possivel; 0/13 pares positivos pode
+  refletir execucao cara demais, nao necessariamente ausencia de edge.
+- Exposicao residual nao fechada (naked leg) nao e marcada a mercado no
+  PnL reportado do Sprint 9 -- subestima risco real e exige Hedge
+  Engine/Barrier Manager/Emergency Exit (Sprints 21-22 do ROADMAP.md)
+  antes de qualquer promocao a capital real.
+- Latencia (250ms) e taxa de ACK_UNKNOWN (2%) no Sprint 9 sao suposicoes
+  nao calibradas por dados reais de producao.
 
 ## Fora de escopo agora
 

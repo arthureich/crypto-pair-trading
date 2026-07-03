@@ -2,6 +2,226 @@
 
 Last updated: 2026-07-02
 
+## HANDOFF - Sprint 9 Executable Backtest With Realistic Order Simulation (Closure)
+
+### Status
+
+DONE. Gate NAO PASSA for "PnL líquido positivo em cenário conservador"
+(honest, reviewed, reproducible result -- see below).
+
+### Agente
+
+Backtest Agent (implementation), QA Agent, Market Data Agent, Execution/Risk
+Agent (review), PM Agent (orchestration, bug diagnosis, fixes)
+
+### Contexto
+
+The user provided the full 28-sprint master roadmap (`project_control/ROADMAP.md`)
+and asked to proceed directly to its Sprint 9 ("Backtest executável com
+simulação de ordens"), reusing the 13 pairs approved by this project's
+(non-canonical) Sprint 8 and the already-downloaded, checksum-verified
+June-2023 tick-level bookTicker archives. ADR-0008 in `DECISIONS.md`
+reconciles the numbering gap between this project's actual Sprint 8 and the
+roadmap's canonical Sprint 8.
+
+### O que foi implementado
+
+- `src/backtest/fill_model.py`: simulates MARKET/IOC and LIMIT+TTL order
+  fills against real level-1 top-of-book quotes only (no fabricated depth),
+  reusing `estimate_slippage` from Sprint 6. Adds latency (earliest reachable
+  quote after `decision_time + latency_ms`) and ACK_UNKNOWN (deterministic
+  per `order_id` via SHA256 hash, integrated with the real
+  `AckGuardOrderStatus` from Sprint 3).
+- `src/backtest/execution_simulator.py`: simulates a full round-trip
+  (entry + exit) per signal with beta-weighted leg sizing, explicit
+  leg-fill-mismatch detection, and genuine integration with
+  `evaluate_ack_guard` to delay the exit order when the entry leg is still
+  ACK_UNKNOWN-unresolved at the planned exit time.
+- `src/backtest/replay_engine.py`: replays the exact same causal signals
+  already reviewed in Sprint 8 (`generate_pair_signal_intents`, unchanged)
+  against real tick data, using a memory-bounded FIFO day-cache (max 4
+  unique symbol-days resident) after an earlier whole-month load caused an
+  out-of-memory kill in this environment.
+- `scripts/run_sprint9_replay.py`: runner, defaults to the 13 Sprint 8
+  backtest-approved pairs (not the full 31-pair cost-gated universe -- an
+  earlier version defaulted to the wrong list, which included BTCUSDT and
+  contributed to an OOM crash; fixed).
+
+### Bugs reais encontrados e corrigidos
+
+1. **Partial-fill PnL silently zeroed (found by PM via manual diagnostic
+   inspection of one trade).** `estimate_slippage` (Sprint 6) nulls its own
+   `average_price`/`slippage_bps` whenever an order does not fill 100% of
+   the requested quantity, even when it filled a real, non-zero amount with
+   real `spent_notional` recorded. `execution_simulator.py`'s
+   `_leg_pnl_quote` used `average_price is None` as its "nothing happened"
+   check, so a partially-filled leg's real PnL was zeroed instead of
+   computed -- affecting ~40-50% of simulated trades (illiquidity at level 1
+   makes partial fills common). Fixed in `fill_model.py`'s new
+   `_realized_price_and_slippage`: computes VWAP directly from
+   `spent_notional / filled_quantity` (always populated regardless of
+   `estimate_slippage`'s success flag). Independently re-verified by QA
+   Agent: the math is provably correct (matches `estimate_slippage`'s own
+   success-path formula), `simulate_limit_fill` never had this bug, no
+   similar pattern found elsewhere in the reviewed files, and the corrected
+   result becoming *more* negative (not less) is exactly what the bug's
+   mechanics predict -- restoring real PnL to zeroed legs could only worsen
+   an already-negative distribution, ruling out an artificial improvement.
+2. **Checksum computed but never verified before use (found by Market Data
+   Agent review).** `replay_engine.py::load_symbol_day_quotes` computed a
+   SHA256 hash for provenance labeling but never compared it against the
+   recorded `.CHECKSUM` sidecar -- fail-open, inconsistent with the
+   fail-closed pattern already established in `historical_dataset.py`.
+   Fixed by calling `verify_checksum_file` before reading each archive, with
+   new regression tests for both missing-sidecar and checksum-mismatch
+   cases.
+3. **Wrong default pair scope (found by PM after an OOM crash).**
+   `run_sprint9_replay.py` originally defaulted to
+   `contract.approved_pairs` (the full 31-pair Sprint 7/8 cost-gated
+   universe, including BTCUSDT/ETHUSDT and other high-volume symbols never
+   intended for this replay) instead of the 13 Sprint 8 backtest-approved
+   pairs. Fixed to read `backtest_approved_pairs` from
+   `sprint8_backtest_results.json`.
+4. **`_coerce_side` did not catch the raw `ValueError`** from an invalid
+   `SlippageSide` string, found via a new chaos test. Fixed to re-raise as
+   `FillModelError`.
+
+### Resultado final
+
+247 signals, 239 executed trades across the 13 pairs. **0 of 13 pairs are
+net-profitable.** Portfolio `net_pnl_quote = -$2266.27`. 70/239 trades (29%)
+show leg-fill-mismatch; 11,470.92 units of position quantity across all
+trades were never closed by the paired exit order (unclosed residual
+exposure, not marked to market in the reported PnL). Every one of the 13
+pairs flips from Sprint 8's idealized positive result to realistic-negative,
+including Sprint 8's two strongest performers (`ETCUSDT/LTCUSDT` at
+542.58bps idealized, `ARBUSDT/AVAXUSDT` at 456.59bps idealized).
+
+### Revisões formais (todas completas e reais, não presumidas)
+
+```text
+Backtest Agent: MUDANCAS SOLICITADAS on report communication (not code).
+Needed an explicit "MARKET_IOC on both legs is an upper-bound cost scenario"
+caveat, and a missing exit-leg partial-fill metric (both addressed: caveat
+added to reports/backtest_executable_v1.md, partially_filled_exit_leg_count
+and unclosed_residual_quantity added to the runner's summary output).
+
+QA Agent: PASSA. Independently re-derived the partial-fill bug fix's math
+and confirmed it correct; confirmed simulate_limit_fill never had the bug;
+found no similar hidden bug pattern; confirmed the more-negative corrected
+result is consistent with, not suspicious of, the bug's mechanics. One P3:
+simulate_limit_fill hardcodes slippage_bps=0.0 regardless of reference
+price (inconsistent metric definition vs MARKET orders, not a hidden-PnL
+bug -- logged as technical debt).
+
+Market Data Agent: MUDANCAS SOLICITADAS, now addressed. P1: checksum
+computed but never verified (see bug #2 above), fixed. Confirmed level-1
+only, no fabricated depth. P3: "realistic execution" label needed
+qualification (modeled latency/ACK_UNKNOWN assumptions, not measured) --
+reflected in the report's language.
+
+Execution/Risk Agent (consultative): 250ms latency reasonable-but-optimistic
+(no jitter/variance modeled); 2% ACK_UNKNOWN rate mechanically correct but
+uncalibrated by real production data; confirmed in code that
+execution_simulator.py never calls simulate_limit_fill despite it existing
+and being tested -- a real gap versus the roadmap's promise to test
+"IOC vs. maker não preenchido"; leg risk / unclosed residual exposure
+assessed as a first-class risk equivalent to a real "naked leg," requiring
+a future Hedge Engine/Barrier Manager/Emergency Exit; explicit
+recommendation to test a passive/maker variant before concluding the
+strategy itself lacks edge.
+```
+
+Note: two of these four review agents (QA Agent and Execution/Risk Agent)
+were dispatched in a prior session that crashed before their results were
+received. Rather than presenting assumed/drafted findings as if they were
+real independent reviews, both agents were resumed via `SendMessage` in this
+session and their actual, genuine conclusions retrieved before this report
+was written. No fabricated review content is in this handoff or in
+`reports/backtest_executable_v1.md`.
+
+### Arquivos alterados
+
+```text
+src/backtest/fill_model.py
+src/backtest/execution_simulator.py
+src/backtest/replay_engine.py
+src/backtest/__init__.py
+scripts/run_sprint9_replay.py
+tests/test_fill_model.py
+tests/test_execution_simulator.py
+tests/test_replay_engine.py
+tests/test_sprint9_chaos.py
+tasks/sprint_09/ (6 task files)
+project_control/ROADMAP.md (new)
+project_control/DECISIONS.md (ADR-0008)
+project_control/TASK_BOARD.md
+project_control/CURRENT_SPRINT.md
+project_control/PROJECT_STATE.md
+project_control/RISKS.md
+project_control/TEST_MATRIX.md
+project_control/DAILY_LOG.md
+reports/backtest_executable_v1.md (new)
+.gitignore (data-tracking fix, see below)
+data/research/ (small derived JSON/CSV outputs + compressed bars.csv backup, now tracked)
+```
+
+### Testes rodados
+
+```text
+UV_CACHE_DIR=.uv-cache uv run --offline --with pytest pytest tests -q
+Result: passed, 242 tests.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with ruff ruff check src scripts tests
+Result: passed.
+
+UV_CACHE_DIR=.uv-cache uv run --offline python scripts/run_sprint9_replay.py
+Result: passed (run 3 times total: initial discovery of the partial-fill
+bug, post-fix verification, post-checksum-fix final run). Real network
+access: none.
+```
+
+### Pendencias
+
+```text
+No LIMIT/maker execution variant has been tested in the real runner --
+Execution/Risk Agent's explicit recommendation before concluding the
+strategy lacks edge. simulate_limit_fill already exists and is unit-tested;
+wiring it into execution_simulator.py/replay_engine.py as an alternative
+order-type configuration is the natural next step.
+
+Latency (250ms) and ACK_UNKNOWN rate (2%) remain uncalibrated assumptions.
+
+Unclosed residual exposure (11,470.92 units) is a first-class documented
+risk requiring a future Hedge Engine/Barrier Manager/Emergency Exit before
+any real-capital promotion of this universe.
+
+Sprint 10 scope is not yet defined -- decision pending the user. The
+roadmap's canonical Sprint 10 is "Execution Risk Gate," but given the 0/13
+result, testing a passive/maker variant first (per Execution/Risk Agent)
+may be the more honest next step before building risk-gate infrastructure
+around a universe that has not yet demonstrated a survivable edge.
+```
+
+### Data tracking fix (separate from Sprint 9 technical work, done in this
+same session at explicit user request)
+
+```text
+Discovered that .gitignore unconditionally excluded all of data/, including
+small derived summaries essential to auditing Sprint 7/8/9 conclusions --
+meaning switching between the user's two development machines lost
+everything in data/, not just the large raw archives. Fixed .gitignore to
+track: all small derived JSON/CSV outputs in cost_pilot/ and normalized/
+(~26MB), plus a gzip-compressed backup of the 330MB Sprint 7 bars.csv
+(67MB compressed, per explicit user choice to keep it despite being
+regenerable, given the cost of re-downloading it). Left untracked (large,
+regenerable): the uncompressed bars.csv, the 83MB Sprint 7 raw klines ZIPs,
+and the 17GB Sprint 8/9 raw bookTicker ZIPs (data/research/binance_public/
+cost_pilot/raw/, subject to TASK-008-08's still-pending cleanup decision).
+Committed (174d327) and pushed to origin/main with explicit user
+authorization given in this conversation.
+```
+
 ## HANDOFF - Sprint 8 Backtest Walk-Forward Cost-Aware (Closure)
 
 ### Status

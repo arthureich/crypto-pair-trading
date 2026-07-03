@@ -107,6 +107,24 @@ documentation review
 | Sprint 8 confirmation review after P1 fixes (Backtest + QA combined) | documentation review | 8 | backtest | passed (1 P3 investigated and explained, not a bug) | sim |
 | Sprint 8 real backtest run: 31 pairs, corrected methodology | integration | 8 | backtest | passed (622 trades, 13 approved, 18 rejected, portfolio net negative) | sim |
 | Backtest sem look-ahead bias | backtest | 8 | backtest | passed (see causal-safety regression above) | sim |
+| Sprint 9 fill_model: MARKET/IOC full and partial fill against level-1 quotes | unit | 9 | backtest | passed (14 tests) | sim |
+| Sprint 9 fill_model: LIMIT+TTL fill, expiry, partial-then-expired | unit | 9 | backtest | passed | sim |
+| Sprint 9 fill_model: latency never selects a quote before decision+latency | unit | 9 | backtest | passed | sim |
+| Sprint 9 fill_model: ACK_UNKNOWN deterministic per order_id, integrated with real AckGuardOrderStatus | unit | 9 | backtest | passed | sim |
+| Sprint 9 fill_model: partial fill still reports real average_price/slippage (regression for the PnL-zeroing bug) | unit | 9 | backtest | passed | sim |
+| Sprint 9 execution_simulator: beta-weighted round trip, LEG_FILL_MISMATCH detection | unit | 9 | backtest | passed (9 tests) | sim |
+| Sprint 9 execution_simulator: partially-filled leg contributes real PnL, not zero (regression) | unit | 9 | backtest | passed | sim |
+| Sprint 9 execution_simulator: ACK_UNKNOWN entry genuinely delays exit via evaluate_ack_guard, accounting for reconciliation time already elapsed | unit | 9 | backtest | passed | sim |
+| Sprint 9 execution_simulator: does not import live/ledger/execution/recovery planes | unit | 9 | backtest/architecture | passed | sim |
+| Sprint 9 replay_engine: bounded FIFO day-cache never exceeds maxsize | unit | 9 | backtest | passed (7 tests) | sim |
+| Sprint 9 replay_engine: fails closed on missing archive, missing checksum sidecar, checksum mismatch | unit | 9 | backtest | passed | sim |
+| Sprint 9 replay_engine: causal replay never uses a quote before the signal | unit | 9 | backtest | passed | sim |
+| Sprint 9 chaos: large data gap, zero liquidity, simultaneous both-leg exit failure, invalid side | unit | 9 | backtest | passed (4 tests) | sim |
+| Sprint 9 real replay: 13 backtest-approved pairs, real tick data, no mock | integration | 9 | backtest/market_data | passed (247 signals, 239 trades, 0/13 net-positive, portfolio -$2266.27) | sim |
+| Sprint 9 review (Backtest Agent): methodology, report-communication findings addressed | documentation review | 9 | backtest | passed (MARKET_IOC caveat + residual metric added) | sim |
+| Sprint 9 review (QA Agent): partial-fill PnL bug fix independently re-derived and confirmed correct | documentation review | 9 | backtest | passed | sim |
+| Sprint 9 review (Market Data Agent): checksum-verification P1 found and fixed, level-1-only confirmed | documentation review | 9 | backtest/market_data | passed (1 P1 fixed) | sim |
+| Sprint 9 review (Execution/Risk Agent, consultative): latency/ack-rate assumptions flagged, leg risk documented, LIMIT/maker gap identified | documentation review | 9 | backtest | reviewed, findings incorporated | sim |
 | Kill switch trigger fails closed | live readiness | 14 | execution | pending | sim |
 
 ## Sprint 1 Review Checks

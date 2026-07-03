@@ -1,5 +1,156 @@
 # Daily Log
 
+## 2026-07-02 (continuacao final - roadmap mestre, Sprint 9, correcao de dados)
+
+User forneceu o roadmap mestre completo de 28 sprints e pediu para seguir a
+Sprint 9 dele ("Backtest executavel com simulacao de ordens"), reusando os
+13 pares do Sprint 8 e os 17GB de dados brutos ja baixados.
+
+Governanca:
+
+```text
+Salvei o roadmap em project_control/ROADMAP.md (fonte de verdade de
+sequenciamento de sprints).
+Comparei contra o Sprint 8 ja executado neste projeto: diverge do Sprint 8
+canonico do roadmap ("Triple Barrier + backtest estatistico"). Registrei
+isso como ADR-0008 -- debito tecnico explicito, nao revertido, nao
+escondido.
+Criei tasks/sprint_09/ com 6 tarefas detalhadas (dono, revisor, arquivos
+permitidos/proibidos, criterio de pronto, testes obrigatorios).
+```
+
+Implementacao Sprint 9:
+
+```text
+src/backtest/fill_model.py: MARKET/IOC e LIMIT+TTL contra top-of-book real
+(nivel 1), latencia, ACK_UNKNOWN (hash deterministico por order_id,
+integrado com AckGuardOrderStatus real do Sprint 3).
+src/backtest/execution_simulator.py: round-trip por par com peso beta,
+LEG_FILL_MISMATCH, integracao real com evaluate_ack_guard para atrasar
+saida quando entrada ainda esta ACK_UNKNOWN.
+src/backtest/replay_engine.py: replay causal dos mesmos sinais do Sprint 8,
+cache de dias limitado (FIFO, max 4) apos um crash de memoria anterior por
+carregar um mes inteiro de uma vez.
+```
+
+Crash de memoria e correcao:
+
+```text
+Primeira tentativa do lote completo (13 pares) morreu por OOM (codigo 137)
+processando BTCUSDT/ETHUSDT. Investigacao revelou bug real: o runner usava
+contract.approved_pairs (os 31 pares do cost-gate) em vez dos 13
+backtest-approved do Sprint 8 -- incluindo BTCUSDT, um simbolo pesadissimo
+que nem deveria estar em consideracao. Corrigido: default agora le
+backtest_approved_pairs de sprint8_backtest_results.json. Reduzi
+day_cache_size de 8 para 4 e adicionei gc.collect() entre pares como
+margem de seguranca extra. Testei cautelosamente par a par (ETHUSDT
+isolado) antes de rodar o lote completo de novo.
+```
+
+Bug real de PnL encontrado via inspecao manual de diagnostico:
+
+```text
+Ao inspecionar manualmente um trade simulado, percebi que a perna B tinha
+filled_quantity=308.6 (preenchimento parcial real) mas average_price=None.
+Causa raiz: estimate_slippage (Sprint 6, ja revisado) zera average_price/
+slippage_bps sempre que a ordem nao preenche 100%, mesmo com preenchimento
+parcial real e spent_notional populado. O execution_simulator usava
+`average_price is None` como proxy de "nada aconteceu", entao zerava
+SILENCIOSAMENTE o PnL real da perna em ~40-50% dos trades (onde havia
+preenchimento parcial).
+Corrigido em fill_model.py::_realized_price_and_slippage: calcula o VWAP
+real a partir de spent_notional/filled_quantity (sempre populados) em vez
+de confiar no average_price nulificado.
+Resultado ANTES da correcao: portfolio -$1729.96 (todos os 13 pares
+negativos).
+Resultado DEPOIS da correcao: portfolio -$2266.27 (ainda todos os 13
+pares negativos, mas MAIS negativo -- consistente com a mecanica do bug:
+restaurar PnL real a pernas antes zeradas so podia piorar uma distribuicao
+ja negativa, nunca melhorar artificialmente).
+```
+
+Revisoes formais (4 agentes, todas reais -- ver nota sobre sessao anterior
+abaixo):
+
+```text
+Backtest Agent: MUDANCAS SOLICITADAS na comunicacao do relatorio (nao no
+codigo) -- precisa de ressalva explicita de que MARKET_IOC nas duas pontas
+e o cenario de custo mais caro possivel, e faltava metrica de fill parcial
+na SAIDA (corrigido: adicionei partially_filled_exit_leg_count e
+unclosed_residual_quantity ao resumo agregado).
+QA Agent: PASSA -- re-derivou matematicamente a correcao do bug e confirmou
+correta, confirmou que simulate_limit_fill nunca teve o bug, nao achou
+padrao similar escondido, confirmou que o resultado mais negativo pos-
+correcao e exatamente consistente com a mecanica do bug (nao suspeito).
+Market Data Agent: MUDANCAS SOLICITADAS -- achou um P1 real: checksum era
+computado mas nunca verificado contra o esperado antes de usar os dados
+(fail-open, nao fail-closed). Corrigido com verify_checksum_file.
+Execution/Risk Agent (consultivo): latencia de 250ms razoavel mas otimista
+(sem variancia modelada); taxa de ACK_UNKNOWN de 2% nao calibrada por dados
+reais; confirmou que simulate_limit_fill nunca e chamado pelo runner real
+(lacuna real vs promessa do roadmap de testar IOC vs maker); risco de
+perna residual nao fechada e de primeira classe, precisa de Hedge Engine/
+Barrier Manager/Emergency Exit futuros; recomenda nao concluir "sem edge"
+sem testar variante LIMIT/maker primeiro.
+```
+
+Nota importante sobre revisoes: dois dos quatro agentes (QA Agent e
+Execution/Risk Agent) foram despachados numa sessao anterior que caiu antes
+de eu receber os resultados reais deles. Em vez de escrever no relatorio
+final o que eu ACHAVA que eles diriam, retomei os dois via SendMessage
+nesta sessao e obtive as conclusoes genuinas deles antes de escrever
+qualquer coisa. Nenhum conteudo de revisao fabricado foi para o relatorio
+final ou HANDOFFS.md.
+
+Resultado final real: 247 sinais, 239 trades executados, **0 dos 13 pares
+sao liquido-positivos**, portfolio -$2266.27. 70/239 trades com
+desbalanceamento de perna; 11.470,92 unidades de posicao nunca fechadas
+(exposicao residual nao marcada a mercado). Todos os 13 pares invertem de
+positivo (Sprint 8 idealizado) para negativo (Sprint 9 realista),
+incluindo os dois melhores do Sprint 8 (ETCUSDT/LTCUSDT 542.58bps,
+ARBUSDT/AVAXUSDT 456.59bps).
+
+Verificacao:
+
+```text
+UV_CACHE_DIR=.uv-cache uv run --offline --with pytest pytest tests -q
+Result: passed, 242 tests.
+UV_CACHE_DIR=.uv-cache uv run --offline --with ruff ruff check src scripts tests
+Result: passed.
+```
+
+Correcao de rastreamento de dados (a pedido explicito do usuario):
+
+```text
+Usuario explicou que alterna entre 2 computadores (um com pouco espaco) e
+queria poder commitar tudo essencial no git para nao depender dos dados
+brutos o tempo todo. Descoberta: .gitignore tinha uma regra generica
+`data/` que ignorava TUDO em data/research/, inclusive os resumos
+pequenos essenciais -- trocar de maquina hoje significaria perder tudo,
+nao so os arquivos brutos grandes.
+Corrigido .gitignore: agora versiona os JSON/CSV pequenos derivados
+(~26MB) + um backup comprimido do bars.csv do Sprint 7 (330MB -> 67MB via
+gzip -9, por escolha explicita do usuario, dado o custo de regenerar).
+Deixado de fora do git (grande, regeneravel): bars.csv sem compressao,
+ZIPs brutos do Sprint 7 (83MB), e os 17GB de bookTicker do Sprint 8/9
+(TASK-008-08 continua bloqueada aguardando decisao de limpeza).
+Commit 174d327 criado e enviado para origin/main com autorizacao explicita
+do usuario ("pode da push tbm depois" / "pode da push" / confirmacoes
+subsequentes). Local git user.email ja estava correto
+(arthureich@hotmail.com), nenhuma mudanca de config necessaria.
+```
+
+Status:
+
+```text
+TASK-009-01 a TASK-009-06 movidas para DONE. Sprint 9 fechada com gate NAO
+PASSA para "PnL positivo em cenario conservador" -- resultado honesto, nao
+mascarado. Atualizados TASK_BOARD, CURRENT_SPRINT, PROJECT_STATE, RISKS,
+TEST_MATRIX, HANDOFFS. Escopo do Sprint 10 nao definido -- decisao pendente
+do usuario, com recomendacao explicita do Execution/Risk Agent de testar
+variante LIMIT/maker antes de decidir se a estrategia tem edge.
+```
+
 ## 2026-07-02 (continuacao - Sprint 8 execucao, revisao e correcao de P1s)
 
 User instruction: "veja e continue pq o outro administrador acabou a cota,
