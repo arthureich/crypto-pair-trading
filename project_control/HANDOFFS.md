@@ -1,6 +1,491 @@
 # Handoffs
 
-Last updated: 2026-07-02
+Last updated: 2026-07-03
+
+## HANDOFF - TASK-SIG-004: Checagem Exploratoria Intrahora 5m (Closure)
+
+### Status
+
+DONE. Resultado: o achado tight de TASK-SIG-003 **nao se converte em edge
+liquido** em barras de 5 minutos. Nao abrir TASK-SIG-005. Signal Iteration 1
+permanece ENCERRADA como hipotese rejeitada (ADR-0010). Sprint 10 permanece
+NAO ABERTA automaticamente; proximo passo volta para decisao do usuario.
+
+### Agente
+
+Backtest Agent (implementacao), Quant Research Agent + QA / Chaos Testing
+Agent (revisao formal), PM Agent (orquestracao e gate).
+
+### Artefatos
+
+```text
+tasks/signal_iteration/TASK-SIG-004-intrahour-sanity-check.md
+scripts/run_signal_intrahour_sanity_check.py
+tests/test_signal_intrahour_sanity_check.py
+reports/signal_intrahour_sanity_check.md
+data/research/binance_public/normalized/intrahour_sanity_5m_202512_202605_bars.csv
+data/research/binance_public/cost_pilot/signal_intrahour_sanity_check.json
+data/research/binance_public/cost_pilot/signal_intrahour_sanity_pair_results.csv
+src/backtest/statistical_backtest.py
+src/research/triple_barrier.py
+tests/test_statistical_backtest.py
+tests/test_triple_barrier_directional.py
+```
+
+### O que foi feito
+
+Rodada unica, pequena e exploratoria autorizada pelo ADR-0010: reexaminar o
+bucket mais apertado de TASK-SIG-003 (`max_half_life_hours=0,375`, gross PF
+1,1559 em 74 trades de 1h) em granularidade 5m, sem nova grade de otimizacao
+e sem filtrar ex-post por `bars_held`, outcome ou PnL.
+
+Escopo real executado:
+
+```text
+8 simbolos: ADAUSDT, ARBUSDT, AVAXUSDT, BTCUSDT, DOGEUSDT, DOTUSDT,
+  ETCUSDT, ETHUSDT.
+9 pares: todos os pares que tiveram QUALQUER trade no bucket 0,375h do Run 2
+  da SIG-003, nao so os 3 que passaram por par.
+Janela: 2025-12 a 2026-05.
+Granularidade: Binance klines 5m.
+Dados normalizados: 419.328 barras.
+```
+
+### Correcao encontrada em revisao
+
+Revisao formal encontrou um bug de unidade em granularidade fina: a barreira
+vertical sub-hora era arredondada para no minimo 1h porque
+`TripleBarrierConfig.vertical_barrier_bars` calculava `ceil(half_life_hours *
+multiplier)` e `_resolve_barrier` multiplicava isso por `HOUR_MS`. Corrigido
+sem mudar o comportamento default de 1h:
+
+```text
+TripleBarrierConfig.bar_duration_hours default 1.0.
+vertical_barrier_bars agora e bar-count real:
+  ceil((half_life_hours * multiplier) / bar_duration_hours).
+_resolve_barrier continua usando open_time real para proteger contra gaps.
+statistical_backtest.py passa bar_duration_hours ao TripleBarrierConfig.
+run_signal_intrahour_sanity_check.py usa max_vertical_bars=2880 para preservar
+  o cap real de 240h do canonico em barras de 5m.
+```
+
+Isto e correcao de bug de unidade da propria checagem, nao nova hipotese de
+sinal e nao nova task de otimizacao.
+
+### Resultado real pos-correcao
+
+```text
+Baseline 5m sem filtro de half-life:
+  trades = 23.051
+  gross_pnl_bps = 38.129,9718
+  gross PF = 1,1343
+  net_pnl_bps = -239.672,3391
+  net PF = 0,4223
+
+Tight 5m max_half_life_hours=0,375:
+  identico ao baseline
+  trades = 23.051
+  gross PF = 1,1343
+  net PF = 0,4223
+
+Achado motivador 1h:
+  trades = 74
+  gross PF = 1,1559
+  net PF = 0,8327
+```
+
+Interpretacao: a granularidade 5m gera amostra ampla, mas o filtro tight
+deixa de ser vinculante nesse recorte e o custo fixo ainda destrói o edge.
+Nao ha evidencia consistente para continuar investindo nesta familia de sinal.
+
+### Revisao formal
+
+- Quant Research Agent: primeira revisao confirmou a matematica central do
+  `bar_duration_hours`, pediu tratar a lacuna latente de janela/unidade antes
+  de reuso em granularidade fina. Re-review pos-correcao: PASSA; ressalva
+  interpretativa aceita: baseline 5m e tight 5m identicos significam que o
+  filtro tight nao discriminou um subconjunto novo nesta amostra.
+- QA / Chaos Testing Agent: MUDANCAS SOLICITADAS por governanca incompleta e
+  bug de unidade sub-hora em `TripleBarrierConfig`. Re-review pos-correcao:
+  PASSA; nenhum achado bloqueante/medio/baixo no escopo revisado.
+- PM Agent: corrigiu a unidade, regenerou o experimento real e fechou os
+  controles. Nao houve alteracao em ledger, live engine, execution plane,
+  recovery ou modelos.
+
+### Verificacao
+
+```text
+pytest tests/test_triple_barrier_directional.py tests/test_statistical_backtest.py tests/test_signal_intrahour_sanity_check.py -q
+  41 passed
+
+pytest tests -q
+  315 passed
+
+ruff check src tests scripts
+  All checks passed
+
+git diff --check
+  clean
+
+uv run --offline python scripts/run_signal_intrahour_sanity_check.py --no-download
+  sucesso; artefatos regenerados; sem novo download.
+```
+
+### Proximo passo
+
+Nao criar TASK-SIG-005. Signal Iteration 1 fica encerrada. Decisao macro
+volta para o usuario: pivotar para nova formulacao de sinal, testar outro
+roadmap research hypothesis, ou abrir Sprint 10 conscientemente apesar do
+gate economico negativo ja documentado.
+
+---
+
+## HANDOFF - TASK-SIG-003: Falsificacao Ex-Ante de Entrada (Closure) -- Encerra Signal Iteration 1
+
+### Status
+
+DONE. Decisao final `STOP_SIGNAL_ITERATION`. Encerra Signal Iteration 1
+(SIG-001/002/003). Sprint 10 permanece NAO ABERTA. Decisao macro (pivotar
+formulacao do sinal, mudar universo/janela, ou pausar) volta para o usuario.
+
+### Agente
+
+Backtest Agent (implementacao), Quant Research Agent + QA / Chaos Testing
+Agent (revisao formal, 2 rodadas), PM Agent (orquestracao e gate).
+
+### Artefatos
+
+```text
+tasks/signal_iteration/TASK-SIG-003-entry-filter-falsification.md
+scripts/run_signal_entry_filter_experiment.py
+tests/test_signal_entry_filter_experiment.py
+reports/signal_entry_filter_experiment.md (relatorio final consolidado)
+data/research/binance_public/cost_pilot/signal_entry_filter_experiment_run1.json (+ csv)
+data/research/binance_public/cost_pilot/signal_entry_filter_experiment_run2.json (+ csv)
+```
+
+### O que foi feito
+
+Ultima tentativa pre-registrada de resgatar o sinal, pelo lado da ENTRADA:
+varreu o gate causal `max_half_life_hours` (meia-vida OU trailing, conhecida
+no momento da entrada) numa grade fixa, com regra de decisao PRE-REGISTRADA
+na task ANTES de rodar (CONTINUE so se algum threshold tiver net profit
+factor >= 1,10 E trade_count >= 200; anti-p-hacking: reportar a grade
+inteira, nunca so o melhor bucket).
+
+### Run 1 -- grade nao-vinculante (bug de desenho encontrado em revisao)
+
+Grade `[240,120,72,48,24,12]`h. Quant Research Agent encontrou um P1 real:
+a grade excluiu apenas 40 de 62.878 trades (0,064%) entre os extremos --
+mais de 99,9% das entradas ja tinham meia-vida trailing abaixo de 12h, entao
+a grade nunca isolou uma subpopulacao distinta. A conclusao STOP original
+extrapolava o que foi de fato testado.
+
+### Correcao: Run 2 -- novo pre-registro, grade vinculante
+
+Generalizado o runner para aceitar uma grade configuravel (`--grid`) e
+adicionada uma checagem automatica de "grade vinculante" (`binding_check`:
+compara o variant mais solto vs mais apertado da PROPRIA grade dada, sem
+hardcode). Pre-registrada uma segunda grade, independente e mais agressiva:
+`[240,12,6,3,1.5,0.75,0.375]`h. Esta SIM e vinculante: exclui 99,88% dos
+trades no threshold mais apertado (62.878 -> 74). O relatorio distingue
+claramente as duas execucoes, com a conclusao do Run 1 honestamente
+re-escopada ("evidencia de que a grade nao mordeu, nao de que filtro de
+entrada nao funciona") em vez de apagada.
+
+### Resultado (Run 2, vinculante)
+
+`STOP_SIGNAL_ITERATION`. Nenhum threshold cumpre a regra pre-registrada
+simultaneamente. O threshold mais apertado (0,375h) chega perto no gross
+(profit factor 1,156, gross bps/trade +5,44 -- primeira vez que o gross fica
+solidamente positivo em toda a Signal Iteration 1) mas falha no net (profit
+factor 0,833, o custo fixo ainda consome o edge) e na amostra (74 trades,
+3 pares -- abaixo do piso de 200 exigido pela regra).
+
+Observacao descritiva, claramente rotulada como NAO fazendo parte da
+decisao (para nao violar a disciplina anti-p-hacking): existe concentracao
+real de edge bruto em entradas de reversao muito rapida, mas nao sobrevive
+ao custo conservador fixo na amostra disponivel. Se alguem quiser perseguir
+isso, o caminho correto e um NOVO pre-registro dedicado (threshold unico
+fixado ex-ante, sensibilidade de custo, universo/janela maior para amostra)
+-- nunca afrouxar a regra ja aplicada.
+
+### Revisao formal
+
+- Backtest Agent: implementacao.
+- Quant Research Agent: MUDANCAS SOLICITADAS no Run 1 isolado (P1: grade
+  nao-vinculante) -> corrigido com Run 2 -> re-revisao PASSA (confirmou
+  `binding_check` generico, nao hardcoded; conclusao final honesta e valida).
+- QA / Chaos Testing Agent: PASSA (fail-closed do baseline, regra
+  pre-registrada tratando NaN corretamente, escopo proibido respeitado,
+  `statistical_backtest.py` nao alterado por esta task).
+- PM Agent: PASSA.
+
+### Verificacao
+
+304 testes na suite completa, ruff limpo, git diff --check limpo.
+
+### Encerramento da Signal Iteration 1
+
+Evidencia acumulada das 3 tasks:
+- TASK-SIG-001 (diagnostico): edge bruto agregado negativo antes de custo.
+- TASK-SIG-002 (saida): capar a saida em 4h piora o gross (survivorship).
+- TASK-SIG-003 (entrada): filtro de entrada so morde em meia-vida muito
+  curta, onde a amostra e pequena demais para confirmar o net edge.
+
+Nao ha mais teste ex-ante barato e obvio pendente dentro do escopo desta
+Signal Iteration. Sprint 10 permanece NAO ABERTA. Decisao pendente do
+usuario: pivotar a formulacao do sinal (nova familia/features/universo),
+investir num pre-registro dedicado a reversao muito rapida com amostra
+maior, ou pausar/encerrar esta linha de pesquisa. NADA foi commitado ainda.
+
+---
+
+## HANDOFF - TASK-SIG-002: Experimento Causal de Reversao Rapida (Closure)
+
+### Status
+
+DONE. Hipotese REJEITADA de forma honesta. Decisao `STOP_FAST_REVERSION_PATH`.
+Sprint 10 permanece NAO ABERTA. Decisao estrategica sobre abrir ou nao uma
+TASK-SIG-003 (teste ex-ante do lado da ENTRADA) esta pendente do usuario.
+
+### Agente
+
+Backtest Agent (implementacao), Quant Research Agent + QA / Chaos Testing
+Agent (revisao formal), PM Agent (orquestracao e gate).
+
+### Artefatos
+
+```text
+scripts/run_signal_fast_reversion_experiment.py
+tests/test_signal_fast_reversion_experiment.py
+reports/signal_fast_reversion_experiment.md
+data/research/binance_public/cost_pilot/signal_fast_reversion_experiment.json
+data/research/binance_public/cost_pilot/signal_fast_reversion_pair_results.csv
+src/backtest/statistical_backtest.py (correcao da barra confirmadora + regressoes)
+tests/test_statistical_backtest.py (2 regressoes da barra confirmadora: mock + resolvedor real)
+```
+
+### O que foi feito
+
+Testou causalmente a hipotese do TASK-SIG-001 de que reversoes rapidas teriam
+edge: rerodou o backtest estatistico com `max_vertical_bars=4` versus o
+baseline canonico, mudando apenas a config ANTES da execucao (sem filtrar
+trades ex-post por bars_held/outcome/PnL). O baseline reproduz o Sprint 8
+canonico exatamente (todos os deltas 0.0; o runner aborta fail-closed sem
+escrever artefatos se nao reproduzir).
+
+### Bug encontrado e corrigido durante a implementacao
+
+O backtest passava ao resolvedor de triple barrier uma janela que terminava
+exatamente no orcamento vertical. Como o resolvedor so confirma VERTICAL ao
+ver uma barra ESTRITAMENTE alem do orcamento (senao fail-closed para
+NO_DATA), a variante curta transformava VERTICALs legitimos em NO_DATA
+descartados -- e como VERTICALs tem gross negativo, isso INFLAVA
+artificialmente a variante (era a "melhora" que aparecia antes da correcao).
+Corrigido para `window_end = position + max_vertical_bars + 2`. Com a correcao,
+a variante corretamente PIORA. Caso claro de por que revisar antes de aceitar:
+o primeiro resultado favoravel era um artefato de survivorship.
+
+### Resultado
+
+`max_vertical_bars=4` nao melhora: gross -15.427 bps, net -2.044 bps, PF
+-0.016 vs baseline. Decomposicao: -12.591 PROFIT, -551 STOP, +13.142 VERTICAL
+(soma zero; trade_count identico = 62.878). Capar a saida em 4h forca ~13k
+reversoes que reverteriam depois de 4h a fechar mid-move como VERTICAL
+negativo. Confirma que o "2-4h = positivo" do diagnostico era survivorship
+ex-post, nao um sinal causal exploravel.
+
+### Revisao formal
+
+- Backtest Agent: PASSA (sessao anterior).
+- QA / Chaos Testing Agent: PASSA (apos aplicar abort fail-closed do baseline
+  e decomposicao no relatorio; sem P1/P2).
+- Quant Research Agent: PASSA (metodologia causal, baseline reproduz,
+  correcao remove vies em vez de introduzir).
+- PM Agent: PASSA.
+- P3 compartilhado por Quant e QA (regressao da barra confirmadora era
+  acoplada a mock): resolvido com um teste de integracao end-to-end usando o
+  resolvedor real, verificado que falha se a janela voltar para `+1`.
+
+### Verificacao
+
+292 testes na suite completa, ruff limpo, git diff --check limpo.
+
+### Proximo passo (decisao do usuario)
+
+A evidencia acumulada (edge bruto agregado nao-positivo; `|z|>=3` nao ajuda;
+unico cap de saida causal testado piora o gross) indica que o sinal, neste
+universo e conjunto de features, nao tem edge bruto exploravel por timing de
+SAIDA. Recomendacao do Quant: parar de iterar a saida. Se houver TASK-SIG-003,
+so se justifica como teste ex-ante final do lado da ENTRADA (gate de
+regime/volatilidade causal, ou half-life OU trailing por entrada) com regra de
+stop pre-registrada -- nunca re-bucketizacao ex-post. Alternativa: encerrar a
+iteracao de sinal e decidir com o usuario o rumo. NADA foi commitado ainda.
+
+---
+
+## HANDOFF - TASK-SIG-001: Diagnostico de Edge Bruto do Sinal
+
+### Status
+
+DONE. Diagnostico real concluido e revisado. Sprint 10 permanece NAO
+ABERTA por decisao explicita do usuario.
+
+### Agente
+
+Quant Research Agent (diagnostico), Backtest Agent (revisao metodologica),
+QA / Chaos Testing Agent (fail-closed), PM Agent (orquestracao e gate).
+
+### Artefatos
+
+```text
+tasks/signal_iteration/TASK-SIG-001-gross-edge-diagnostics.md
+tasks/signal_iteration/TASK-SIG-002-fast-reversion-experiment.md
+src/research/signal_diagnostics.py
+scripts/run_signal_diagnostics.py
+tests/test_signal_diagnostics.py
+reports/signal_diagnostics.md
+data/research/binance_public/cost_pilot/signal_diagnostics_sprint8_canonical.json
+data/research/binance_public/cost_pilot/signal_diagnostics_sprint8_canonical.csv
+```
+
+### Resultado real
+
+Foram analisados os 62.878 trades `RESOLVED` ja calculados pelo Sprint 8
+canonico, sem rerodar backtest e sem carregar arquivos raw.
+
+```text
+Gross PnL total: -48.248,03 bps
+Gross PnL medio: -0,7673 bps/trade
+Gross profit factor: 0,9866
+Net PnL total ja calculado: -861.874,19 bps
+PROFIT / STOP / VERTICAL: 69% / 10% / 21%
+```
+
+Conclusao: a hipotese "STOP acontece demais" nao se confirmou; PROFIT e
+muito mais frequente que STOP. O problema e payoff medio/perdas grandes.
+`|z| >= 3.0` piora contra a faixa `2.0-2.5`, entao aumentar simplesmente o
+limiar de entrada nao e a primeira iteracao recomendada. O recorte mais
+forte e temporal: 2-4h tem gross medio positivo (+41,42 bps/trade), enquanto
+5h+ destrói o edge bruto.
+
+### Revisao formal
+
+```text
+Quant Research Agent: PASSA. Ressalva: bars_held/outcome sao ex-post e nao
+podem virar feature de entrada.
+
+Backtest Agent: MUDANCAS SOLICITADAS -> PASSA. Correcoes: bucket 25h+
+materializado mesmo com zero trades; OU half-life curto rebaixado para
+hipotese secundaria que exige registrar/recalcular half-life por entrada.
+
+QA / Chaos Testing Agent: MUDANCAS SOLICITADAS -> PASSA. Correcoes:
+fail-closed para status/side/outcome invalidos, bars_held<=0, |z|<2.0 e
+payload sem nenhum trade resolvido.
+```
+
+### Verificacao
+
+```text
+pytest tests/test_signal_diagnostics.py -> 13 passed
+pytest tests -q -> 283 passed
+ruff check src tests scripts -> All checks passed
+git diff --check -> clean
+```
+
+### Proximo passo
+
+TASK-SIG-002 esta READY. Deve rerodar o backtest estatistico com uma regra
+causal de reversao rapida (`max_vertical_bars=4`) e comparar contra o
+baseline canonico. E proibido filtrar retrospectivamente por `bars_held`,
+`outcome`, `gross_pnl_bps` ou `net_pnl_bps`.
+
+---
+
+## HANDOFF - Sprint 8 Canonico: Triple Barrier + Backtest Estatistico (Closure)
+
+### Status
+
+DONE. Gate NAO PASSA para todos os 41 pares ("profit factor liquido >=
+1.10" -- resultado honesto, revisado, reproduzivel -- ver
+`reports/backtest_statistical.md`).
+
+### Agente
+
+Quant Research Agent (`triple_barrier.py`), Backtest Agent
+(`statistical_backtest.py`, execucao real), QA / Chaos Testing Agent
+(revisao adversarial x2), PM Agent (orquestracao, diagnostico e correcao de
+bugs, gate, relatorio)
+
+### Contexto
+
+O usuario pediu para voltar e construir o Sprint 8 canonico do roadmap
+mestre (Triple Barrier direcional + backtest estatistico), ja que a Sprint 8
+real deste projeto (walk-forward cost-aware) diverge do desenho do roadmap
+(ver ADR-0008). ADR-0009 decidiu construir esse trabalho retroativamente,
+como tarefas TASK-008C-01/02/03 separadas, sem reverter o que ja estava
+fechado.
+
+### O que foi implementado
+
+- `src/research/triple_barrier.py`: labeling de triple barrier direcional em
+  espaco de z-score (PROFIT/STOP/VERTICAL/NO_DATA), barreira vertical
+  derivada do half-life OU e resolvida por tempo decorrido real (nao
+  contagem de barras -- importante na presenca de lacunas nos dados).
+- `src/backtest/statistical_backtest.py`: backtest a nivel de candle (1h)
+  reusando o padrao causal ja revisado do Sprint 8 real (Kalman sequencial +
+  z-score rolante causal + refit OU em janela trailing), resolvendo cada
+  sinal via triple barrier, com custo conservador fixo (6.0bps/perna
+  round-trip, explicitamente uma suposicao) + funding real do Sprint 7.
+- `scripts/run_sprint8_canonical_backtest.py`: runner real, sem mock, contra
+  as 526.080 barras normalizadas do Sprint 7.
+- `reports/backtest_statistical.md`: metodologia completa, formula de custo
+  com justificativa, tabela por par e agregada, decisao de gate, e a
+  ressalva obrigatoria de que este resultado (custo fixo estimado) nao e
+  diretamente comparavel ao da Sprint 9 (custo real tick-a-tick).
+
+### Bugs encontrados em revisao formal (2 rodadas: 4 revisores + 2 re-revisores independentes)
+
+1. `triple_barrier.py` P1 (Backtest Agent): dados insuficientes apos a
+   entrada eram rotulados VERTICAL com bars_held truncado em vez de
+   NO_DATA -- corrigido para fail-closed.
+2. `triple_barrier.py` P1 (QA/Chaos Agent): barreira vertical usava
+   contagem de posicao no array, incorreta na presenca de lacunas -- corrigido
+   para usar tempo decorrido real via open_time.
+3. `statistical_backtest.py` P1 (Quant Research Agent E QA/Chaos Agent,
+   independentemente, o MESMO bug): `profit_factor_gate_pass` usava
+   `math.isfinite()`, rejeitando `+inf` -- um par 100% vencedor era marcado
+   como reprovado. Corrigido.
+4. `statistical_backtest.py` P1 (QA/Chaos Agent): funding_carry NaN podia
+   envenenar as metricas agregadas com NaN enquanto o gate reportava PASS.
+   Corrigido com fail-closed.
+
+Todas as 4 correcoes foram re-revisadas por agentes independentes que nao
+viram a primeira revisao -- ambas as rodadas de re-revisao: **PASSA**.
+
+### Resultado real
+
+62.878 trades resolvidos nos 41 pares. Portfolio: profit factor 0,782, net
+PnL -861.874,19 bps. Melhor par individual (ETCUSDT/LTCUSDT): profit factor
+0,960 -- ainda abaixo do gate de 1,10. **0/41 pares aprovados.** Consistente
+(mas nao diretamente comparavel) com o resultado NAO PASSA da Sprint 9.
+
+### Proximo passo sugerido
+
+O PnL bruto por trade ja e proximo de zero antes de qualquer custo (ver
+Secao 5.1 do relatorio) -- sugere que o proximo passo de pesquisa e revisar
+a seletividade do sinal de entrada, nao apenas o modelo de custo. Fora do
+escopo desta tarefa de gate.
+
+### Handoff para
+
+PM Agent: decidir com o usuario se avanca para a proxima sprint do roadmap
+(Sprint 10+) ou se investe em iterar o sinal de entrada antes de prosseguir.
+`project_control/RISKS.md` atualizado para fechar o debito tecnico do
+ADR-0008.
+
+---
 
 ## HANDOFF - Sprint 9 Executable Backtest With Realistic Order Simulation (Closure)
 

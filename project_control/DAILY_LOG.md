@@ -1,5 +1,155 @@
 # Daily Log
 
+## 2026-07-03 (TASK-SIG-004 - checagem intrahora 5m fechada)
+
+Continuei a partir da revisao formal da TASK-SIG-004. O trabalho tecnico
+central estava feito, mas a revisao pediu mudancas: governanca nao fechada e
+bug de unidade em barreira vertical sub-hora.
+
+Corrigi a unidade no core compartilhado: `TripleBarrierConfig` agora recebe
+`bar_duration_hours` (default 1.0, preservando o comportamento de 1h),
+`vertical_barrier_bars` calcula contagem real de barras via
+`ceil((half_life_hours * multiplier) / bar_duration_hours)`, e o resolvedor
+continua usando `open_time` real para proteger contra gaps. `statistical_backtest.py`
+passa `bar_duration_hours` ao triple barrier e o runner 5m escala
+`max_vertical_bars=2880` para preservar o cap real de 240h.
+
+Rerodei a checagem real com `--no-download`, reaproveitando os dados 5m ja
+baixados/normalizados (419.328 barras, 8 simbolos, 9 pares, 2025-12 a
+2026-05). Resultado pos-correcao: baseline=tight, 23.051 trades, gross PF
+1,1343, net PF 0,4223. O achado motivador 1h (gross PF 1,1559, net PF
+0,8327, n=74) nao vira edge liquido em amostra adequada.
+
+Atualizei `reports/signal_intrahour_sanity_check.md`, JSON/CSV de saida,
+task file, TASK_BOARD, HANDOFFS, CURRENT_SPRINT, PROJECT_STATE e TEST_MATRIX.
+Decisao: nao abrir TASK-SIG-005; Signal Iteration 1 permanece encerrada;
+Sprint 10 nao abre automaticamente. Verificacao: foco 41 testes, suite
+completa 315 testes, ruff limpo, git diff --check limpo.
+
+## 2026-07-03 (Signal Iteration 1 - TASK-SIG-003, ultima tentativa e encerramento)
+
+Usuario escolheu explicitamente "TASK-SIG-003: teste ex-ante de ENTRADA"
+como proximo passo apos o STOP de TASK-SIG-002, e "ainda nao commitar".
+Criei a task com regra de decisao PRE-REGISTRADA (net PF>=1,10 E
+trade_count>=200) e grade fixa de `max_half_life_hours`. Implementei
+`scripts/run_signal_entry_filter_experiment.py` + testes, rodei a grade
+real: `STOP_SIGNAL_ITERATION`.
+
+Despachei Quant + QA em revisao formal. QA: PASSA. Quant achou um P1 real:
+a grade `[240,120,72,48,24,12]`h era NAO-VINCULANTE (so 0,064% dos trades
+excluidos -- a distribuicao de half-life trailing das entradas ja e quase
+toda <12h), entao a conclusao original extrapolava o que foi testado.
+
+Corrigi generalizando o runner para grade configuravel (`--grid`) e
+adicionando `binding_check` (audita automaticamente se uma grade exclui
+fracao material de trades, sem hardcode). Pre-registrei um Run 2
+independente com grade bem mais agressiva `[240,12,6,3,1.5,0.75,0.375]`h --
+essa sim vinculante (99,88% excluidos no threshold mais apertado). Reescrevi
+o relatorio final consolidando as duas execucoes com honestidade (Run 1
+re-escopado, nao apagado) e uma secao de observacao descritiva claramente
+rotulada como nao-decisoria (concentracao de gross edge em half-life muito
+curto, mas amostra pequena demais para confirmar).
+
+Re-despachei o Quant sobre o estado corrigido: PASSA, confirmando que
+`binding_check` e generico (nao hardcoded) e que a decisao final
+`STOP_SIGNAL_ITERATION` decorre honestamente da regra pre-registrada.
+
+Fechei TASK-SIG-003 (DONE) no board, task file, HANDOFFS e PROJECT_STATE.
+304 testes, ruff limpo, diff limpo. **Isto encerra a Signal Iteration 1**
+(SIG-001/002/003) -- decisao macro de proximos passos volta para o usuario.
+Nada commitado.
+
+## 2026-07-03 (Signal Iteration 1 - TASK-SIG-002, experimento de reversao rapida)
+
+Continuei de onde a sessao anterior parou (ela tinha implementado o runner e
+as correcoes do QA mas parou no meio da validacao, deixando um teste
+quebrando -- fixture de `compare_variant_results` sem a chave `outcome_counts`
+que a funcao passou a consumir; alinhei o fixture ao contrato real).
+
+Rerodei o experimento corrigido (com a barra confirmadora): baseline reproduz
+o Sprint 8 canonico exatamente, e `max_vertical_bars=4` NAO melhora (gross
+-15.427 bps, net -2.044 bps, PF -0.016). Decisao `STOP_FAST_REVERSION_PATH`.
+A hipotese de reversao rapida do TASK-SIG-001 era survivorship ex-post.
+
+Revisao formal (estado final, pos-correcoes): despachei Quant Research e
+QA/Chaos frescos (os revisores da sessao anterior nao eram acessiveis daqui);
+ambos PASSA, mais Backtest (sessao anterior) PASSA e PM PASSA. Quant e QA
+levantaram o mesmo P3: a regressao da barra confirmadora era acoplada a mock.
+Adicionei um teste com o resolvedor real, verificado que falha se a janela
+voltar para `+1`.
+
+Fechei TASK-SIG-002 (DONE) no board, HANDOFFS e PROJECT_STATE. 292 testes,
+ruff limpo, diff limpo. Decisao estrategica sobre TASK-SIG-003 (teste ex-ante
+de entrada) vs. encerrar iteracao de sinal esta com o usuario. Nada commitado.
+
+## 2026-07-03 (Signal Iteration 1 - diagnostico de edge bruto)
+
+Usuario decidiu explicitamente iterar o sinal primeiro antes de abrir Sprint
+10 ou testar execucao passiva/maker. Criei `tasks/signal_iteration/` com
+TASK-SIG-001 e TASK-SIG-002.
+
+TASK-SIG-001 implementado:
+
+```text
+src/research/signal_diagnostics.py
+scripts/run_signal_diagnostics.py
+tests/test_signal_diagnostics.py
+reports/signal_diagnostics.md
+data/research/binance_public/cost_pilot/signal_diagnostics_sprint8_canonical.json
+data/research/binance_public/cost_pilot/signal_diagnostics_sprint8_canonical.csv
+```
+
+Analise real dos 62.878 trades resolvidos do Sprint 8 canonico, sem rerodar
+backtest nem carregar raw: gross PnL -48.248,03 bps (-0,7673 bps/trade),
+gross profit factor 0,9866, net PnL -861.874,19 bps. PROFIT e muito mais
+frequente que STOP (69% vs 10%), entao a hipotese "STOP demais" nao se
+confirmou. `|z| >= 3.0` piora contra `2.0-2.5`. O recorte mais forte e
+temporal: trades resolvidos em 2-4h tem gross medio +41,42 bps/trade,
+enquanto holds de 5h+ sao fortemente negativos. Como `bars_held` e
+`outcome` sao ex-post, a proxima tarefa nao pode filtrar retrospectivamente;
+TASK-SIG-002 deve rerodar um experimento causal com `max_vertical_bars=4`.
+
+Revisao formal:
+
+```text
+Quant Research Agent: PASSA, com ressalva de nao usar bars_held/outcome como
+feature de entrada.
+Backtest Agent: MUDANCAS SOLICITADAS -> PASSA apos materializar bucket 25h+
+zerado e rebaixar OU half-life curto para hipotese secundaria.
+QA / Chaos Testing Agent: MUDANCAS SOLICITADAS -> PASSA apos fail-closed para
+status/side/outcome invalidos, bars_held<=0, |z|<2.0 e nenhum trade resolvido.
+```
+
+Verificacao: `pytest tests/test_signal_diagnostics.py` 13 passed;
+`pytest tests -q` 283 passed; `ruff check src tests scripts` limpo;
+`git diff --check` limpo. Sprint 10 permanece NAO ABERTA.
+
+## 2026-07-03 (Sprint 8 Canonico - Triple Barrier + backtest estatistico)
+
+User pediu para voltar e construir de verdade o Sprint 8 canonico do roadmap
+mestre (ADR-0008 ja documentava a divergencia; ADR-0009 decidiu construir
+retroativamente como trabalho separado, TASK-008C-01/02/03).
+
+Implementado: `src/research/triple_barrier.py` (labeling triple barrier
+direcional), `src/backtest/statistical_backtest.py` (backtest candle-level
+com custo fixo conservador + funding real), `scripts/run_sprint8_canonical_backtest.py`.
+
+Revisao formal: 4 agentes independentes na primeira passada (Backtest Agent
++ QA/Chaos Agent em triple_barrier.py; Quant Research Agent + QA/Chaos Agent
+em statistical_backtest.py) encontraram 4 bugs P1 reais -- dois em cada
+arquivo, incluindo o mesmo bug (`profit_factor_gate_pass` rejeitando `+inf`)
+encontrado independentemente por dois revisores diferentes em
+statistical_backtest.py. Todos corrigidos e re-revisados por 2 agentes
+independentes adicionais: ambas as rodadas PASSA.
+
+Execucao real: 41 pares estatisticos do Sprint 7, 526.080 barras reais.
+Resultado: 0/41 pares aprovados (profit factor liquido >= 1.10). Portfolio
+profit factor 0,782. Consistente com o NAO PASSA da Sprint 9 (metodologia
+diferente, mesma conclusao direcional). `reports/backtest_statistical.md`
+escrito com metodologia completa e ressalva de nao-comparabilidade com
+Sprint 9. `project_control/RISKS.md` atualizado para fechar o debito tecnico
+do ADR-0008. Suite completa: 270 testes passando, ruff limpo.
+
 ## 2026-07-02 (continuacao final - roadmap mestre, Sprint 9, correcao de dados)
 
 User forneceu o roadmap mestre completo de 28 sprints e pediu para seguir a

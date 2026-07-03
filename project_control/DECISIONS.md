@@ -370,3 +370,183 @@ Add "Sprint 8 canonical gap: directional triple barrier + Sharpe/Sortino/
 profit-factor metrics" to `project_control/RISKS.md` as open technical debt.
 Any future sprint that revisits exit-strategy sophistication should close
 this gap explicitly and reference this ADR.
+
+## ADR-0009 - Retroactively Build Canonical Sprint 8 (Triple Barrier + Statistical Backtest)
+
+## Status
+
+Accepted
+
+## Context
+
+ADR-0008 logged the roadmap's canonical Sprint 8 ("Triple Barrier direcional
+e backtest estatistico") as deferred technical debt after the project
+proceeded directly to Sprint 9 by explicit user instruction. The user has now
+asked to go back and build it properly, noting that `project_control/ROADMAP.md`
+was only made available to the PM in the Sprint 8/9 session -- prior sessions
+that built the non-canonical "Sprint 8" (walk-forward cost-aware) never had
+this document and could not have followed it.
+
+## Decision
+
+1. Build the roadmap's canonical Sprint 8 deliverables now, as a distinct,
+   separately tracked body of work (`tasks/sprint_08_canonical/`,
+   `TASK-008C-*` in `TASK_BOARD.md`) rather than overwriting or renumbering
+   the already-closed non-canonical Sprint 8 (whose real, reviewed
+   walk-forward/Sprint 9 chain of work stands on its own and is not reverted).
+2. Universe: all 41 Sprint 7 statistical candidate pairs
+   (`sprint7_binance_usdm_202306_202605_research_gate.json`), not the
+   cost-gated 31 or backtest-approved 13 -- the roadmap's Sprint 8 sits
+   between Sprint 7 (research) and the expensive real-cost-evidence work this
+   project added beyond the roadmap (ADR-0007), so it is evaluated on the
+   full statistical universe with the roadmap's own conservative-fixed-cost
+   assumption, not gated by data this sprint was never meant to depend on.
+3. Cost model: exactly as the roadmap specifies -- "fees estimadas, funding
+   estimado, slippage conservador fixo" -- not the real tick-level cost
+   evidence from ADR-0007/Sprint 9. Funding uses the real, already-computed
+   `funding_carry_bps_per_day` per pair (Sprint 7 output); fees/slippage use
+   a single documented conservative fixed constant per leg round-trip,
+   explicitly labeled as an assumption, not a measurement.
+4. Exit logic: directional triple barrier in z-score space (profit barrier =
+   reversion toward the OU mean, stop barrier = adverse z-score excursion
+   beyond entry, vertical barrier = a multiple of the pair's OU half-life,
+   capped). Barrier resolution scans forward through already-known historical
+   bars after a causally-generated entry signal -- this is standard backtest
+   label resolution, not look-ahead in the entry signal itself, and must be
+   documented as such to avoid confusion with the project's no-look-ahead
+   rules for signal generation.
+5. Metrics: Sharpe, Sortino, max drawdown, profit factor, hit rate, avg
+   win/loss, turnover, average time in trade -- all roadmap-specified,
+   previously never implemented in this project.
+6. Gate: profit factor >= 1.10 net of costs, per roadmap.
+
+## Consequences
+
+This does not replace or invalidate the non-canonical Sprint 8 or Sprint 9
+work already done and reviewed; both remain valid, real, reviewed
+engineering. Canonical Sprint 8 is additive: it answers the roadmap's
+original question (does a simple, cheap, candle-level backtest with
+conservative fixed costs show a profit-factor-positive edge) using a
+different methodology than what Sprint 9 already tested (tick-level real
+execution simulation). The two are complementary evidence, not duplicates.
+If canonical Sprint 8's approved universe differs materially from the
+13-pair Sprint 9 universe, that is expected (different filter) and does not
+by itself invalidate either result.
+
+## Agent Impact
+
+- PM Agent
+- Backtest Agent
+- Quant Research Agent
+- QA / Chaos Testing Agent
+
+## Migration
+
+Update `RISKS.md` to close the ADR-0008 technical-debt entry once this ADR's
+deliverables are reviewed and merged. Update `TASK_BOARD.md`/`CURRENT_SPRINT.md`
+with `TASK-008C-*` tasks distinct from the already-closed `TASK-008-*` series.
+
+## ADR-0010 - Close Signal Iteration 1 as a Rejected Hypothesis
+
+## Status
+
+Accepted
+
+## Context
+
+Canonical Sprint 8 (ADR-0009) gated NAO PASSA for all 41 statistical pairs
+(`reports/backtest_statistical.md`). Before opening Sprint 10 or abandoning
+the mean-reversion signal family entirely, the user asked to iterate on the
+signal itself first (this session), producing three sequential, formally
+reviewed, pre-registered falsification tests:
+
+1. **TASK-SIG-001** (diagnostic, no rerun): aggregate gross PnL is negative
+   before any cost (-0.7673 bps/trade); `|z| >= 3.0` performs worse than
+   `2.0-2.5`; the only strong ex-post cut was 2-4h resolved reversions.
+2. **TASK-SIG-002** (causal exit-side test): capping the vertical exit at 4
+   bars to force "fast reversion" trades makes gross PnL WORSE, not better --
+   the 2-4h ex-post cut in TASK-SIG-001 was survivorship bias, not a causal
+   edge. `STOP_FAST_REVERSION_PATH`.
+3. **TASK-SIG-003** (causal entry-side test, two pre-registered runs): a
+   `max_half_life_hours` entry gate is non-binding down to 12h (Run 1, a real
+   methodology gap caught by Quant Research Agent review), and only becomes
+   binding at 0.375h (Run 2), where gross profit factor exceeds 1.0 for the
+   first time in the entire iteration (1.156) but net profit factor stays at
+   0.833 and the qualifying sample is 74 trades across 3 pairs --
+   underpowered by the task's own pre-registered `trade_count >= 200` bar.
+   `STOP_SIGNAL_ITERATION`.
+
+All three tasks reproduced their baselines exactly, applied literal
+pre-registered decision rules (no ex-post cherry-picking), and passed
+independent formal review (Quant Research Agent + QA / Chaos Testing Agent +
+PM Agent), including at least one real P1 caught and fixed per task before
+acceptance. This is a clean, convergent, three-times-independently-tested
+negative result, not a single failed attempt.
+
+## Decision
+
+1. **Signal Iteration 1 is officially closed as a REJECTED HYPOTHESIS.** The
+   Kalman/OU mean-reversion signal, as formulated (dynamic hedge ratio spread,
+   causal rolling z-score entries, OU-half-life-driven triple-barrier exits),
+   on this universe (41 Sprint 7 statistical pairs) and this dataset (1h
+   candles, Binance USD-M futures, 2023-06 through 2026-05), shows no
+   exploitable net edge via exit-side timing or entry-side half-life
+   filtering. This is documented as a durable negative research result, not
+   left as an open/pending iteration.
+2. Sprint 10 (Execution Risk Gate) remains NOT opened by this decision alone;
+   opening it is a separate decision for the user, independent of whether
+   this signal family is abandoned or not.
+3. One bounded, small-scope exploratory check is authorized as a final,
+   non-repeating sanity pass before moving to the next research hypothesis:
+   re-examine the 3 pairs and 74 trades from TASK-SIG-003 Run 2's tightest
+   bucket (`max_half_life_hours=0.375`, ~22.5 minutes) using finer-grained
+   (5-15 minute) bars, on the theory that hourly bars cannot reliably
+   estimate or resolve reversions faster than the bar interval itself. This
+   check is explicitly NOT a new optimization cycle: no parameter sweep, no
+   new pre-registered decision rule beyond a plain "does gross/net edge
+   replicate at finer granularity on this narrow slice," small universe (the
+   3 pairs' underlying symbols only), and a bounded time window (not a
+   3-year download). If it does not show consistent evidence, this signal
+   family receives no further investment and effort moves to the next
+   roadmap research hypothesis.
+
+## Consequences
+
+The three SIG tasks and their reports remain as permanent, citable evidence
+of a real research dead end -- this is valuable output, not wasted work: it
+prevents future sessions (or the live Execution Risk Gate work in Sprint 10)
+from re-deriving or re-litigating the same conclusion. Whatever the
+5-15-minute exploratory check finds, it does not reopen TASK-SIG-001/002/003;
+it is a distinct, separately-scoped follow-up.
+
+## Addendum 2026-07-03 - TASK-SIG-004 Executed
+
+The bounded intrahour check was executed and closed. Scope was kept small:
+8 symbols / 9 pairs that had any trade in TASK-SIG-003 Run 2's tightest
+bucket, 2025-12 through 2026-05, Binance 5m klines, no full-universe
+redownload. A review-found sub-hour vertical-barrier unit bug was corrected
+with `bar_duration_hours` propagation before accepting the result.
+
+Final result after correction: baseline 5m and tight 5m
+(`max_half_life_hours=0.375`) were identical: 23,051 trades, gross profit
+factor 1.1343, net profit factor 0.4223. The 1h motivating observation
+(gross PF 1.1559, net PF 0.8327, n=74) does not become an exploitable net
+edge at 5m. Decision is unchanged: no TASK-SIG-005, Signal Iteration 1
+remains closed as a rejected hypothesis, and Sprint 10 is not opened by this
+ADR.
+
+## Agent Impact
+
+- PM Agent
+- Quant Research Agent
+- Backtest Agent
+- QA / Chaos Testing Agent
+
+## Migration
+
+Update `PROJECT_STATE.md` and `CURRENT_SPRINT.md` to reflect Signal
+Iteration 1 as closed/rejected, not pending. Track the bounded intrahour
+exploratory check as its own small task
+(`tasks/signal_iteration/TASK-SIG-004-intrahour-sanity-check.md`), explicitly
+scoped smaller than TASK-SIG-001/002/003 and not part of the same
+pre-registered decision chain.

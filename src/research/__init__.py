@@ -115,6 +115,14 @@ from .stationarity import (
     rolling_correlation,
     spread_stability,
 )
+from .triple_barrier import (
+    BarrierOutcome,
+    BarrierSide,
+    TripleBarrierConfig,
+    TripleBarrierError,
+    TripleBarrierLabel,
+    label_directional_triple_barrier,
+)
 
 __all__ = [
     "AnalysisScope",
@@ -149,6 +157,8 @@ __all__ = [
     "PreliminaryHalfLifeResult",
     "RAW_COST_SAMPLE_COLUMNS",
     "RejectedPair",
+    "BarrierOutcome",
+    "BarrierSide",
     "S3Object",
     "SpreadStabilityResult",
     "Sprint8ContractError",
@@ -160,6 +170,9 @@ __all__ = [
     "SymbolMetrics",
     "SymbolRejectReason",
     "SymbolSelection",
+    "TripleBarrierConfig",
+    "TripleBarrierError",
+    "TripleBarrierLabel",
     "WalkForwardFold",
     "WalkForwardSplitConfig",
     "WalkForwardSplitError",
@@ -189,6 +202,7 @@ __all__ = [
     "join_cost_to_bars_no_lookahead",
     "kpss",
     "kpss_test",
+    "label_directional_triple_barrier",
     "load_sprint8_universe_contract",
     "merge_symbol_data",
     "month_range",

@@ -125,6 +125,17 @@ documentation review
 | Sprint 9 review (QA Agent): partial-fill PnL bug fix independently re-derived and confirmed correct | documentation review | 9 | backtest | passed | sim |
 | Sprint 9 review (Market Data Agent): checksum-verification P1 found and fixed, level-1-only confirmed | documentation review | 9 | backtest/market_data | passed (1 P1 fixed) | sim |
 | Sprint 9 review (Execution/Risk Agent, consultative): latency/ack-rate assumptions flagged, leg risk documented, LIMIT/maker gap identified | documentation review | 9 | backtest | reviewed, findings incorporated | sim |
+| TASK-SIG-001 signal diagnostics: flatten canonical resolved trades only | unit | SIG-1 | research | passed (excludes UNRESOLVED_NO_DATA; fails if no resolved trades) | sim |
+| TASK-SIG-001 signal diagnostics: fail-closed malformed payload | unit | SIG-1 | research/qa | passed (invalid status/side/outcome, bars_held<=0, |z|<2.0) | sim |
+| TASK-SIG-001 signal diagnostics: required buckets materialized | unit | SIG-1 | research/backtest | passed (1h, 2-4h, 5-12h, 13-24h, 25h+ even when zero) | sim |
+| TASK-SIG-001 real diagnostic run | integration | SIG-1 | research | passed (62,878 resolved trades, gross PF 0.987, report generated) | sim |
+| TASK-SIG-001 formal review | documentation review | SIG-1 | research/backtest/qa | passed after Backtest and QA requested fixes were addressed | sim |
+| TASK-SIG-002 baseline reproduction and fast-vertical causal variant | backtest | SIG-1 | backtest | passed (baseline exact, max_vertical_bars=4 worsens, STOP_FAST_REVERSION_PATH) | sim |
+| TASK-SIG-002 confirming-bar regression with real resolver | unit | SIG-1 | backtest/research | passed (VERTICAL at budget boundary is not downgraded to NO_DATA) | sim |
+| TASK-SIG-003 binding half-life grid and fail-closed baseline | backtest | SIG-1 | backtest/research | passed (Run 2 binding grid, STOP_SIGNAL_ITERATION) | sim |
+| TASK-SIG-004 bar_duration_hours propagation to OU/funding/triple barrier | unit | SIG-1-pos | backtest/research | passed (sub-hour vertical barrier regression and default 1h preservation) | sim |
+| TASK-SIG-004 intrahour real sanity run | integration | SIG-1-pos | backtest/research | passed (5m, 8 symbols, 9 pairs, 23,051 trades, gross PF 1.1343, net PF 0.4223) | sim |
+| TASK-SIG-004 formal review and handoff closure | documentation review | SIG-1-pos | pm/backtest/qa | passed after unit bug and governance findings were addressed | sim |
 | Kill switch trigger fails closed | live readiness | 14 | execution | pending | sim |
 
 ## Sprint 1 Review Checks

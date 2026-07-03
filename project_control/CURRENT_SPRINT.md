@@ -1,6 +1,38 @@
 # CURRENT_SPRINT
 
-Last updated: 2026-07-02
+Last updated: 2026-07-03
+
+## Workstream atual (pos-SIG-004)
+
+Signal Iteration 1 - ENCERRADA como hipotese rejeitada (ADR-0010).
+
+Status: TASK-SIG-001, TASK-SIG-002, TASK-SIG-003 e TASK-SIG-004 DONE.
+
+Decisao consolidada: o sinal Kalman/OU/z-score deste universo nao mostrou
+edge liquido exploravel por diagnostico bruto, timing causal de saida,
+filtro causal de entrada por half-life, nem checagem exploratoria intrahora
+em barras de 5m. Sprint 10 permanece NAO ABERTA automaticamente.
+
+Proxima decisao pertence ao usuario: pivotar a formulacao do sinal, abrir
+outra hipotese de pesquisa do roadmap, ou abrir Sprint 10 conscientemente
+apesar do gate economico negativo ja documentado.
+
+| ID | Tarefa | Dono | Revisor | Status | Progresso |
+|---|---|---|---|---|---:|
+| TASK-SIG-001 | Diagnosticar edge bruto do sinal | Quant Research Agent | Backtest + QA/Chaos + PM | DONE | 100% |
+| TASK-SIG-002 | Testar reversao rapida com cap vertical causal | Backtest Agent | Quant Research + QA/Chaos + PM | DONE | 100% |
+| TASK-SIG-003 | Falsificar filtro ex-ante de entrada por half-life | Backtest Agent | Quant Research + QA/Chaos + PM | DONE | 100% |
+| TASK-SIG-004 | Checar reversao intrahora 5m em escopo pequeno | Backtest Agent | Quant Research + QA/Chaos + PM | DONE | 100% |
+
+## Nota (2026-07-03): debito tecnico do ADR-0008 fechado
+
+O Sprint 8 canonico do roadmap (Triple Barrier direcional + backtest
+estatistico), citado como debito tecnico abaixo, foi construido
+retroativamente como trabalho separado (`tasks/sprint_08_canonical/`,
+TASK-008C-01/02/03) sem reabrir ou alterar este Sprint 9. Resultado: gate
+NAO PASSA para os 41 pares estatisticos (ver `reports/backtest_statistical.md`
+e `HANDOFFS.md`). `RISKS.md` atualizado para fechar essa linha. O proximo
+sprint numerado do roadmap ainda nao foi iniciado.
 
 ## Sprint
 

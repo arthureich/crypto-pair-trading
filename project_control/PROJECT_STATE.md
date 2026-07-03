@@ -1,10 +1,110 @@
 # PROJECT_STATE
 
-Last updated: 2026-07-02
+Last updated: 2026-07-03
+
+## Atualizacao 2026-07-03: TASK-SIG-004 fechada (checagem intrahora 5m)
+
+A checagem exploratoria unica autorizada pelo ADR-0010 foi executada e
+fechada. TASK-SIG-004 reprocessou dados reais 5m checksum-verificados para 8
+simbolos / 9 pares / 2025-12 a 2026-05 (419.328 barras normalizadas), sem
+novo ciclo de otimizacao e sem redownload do universo completo. Revisao
+formal encontrou bug de unidade em barreira vertical sub-hora; corrigido com
+`TripleBarrierConfig.bar_duration_hours`, propagacao em
+`statistical_backtest.py`, e `max_vertical_bars=2880` no runner 5m para
+preservar o cap real de 240h.
+
+Resultado pos-correcao: baseline 5m e tight 5m (`max_half_life_hours=0,375`)
+ficaram identicos, com 23.051 trades, gross PF 1,1343 e net PF 0,4223. O
+achado motivador de 1h (gross PF 1,1559, net PF 0,8327, n=74) nao se converte
+em edge liquido em amostra adequada. Decisao: **nao abrir TASK-SIG-005**;
+Signal Iteration 1 permanece ENCERRADA; Sprint 10 permanece NAO ABERTA
+automaticamente. Ver `reports/signal_intrahour_sanity_check.md` e
+`HANDOFFS.md`.
+
+## Atualizacao 2026-07-03: ADR-0010 -- Signal Iteration 1 OFICIALMENTE ENCERRADA (hipotese rejeitada)
+
+Decisao do usuario, registrada em ADR-0010 (`DECISIONS.md`): encerrar
+oficialmente a Signal Iteration 1 como **hipotese rejeitada** (nao "pendente"
+ou "em pausa") e seguir para a proxima linha de pesquisa do roadmap. O sinal
+de reversao a media Kalman/OU, neste universo (41 pares) e dataset (barras
+de 1h, 2023-06 a 2026-05), nao tem edge liquido exploravel via timing de
+saida (SIG-002) nem filtro de entrada por half-life (SIG-003). Resultado
+negativo convergente, tres vezes testado de forma independente e
+pre-registrada -- documentado como achado permanente, nao como trabalho
+incompleto.
+
+A checagem exploratoria autorizada (TASK-SIG-004) foi executada e tambem nao
+mostrou edge liquido exploravel; portanto esta familia de sinal nao recebe
+mais investimento sem uma nova decisao explicita do usuario.
+
+## Atualizacao 2026-07-03: Signal Iteration 1 ENCERRADA (TASK-SIG-003, ultima tentativa)
+
+TASK-SIG-003 testou a ultima pista pendente: filtro ex-ante de ENTRADA via
+`max_half_life_hours`. Run 1 (grade [240..12]h) foi achado NAO-VINCULANTE em
+revisao formal (Quant Research Agent, P1) -- so 0,064% dos trades excluidos,
+distribuicao de half-life ja quase toda <12h. Corrigido com Run 2, novo
+pre-registro independente e vinculante (grade [240..0,375]h, 99,88%
+excluidos no threshold mais apertado). Decisao final: `STOP_SIGNAL_ITERATION`
+-- nenhum threshold cumpre net PF>=1,10 E trade_count>=200 simultaneamente
+(0,375h chega perto no gross, PF 1,156, mas falha no net, PF 0,833, com
+amostra pequena demais, 74 trades). Observacao descritiva nao-decisoria:
+existe concentracao real de edge bruto em reversao muito rapida, mas nao
+sobrevive ao custo fixo na amostra disponivel. Revisao formal: Quant
+(MUDANCAS SOLICITADAS -> corrigido -> PASSA), QA (PASSA), PM (PASSA). 304
+testes, ruff limpo, diff limpo. Ver `reports/signal_entry_filter_experiment.md`.
+
+**Isto encerra a Signal Iteration 1 (SIG-001/002/003).** Evidencia acumulada
+das 3 tasks nao sustenta continuar iterando este sinal com os dados/universo
+atuais. Sprint 10 permanece NAO ABERTA. Decisao macro pendente do usuario:
+pivotar formulacao do sinal, investir num pre-registro dedicado a reversao
+muito rapida com amostra maior, ou pausar esta linha de pesquisa. NADA foi
+commitado ainda.
+
+## Atualizacao 2026-07-03: Signal Iteration 1 -- TASK-SIG-002 fechado (hipotese rejeitada)
+
+O usuario escolheu explicitamente **iterar o sinal primeiro**, em vez de
+avancar para Sprint 10 (Execution Risk Gate) ou testar execucao
+passiva/maker. TASK-SIG-001 diagnosticou os 62.878 trades ja calculados no
+Sprint 8 canonico: gross PnL agregado negativo antes de custo (-0,7673
+bps/trade), `|z| >= 3.0` pior que `2.0-2.5`, e reversoes resolvidas em 2-4h
+positivas. TASK-SIG-002 testou causalmente essa ultima pista com
+`max_vertical_bars=4`. Resultado: **hipotese rejeitada** -- decisao
+`STOP_FAST_REVERSION_PATH`. O baseline reproduz o canonico exatamente
+(deltas 0.0) e a variante piora (gross -15.427 bps, net -2.044 bps). Um bug
+de "barra confirmadora" foi encontrado durante a implementacao: a janela do
+resolvedor precisava de `+2` barras (nao `+1`) para confirmar VERTICAL em vez
+de descartar como NO_DATA; antes da correcao a variante parecia melhor
+(survivorship de VERTICALs virando NO_DATA), depois corretamente piora.
+Revisao formal: Backtest/Quant/QA/PM todos PASSA; P3 compartilhado (regressao
+acoplada a mock) resolvido com teste de integracao de resolvedor real.
+Verificacao: 292 testes, ruff limpo, diff limpo.
+
+Conclusao acumulada: o sinal, neste universo e features, nao tem edge bruto
+exploravel por timing de SAIDA. Decisao pendente do usuario: abrir TASK-SIG-003
+como teste ex-ante final do lado da ENTRADA, ou encerrar a iteracao de sinal.
+Sprint 10 permanece NAO ABERTA. NADA foi commitado ainda.
+
+## Atualizacao 2026-07-03: Sprint 8 Canonico fechado (retroativo, ADR-0009)
+
+O debito tecnico do ADR-0008 (Sprint 8 canonico do roadmap nunca
+implementado) foi fechado: `src/research/triple_barrier.py` +
+`src/backtest/statistical_backtest.py` implementados, 4 bugs P1 reais
+encontrados e corrigidos em revisao formal (2 rodadas, 6 agentes no total),
+e execucao real contra os 41 pares estatisticos do Sprint 7. **Gate NAO
+PASSA para 0/41 pares** (melhor caso: ETCUSDT/LTCUSDT, profit factor 0,960
+vs. limiar 1,10; portfolio profit factor 0,782). Ver
+`reports/backtest_statistical.md` para metodologia completa e a ressalva de
+que este resultado (custo fixo estimado) nao e diretamente comparavel ao da
+Sprint 9 (custo real tick-a-tick) -- ambos, porem, apontam na mesma direcao.
+Este trabalho nao reabriu nem alterou o Sprint 8/9 ja fechados deste
+projeto. `RISKS.md` atualizado. Suite completa: 270 testes, ruff limpo.
 
 ## Sprint atual
 
-Sprint 9 - Backtest executavel com simulacao de ordens (ver `project_control/ROADMAP.md`)
+Nenhuma sprint numerada nova aberta. Ultima sprint numerada fechada:
+Sprint 9 - Backtest executavel com simulacao de ordens (ver
+`project_control/ROADMAP.md`). Workstream pos-Sprint 9 / pre-Sprint 10
+(Signal Iteration 1 + TASK-SIG-004) tambem esta fechado.
 
 ## Status geral
 
@@ -126,19 +226,19 @@ LIMIT/maker antes de concluir que a estrategia nao tem edge.
 ## Componentes em andamento
 
 - Nenhum item tecnico do Sprint 9 em andamento -- sprint fechada.
+- Nenhuma tarefa da Signal Iteration 1 em andamento: TASK-SIG-001/002/003 e
+  a checagem exploratoria TASK-SIG-004 estao DONE.
 - TASK-008-08 (limpeza segura dos 17GB de arquivos raw preservados)
   permanece BLOCKED aguardando aceite explicito do usuario antes de
   qualquer exclusao.
-- Escopo do Sprint 10 ainda nao definido -- decisao pendente do usuario.
+- Sprint 10 permanece nao aberta.
 
 ## Objetivo atual
 
-Nenhum objetivo tecnico ativo definido ainda. Antes de decidir o proximo
-sprint, o Execution/Risk Agent recomenda explicitamente testar uma
-variante de execucao passiva/maker (`simulate_limit_fill`, ja implementada
-e testada, mas nao usada no runner real) para separar "execucao cara
-demais" de "estrategia sem edge" -- o resultado atual (0/13) nao permite
-distinguir essas duas explicacoes.
+Decisao macro do usuario: escolher entre pivotar para nova formulacao de
+sinal, abrir outra hipotese de pesquisa do roadmap, ou abrir Sprint 10
+conscientemente apesar do gate economico negativo ja documentado. Nenhuma
+task SIG deve ser aberta automaticamente.
 
 ## Proximo gate
 
@@ -198,8 +298,8 @@ como prosseguir e do usuario.
   live-readiness blockers.
 - TASK-008-08 (limpeza segura dos arquivos raw) permanece BLOCKED aguardando
   aceite explicito do usuario.
-- Escopo e tarefas do Sprint 9 ainda nao foram definidos; requer decisao do
-  usuario antes de abrir formalmente.
+- Nenhum gate SIG ativo. Signal Iteration 1 e TASK-SIG-004 estao fechadas;
+  Sprint 10 so abre por decisao explicita de escopo.
 
 ## Riscos atuais
 
