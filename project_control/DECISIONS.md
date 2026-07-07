@@ -1638,3 +1638,63 @@ feasibility diagnostic on the existing normalized dataset, write
 `reports/regime_conditioned_tsrev_feasibility.md`, and update
 `PROJECT_STATE.md`, `CURRENT_SPRINT.md`, `HANDOFFS.md`, `RISKS.md`, and
 `TEST_MATRIX.md`.
+
+## ADR-0023 - Validate Funding Price Divergence Only On Genuine New OOS
+
+## Status
+
+Accepted
+
+## Context
+
+`TASK-ALT-001` classified Family G (Funding Structure) as
+`SEM_INFORMACAO` under the pre-registered threshold. The one notable
+near-miss was `funding_price_divergence`: full-sample rho 0.0248, below
+the 0.03 threshold, but positive and stable across all 3 non-overlapping
+subperiods. Reusing 2023-06 through 2026-05 to lower the threshold or
+design a strategy would contaminate the hypothesis.
+
+On 2026-07-07, a lightweight availability probe confirmed that the
+2026-06 `.CHECKSUM` sidecars exist for the 20-symbol universe across all
+5 monthly families needed by the existing historical dataset pipeline
+(`klines`, `markPriceKlines`, `indexPriceKlines`, `premiumIndexKlines`,
+`fundingRate`): 100/100 sidecars found. No ZIP archive was downloaded by
+this probe.
+
+## Decision
+
+Open `TASK-ALT-005` as a narrow new-OOS information-content validation
+for the exact `funding_price_divergence` feature only. The old dataset may
+be used only as causal rolling context. The decisive sample starts at
+2026-06-01 and must use complete months only. No partial July data, no
+new feature, no horizon change, no threshold adjustment, and no economic
+backtest is authorized by this ADR.
+
+The only promotion gate is informational: the new-OOS Spearman rho must
+be positive and at least 0.03, with positive signs in every complete
+month if more than one month is evaluated. Passing this gate permits only
+a future separately pre-registered feasibility task; it does not
+authorize SignalIntent, execution, ledger, recovery, ML, paper trading, or
+live trading changes.
+
+## Consequences
+
+The near-miss gets a disciplined path forward without re-mining the
+sample that created it. A one-month new-OOS result can only promote the
+idea to a future feasibility design; it cannot become a strategy. If the
+data gate fails, the task fails closed and no rho interpretation is made.
+
+## Agent Impact
+
+- PM Agent
+- Quant Research Agent
+- Backtest Agent
+- Market Data Agent (only if historical-data downloader code changes)
+
+## Migration
+
+Add `TASK-ALT-005` to `TASK_BOARD.md`. Add
+`docs/pre_registers/TASK-ALT-005.md`. If executed, implement a dedicated
+runner/test pair, write a report and JSON artifact, and update
+`PROJECT_STATE.md`, `CURRENT_SPRINT.md`, `HANDOFFS.md`, `RISKS.md`,
+`TEST_MATRIX.md`, and `DAILY_LOG.md`.

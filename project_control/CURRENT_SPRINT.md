@@ -2,7 +2,50 @@
 
 Last updated: 2026-07-07
 
-## Workstream atual: Research Phase II -- TASK-ALT-004 FECHADA NAO_PASSA (ADR-0022)
+## Workstream atual: Research Phase II -- TASK-ALT-005 IN_PROGRESS, download pendente (ADR-0023)
+
+`TASK-ALT-005` foi aberta para tratar a unica pista remanescente da
+Family G: `funding_price_divergence`. Esta task NAO reusa 2023-06/2026-05
+como evidencia decisoria; esse periodo apenas pode alimentar janelas
+causais de 90 dias. O novo OOS decisivo comeca em 2026-06-01.
+
+Probe leve de disponibilidade em 2026-07-07:
+
+```text
+20 symbols x 5 familias mensais x 2026-06 = 100 .CHECKSUM sidecars
+Resultado: checked=100, missing=0
+ZIPs baixados: 0
+```
+
+Proxima execucao permitida: baixar/normalizar apenas meses completos
+novos (inicialmente 2026-06), calcular a feature exata
+`funding_price_divergence` com o historico antigo apenas como contexto
+causal, e avaliar somente linhas `open_time >= 2026-06-01`. Se apenas
+2026-06 for usado, as ultimas 24h sem `t+24h` devem cair fora do target,
+sem preenchimento.
+
+Gate: `DATA_GATE_FAIL_CLOSED` se faltar symbol/familia/checksum/cobertura
+ou se houver menos de 10.000 observacoes validas. Se o data gate passar,
+`PROMOVE_PARA_FEASIBILITY` somente se `rho_new_oos >= 0,03` e o sinal for
+positivo; caso contrario `NAO_PROMOVE`. Mesmo um promote nao autoriza
+SignalIntent, paper/live, Execution, Ledger, Recovery, ML ou ordem.
+
+Estado atual: runner e testes unitarios implementados; download real e
+diagnostico real nao foram executados a pedido do usuario, que vai baixar
+e continuar depois. Ver `docs/pre_registers/TASK-ALT-005.md` para o
+comando de retomada.
+
+Verificacao ja rodada:
+
+```text
+PYTHONPATH=. UV_CACHE_DIR=.uv-cache uv run --offline --with pytest pytest tests/test_alt_funding_divergence_new_oos.py tests/test_info_content.py
+Result: 18 passed, 1 warning.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with ruff ruff check scripts/diagnostic_alt_funding_divergence_new_oos.py tests/test_alt_funding_divergence_new_oos.py
+Result: All checks passed.
+```
+
+## Workstream anterior: Research Phase II -- TASK-ALT-004 FECHADA NAO_PASSA (ADR-0022)
 
 `TASK-ALT-004` (regime-conditioning sobre TSREV 24h, DONE): follow-up da
 Family J, feasibility only. Filtro pre-registrado: bloquear entradas da

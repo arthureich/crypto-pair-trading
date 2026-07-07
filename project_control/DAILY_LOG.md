@@ -1418,3 +1418,36 @@ Sprint 6 gate passed.
 reports/sprint_06_review.md created.
 Sprint 7 was not started; explicit user confirmation is required.
 ```
+
+2026-07-07 - TASK-ALT-005 opened:
+
+```text
+PM Agent opened ADR-0023 and docs/pre_registers/TASK-ALT-005.md.
+Scope: validate only funding_price_divergence in genuine new OOS.
+Old 2023-06/2026-05 dataset may be used only as causal 90d context, not
+as decision evidence.
+Lightweight availability probe completed with escalated network after a
+transient DNS failure inside sandbox: 20 symbols x 5 monthly families x
+2026-06 = 100/100 .CHECKSUM sidecars found, no ZIPs downloaded.
+TASK-ALT-005 marked READY; implementation/download/diagnostic not run yet.
+No Execution, Ledger, Recovery, ML, live, SignalIntent, or order-routing
+files touched.
+```
+
+2026-07-07 - TASK-ALT-005 runner prepared, real download deferred:
+
+```text
+PM Agent implemented scripts/diagnostic_alt_funding_divergence_new_oos.py
+and tests/test_alt_funding_divergence_new_oos.py.
+Focused verification:
+PYTHONPATH=. UV_CACHE_DIR=.uv-cache uv run --offline --with pytest pytest tests/test_alt_funding_divergence_new_oos.py tests/test_info_content.py
+Result: 18 passed, 1 warning.
+UV_CACHE_DIR=.uv-cache uv run --offline --with ruff ruff check scripts/diagnostic_alt_funding_divergence_new_oos.py tests/test_alt_funding_divergence_new_oos.py
+Result: All checks passed.
+git diff --check
+Result: passed.
+User requested no download now: "vou fazer o download e continuar depois".
+TASK-ALT-005 remains IN_PROGRESS at 60%; real 2026-06 download,
+normalization, data gate, rho diagnostic, report, JSON, and final control
+updates remain pending.
+```

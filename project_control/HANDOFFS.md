@@ -2,6 +2,121 @@
 
 Last updated: 2026-07-07
 
+## HANDOFF - TASK-ALT-005: Funding Price Divergence New-OOS Validation Paused Before Download
+
+### Status
+
+IN_PROGRESS. Task aberta por ADR-0023 para validar em novo OOS a pista
+`funding_price_divergence`. Runner e testes unitarios estao prontos; o
+download/diagnostico real de 2026-06 foi pausado a pedido do usuario, que
+vai baixar e continuar depois.
+
+### Agente
+
+Backtest Agent.
+
+### Sprint / fase atual
+
+Research Phase II - Alternative Information (`TASK-ALT-005`).
+
+### Task
+
+Implementar e executar um runner pequeno para baixar/normalizar dados
+mensais completos posteriores a 2026-05-31 e avaliar somente a feature
+exata `funding_price_divergence` em linhas `open_time >= 2026-06-01`.
+Usar o dataset antigo apenas como contexto causal de 90 dias.
+
+### Contexto obrigatorio
+
+`TASK-ALT-001` classificou `funding_price_divergence` como
+`SEM_INFORMACAO` porque rho=0,0248 ficou abaixo do limiar 0,03, mas o
+sinal foi positivo e estavel nos 3 subperiodos. Nao ajustar limiar e nao
+retestar no mesmo periodo. `TASK-ALT-004` fechou NAO_PASSA; esta e agora
+a unica pista metodologicamente limpa da fase.
+
+Probe feito em 2026-07-07: 100/100 `.CHECKSUM` sidecars de 2026-06
+encontrados para 20 symbols x 5 familias mensais; nenhum ZIP baixado.
+
+### Arquivos permitidos
+
+```text
+docs/pre_registers/TASK-ALT-005.md
+scripts/diagnostic_alt_funding_divergence_new_oos.py
+tests/test_alt_funding_divergence_new_oos.py
+reports/alt_info_funding_divergence_new_oos.md
+data/research/binance_public/normalized/*202606*_bars.csv
+data/research/binance_public/normalized/*202606*_bars.csv.gz
+data/research/binance_public/cost_pilot/alt_info_funding_divergence_new_oos_results.json
+project_control/CURRENT_SPRINT.md
+project_control/TASK_BOARD.md
+project_control/PROJECT_STATE.md
+project_control/HANDOFFS.md
+project_control/TEST_MATRIX.md
+project_control/RISKS.md
+project_control/DAILY_LOG.md
+project_control/DECISIONS.md
+```
+
+### Arquivos proibidos
+
+```text
+src/execution/**
+src/ledger/**
+src/live/**
+src/recovery/**
+src/ml/**
+src/market_data/**
+src/backtest/execution_simulator.py
+src/backtest/replay_engine.py
+docs/event_contracts.md
+docs/risk_limits.md
+docs/state_machine.md
+```
+
+### Criterio de pronto
+
+```text
+1. Data gate declarado primeiro: PASS ou DATA_GATE_FAIL_CLOSED.
+2. Resultado declarado exatamente como PROMOVE_PARA_FEASIBILITY,
+   NAO_PROMOVE ou DATA_GATE_FAIL_CLOSED.
+3. Relatorio e JSON citam janela exata, symbols, familias, checksums,
+   linhas normalizadas, observacoes validas e rho.
+4. Nenhum arquivo de Execution/Ledger/Recovery/ML/live alterado.
+```
+
+### Testes obrigatorios
+
+```text
+PYTHONPATH=. UV_CACHE_DIR=.uv-cache uv run --offline --with pytest pytest tests/test_alt_funding_divergence_new_oos.py tests/test_info_content.py
+Result: 18 passed, 1 warning.
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with ruff ruff check scripts/diagnostic_alt_funding_divergence_new_oos.py tests/test_alt_funding_divergence_new_oos.py
+Result: All checks passed.
+```
+
+Cobrir causalidade, boundary novo-OOS, descarte das ultimas 24h sem
+target, data gate fail-closed e output auditavel.
+
+### Handoff esperado
+
+Atualizar `PROJECT_STATE.md`, `CURRENT_SPRINT.md`, `TASK_BOARD.md`,
+`HANDOFFS.md`, `TEST_MATRIX.md`, `RISKS.md` e `DAILY_LOG.md` com o
+resultado real, comandos rodados e testes.
+
+### Comando de retomada
+
+```text
+PYTHONPATH=. UV_CACHE_DIR=.uv-cache uv run --offline python scripts/diagnostic_alt_funding_divergence_new_oos.py \
+  --start-month 2026-06 \
+  --end-month-exclusive 2026-07 \
+  --dataset-version sprint_alt_funding_divergence_202606 \
+  --download-workers 4
+```
+
+Se `uv --offline` nao tiver as dependencias locais suficientes, repetir
+sem `--offline`. O comando baixa somente OHLCV/funding mensal completo de
+2026-06; `bookTicker`/L2 segue fora de escopo.
+
 ## HANDOFF - TASK-ALT-004: Regime-Conditioned TSREV Feasibility Closed NAO_PASSA
 
 ### Status

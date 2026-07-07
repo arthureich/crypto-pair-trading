@@ -2,6 +2,37 @@
 
 Last updated: 2026-07-07
 
+## Atualizacao 2026-07-07: TASK-ALT-005 aberta para validar funding_price_divergence somente em novo OOS (ADR-0023)
+
+Depois de `TASK-ALT-004` fechar NAO_PASSA, a Research Phase II tem uma
+unica pista restante com disciplina metodologica suficiente para continuar:
+`funding_price_divergence`, near-miss da Family G (`rho=0,0248` full,
+sinal positivo nos 3 subperiodos). ADR-0023 e
+`docs/pre_registers/TASK-ALT-005.md` abrem uma validacao estreita em
+dado genuinamente novo.
+
+Regra central: 2023-06/2026-05 esta contaminado para esta pergunta e so
+pode ser usado como contexto causal para janelas de 90 dias. O resultado
+decisorio deve usar apenas barras `open_time >= 2026-06-01`.
+
+Probe leve feito em 2026-07-07, sem baixar ZIPs: os `.CHECKSUM` mensais
+de 2026-06 existem para 20/20 symbols e 5/5 familias necessarias
+(`klines`, `markPriceKlines`, `indexPriceKlines`, `premiumIndexKlines`,
+`fundingRate`): 100/100 sidecars encontrados. Isto libera a proxima
+execucao como download pequeno de OHLCV/funding mensal, nao bookTicker/L2.
+
+Gate da task: falhar fechado se faltar dado/checksum/cobertura ou se
+`full_sample_n < 10.000`; se o data gate passar, promover somente se
+`rho_new_oos >= 0,03` e sinal positivo. Um promote apenas autoriza uma
+futura task separada de feasibility; nao autoriza estrategia, SignalIntent,
+Execution, Ledger, Recovery, ML, paper/live ou ordem.
+
+Estado operacional atual: `scripts/diagnostic_alt_funding_divergence_new_oos.py`
+e `tests/test_alt_funding_divergence_new_oos.py` foram implementados.
+Verificacao focada passou (18 testes + ruff). O download/diagnostico real
+de 2026-06 foi explicitamente deixado pendente para o usuario continuar
+depois; nenhum ZIP novo foi baixado nesta etapa.
+
 ## Atualizacao 2026-07-07: TASK-ALT-004 (Regime Conditioning sobre TSREV 24h) fechada NAO_PASSA -- volatilidade informa risco, mas nao salva a estrategia (ADR-0022)
 
 Como follow-up disciplinado da Family J, foi aberta uma task separada de
