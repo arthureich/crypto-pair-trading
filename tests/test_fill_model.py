@@ -21,7 +21,9 @@ from src.execution.ack_guard import AckGuardOrderStatus  # noqa: E402
 from src.execution.slippage_estimator import SlippageSide  # noqa: E402
 
 
-def _quote(event_time: int, bid: float, ask: float, bid_qty: float, ask_qty: float) -> TopOfBookQuote:
+def _quote(
+    event_time: int, bid: float, ask: float, bid_qty: float, ask_qty: float
+) -> TopOfBookQuote:
     return TopOfBookQuote(
         event_time=event_time,
         best_bid=bid,
@@ -255,4 +257,83 @@ def test_invalid_quantity_fails_closed() -> None:
 
 def test_crossed_quote_is_rejected_fail_closed() -> None:
     with pytest.raises(FillModelError):
-        TopOfBookQuote(event_time=1, best_bid=101.0, best_ask=100.0, best_bid_qty=1.0, best_ask_qty=1.0)
+        TopOfBookQuote(
+            event_time=1, best_bid=101.0, best_ask=100.0, best_bid_qty=1.0, best_ask_qty=1.0
+        )
+
+
+def test_limit_fill_slippage_bps_is_none_without_reference_price() -> None:
+    """Regression: no longer fabricates 0.0 slippage when no reference is given.
+
+    QA Agent (Sprint 9 review) flagged the previous hardcoded ``0.0`` as an
+    inconsistent metric definition versus MARKET orders. Without a reference
+    price to compare against, the honest answer is "unknown", not "zero".
+    """
+
+    quotes = [_quote(1_000, 100.0, 100.2, 5.0, 5.0)]
+    config = FillModelConfig(latency_ms=0, limit_ttl_ms=5_000, ack_unknown_rate=0.0)
+
+    outcome = simulate_limit_fill(
+        order_id="order-8",
+        side=SlippageSide.BUY,
+        quantity=1.0,
+        limit_price=100.2,
+        quotes=quotes,
+        decision_time=1_000,
+        config=config,
+    )
+
+    assert outcome.status is FillStatus.FILLED
+    assert outcome.slippage_bps is None
+
+
+def test_limit_fill_slippage_bps_computed_against_reference_price_for_buy() -> None:
+    """A passive BUY filled at the bid (below the mid reference) is favorable."""
+
+    quotes = [
+        _quote(1_000, 99.9, 100.1, 5.0, 5.0),
+        _quote(2_000, 99.8, 99.85, 5.0, 5.0),
+    ]
+    config = FillModelConfig(latency_ms=0, limit_ttl_ms=5_000, ack_unknown_rate=0.0)
+
+    outcome = simulate_limit_fill(
+        order_id="order-9",
+        side=SlippageSide.BUY,
+        quantity=1.0,
+        limit_price=99.9,
+        quotes=quotes,
+        decision_time=1_000,
+        config=config,
+        reference_price=100.0,
+    )
+
+    assert outcome.status is FillStatus.FILLED
+    assert outcome.average_price == pytest.approx(99.9)
+    assert outcome.slippage_bps is not None
+    assert outcome.slippage_bps < 0.0
+
+
+def test_limit_fill_slippage_bps_computed_against_reference_price_for_sell() -> None:
+    """A passive SELL filled at the ask (above the mid reference) is favorable."""
+
+    quotes = [
+        _quote(1_000, 99.9, 100.1, 5.0, 5.0),
+        _quote(2_000, 100.15, 100.2, 5.0, 5.0),
+    ]
+    config = FillModelConfig(latency_ms=0, limit_ttl_ms=5_000, ack_unknown_rate=0.0)
+
+    outcome = simulate_limit_fill(
+        order_id="order-10",
+        side=SlippageSide.SELL,
+        quantity=1.0,
+        limit_price=100.1,
+        quotes=quotes,
+        decision_time=1_000,
+        config=config,
+        reference_price=100.0,
+    )
+
+    assert outcome.status is FillStatus.FILLED
+    assert outcome.average_price == pytest.approx(100.1)
+    assert outcome.slippage_bps is not None
+    assert outcome.slippage_bps < 0.0

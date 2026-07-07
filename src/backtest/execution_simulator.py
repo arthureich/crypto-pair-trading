@@ -30,6 +30,8 @@ from .fill_model import (
     FillStatus,
     OrderType,
     TopOfBookQuote,
+    no_quote_fill_outcome,
+    simulate_limit_fill,
     simulate_market_fill,
 )
 
@@ -37,6 +39,25 @@ DEFAULT_HOLDING_PERIOD_MS = 60 * 60 * 1000
 LEG_FILL_MISMATCH_TOLERANCE = 0.05
 _VENUE = "BINANCE"
 _ACCOUNT_ID = "SPRINT9_BACKTEST"
+
+
+class ExecutionStyle(StrEnum):
+    """Order-placement style used for both legs of a round-trip trade.
+
+    ``MARKET_IOC`` is the Sprint 9 baseline: aggressive, crosses the spread
+    immediately on both entry and exit. ``LIMIT_MAKER_TTL`` is the Sprint 10
+    passive/maker variant (Execution/Risk Agent's recommendation, see
+    ``project_control/DECISIONS.md`` ADR-0011): a resting order quoted at the
+    touch (best bid for a BUY, best ask for a SELL) that never crosses the
+    spread at placement and only fills if the market later crosses to it
+    within the configured TTL (``FillModelConfig.limit_ttl_ms``).
+    """
+
+    MARKET_IOC = "MARKET_IOC"
+    LIMIT_MAKER_TTL = "LIMIT_MAKER_TTL"
+
+
+DEFAULT_EXECUTION_STYLE = ExecutionStyle.MARKET_IOC
 
 
 class TradeStatus(StrEnum):
@@ -83,6 +104,7 @@ def simulate_round_trip_trade(
     quotes_b: Sequence[TopOfBookQuote],
     holding_period_ms: int = DEFAULT_HOLDING_PERIOD_MS,
     config: FillModelConfig | None = None,
+    execution_style: ExecutionStyle = DEFAULT_EXECUTION_STYLE,
 ) -> RoundTripTradeResult:
     """Simulate a beta-weighted round-trip pair trade against real quotes.
 
@@ -117,23 +139,25 @@ def simulate_round_trip_trade(
     quantity_a = float(intent.target_notional) / reference_a
     quantity_b = (beta_weight * float(intent.target_notional)) / reference_b
 
-    entry_a = simulate_market_fill(
+    entry_a = _simulate_leg_fill(
         order_id=f"{signal_id}-A-ENTRY",
         side=intent.side_a,
         quantity=quantity_a,
         quotes=quotes_a,
         decision_time=intent.created_at,
         config=cfg,
-        reference_price=reference_a,
+        execution_style=execution_style,
+        market_reference_price=reference_a,
     )
-    entry_b = simulate_market_fill(
+    entry_b = _simulate_leg_fill(
         order_id=f"{signal_id}-B-ENTRY",
         side=intent.side_b,
         quantity=quantity_b,
         quotes=quotes_b,
         decision_time=intent.created_at,
         config=cfg,
-        reference_price=reference_b,
+        execution_style=execution_style,
+        market_reference_price=reference_b,
     )
 
     if entry_a.filled_quantity <= 0.0 and entry_b.filled_quantity <= 0.0:
@@ -156,27 +180,29 @@ def simulate_round_trip_trade(
     exit_delay_ms = max(exit_time_a, exit_time_b) - planned_exit_time
 
     exit_a = (
-        simulate_market_fill(
+        _simulate_leg_fill(
             order_id=f"{signal_id}-A-EXIT",
             side=_opposite_side(intent.side_a),
             quantity=entry_a.filled_quantity,
             quotes=quotes_a,
             decision_time=exit_time_a,
             config=cfg,
-            reference_price=reference_a,
+            execution_style=execution_style,
+            market_reference_price=reference_a,
         )
         if entry_a.filled_quantity > 0.0
         else None
     )
     exit_b = (
-        simulate_market_fill(
+        _simulate_leg_fill(
             order_id=f"{signal_id}-B-EXIT",
             side=_opposite_side(intent.side_b),
             quantity=entry_b.filled_quantity,
             quotes=quotes_b,
             decision_time=exit_time_b,
             config=cfg,
-            reference_price=reference_b,
+            execution_style=execution_style,
+            market_reference_price=reference_b,
         )
         if entry_b.filled_quantity > 0.0
         else None
@@ -255,18 +281,87 @@ def _effective_exit_time(
     return max(planned_exit_time, entry_fill.reconciliation_available_time)
 
 
-def _reference_price(quotes: Sequence[TopOfBookQuote], decision_time: int) -> float | None:
-    """Return the most recent quote's mid price at or before decision_time."""
+def _simulate_leg_fill(
+    *,
+    order_id: str,
+    side: SlippageSide | str,
+    quantity: float,
+    quotes: Sequence[TopOfBookQuote],
+    decision_time: int,
+    config: FillModelConfig,
+    execution_style: ExecutionStyle,
+    market_reference_price: float | None,
+) -> FillOutcome:
+    """Dispatch one leg's order to the configured execution style.
+
+    ``MARKET_IOC`` is unchanged from Sprint 9: crosses the spread against
+    ``simulate_market_fill``, using the static entry-time mid
+    (``market_reference_price``) as the slippage baseline for both entry and
+    exit, exactly as before.
+
+    ``LIMIT_MAKER_TTL`` rests a passive order quoted at the touch using the
+    most recent causal quote at THIS leg's own ``decision_time`` (not the
+    static entry-time reference, which would be stale by the time an exit
+    order is placed): best bid for a BUY, best ask for a SELL. This never
+    crosses the spread at placement -- ``simulate_limit_fill`` only fills it
+    if a later quote crosses back to that price within the TTL.
+    """
+
+    if execution_style is ExecutionStyle.MARKET_IOC:
+        return simulate_market_fill(
+            order_id=order_id,
+            side=side,
+            quantity=quantity,
+            quotes=quotes,
+            decision_time=decision_time,
+            config=config,
+            reference_price=market_reference_price,
+        )
+    resolved_side = _resolve_side(side)
+    quote = _reference_quote(quotes, decision_time)
+    if quote is None:
+        return no_quote_fill_outcome(
+            order_id, OrderType.LIMIT, resolved_side, quantity, decision_time
+        )
+    limit_price = quote.best_bid if resolved_side is SlippageSide.BUY else quote.best_ask
+    return simulate_limit_fill(
+        order_id=order_id,
+        side=resolved_side,
+        quantity=quantity,
+        limit_price=limit_price,
+        quotes=quotes,
+        decision_time=decision_time,
+        config=config,
+        reference_price=_mid(quote),
+    )
+
+
+def _reference_quote(quotes: Sequence[TopOfBookQuote], decision_time: int) -> TopOfBookQuote | None:
+    """Return the most recent quote at or before decision_time (causal only)."""
 
     causal = [quote for quote in quotes if quote.event_time <= decision_time]
     if not causal:
         return None
-    latest = max(causal, key=lambda quote: quote.event_time)
-    return (latest.best_bid + latest.best_ask) / 2.0
+    return max(causal, key=lambda quote: quote.event_time)
+
+
+def _mid(quote: TopOfBookQuote) -> float:
+    return (quote.best_bid + quote.best_ask) / 2.0
+
+
+def _reference_price(quotes: Sequence[TopOfBookQuote], decision_time: int) -> float | None:
+    """Return the most recent quote's mid price at or before decision_time."""
+
+    quote = _reference_quote(quotes, decision_time)
+    return _mid(quote) if quote is not None else None
+
+
+def _resolve_side(side: SlippageSide | str) -> SlippageSide:
+    return SlippageSide(side) if not isinstance(side, SlippageSide) else side
 
 
 def _opposite_side(side: SlippageSide | str) -> SlippageSide:
-    resolved = SlippageSide(side) if not isinstance(side, SlippageSide) else side
+    resolved = _resolve_side(side)
     return SlippageSide.SELL if resolved is SlippageSide.BUY else SlippageSide.BUY
 
 
@@ -319,7 +414,9 @@ def _positive_finite(name: str, value: float) -> float:
 
 
 __all__ = [
+    "DEFAULT_EXECUTION_STYLE",
     "ExecutionSimulatorError",
+    "ExecutionStyle",
     "RoundTripTradeResult",
     "TradeStatus",
     "simulate_round_trip_trade",

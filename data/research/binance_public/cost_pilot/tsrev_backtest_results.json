@@ -1,0 +1,264 @@
+{
+  "bars_csv": "C:\\Users\\arthu\\Desktop\\Aula\\Projects\\Crypto-Pair-Trading\\data\\research\\binance_public\\normalized\\sprint7_binance_usdm_202306_202605_bars.csv.gz",
+  "baseline_max_drawdown_bps_oos": 11003.939982368345,
+  "family_a_cells": {
+    "12": {
+      "config": {
+        "cost_bps_roundtrip": 6.0,
+        "horizon_hours": 12,
+        "min_trades_for_gate": 200,
+        "profit_factor_gate": 1.05,
+        "vol_lookback_hours": 720,
+        "zscore_threshold": 1.0
+      },
+      "full_sample_summary": {
+        "baseline_max_drawdown_bps": null,
+        "cost_bps": 113232.00000000009,
+        "gate_pass": false,
+        "gross_pnl_bps": -143947.30774385156,
+        "max_drawdown_bps": 290161.5818944729,
+        "net_pnl_bps": -257179.30774385165,
+        "open_at_end_count": 14,
+        "profit_factor": 0.8727125159729023,
+        "resolved_count": 18872,
+        "trade_count": 18886,
+        "win_rate": 0.49989402289105556
+      },
+      "in_sample_summary": {
+        "baseline_max_drawdown_bps": null,
+        "cost_bps": 69570.44372343138,
+        "gate_pass": false,
+        "gross_pnl_bps": -78254.62816135041,
+        "max_drawdown_bps": 172832.07869748882,
+        "net_pnl_bps": -147825.0718847818,
+        "open_at_end_count": 0,
+        "profit_factor": 0.885029436661266,
+        "resolved_count": 12140,
+        "trade_count": 12140,
+        "win_rate": 0.5006589785831961
+      },
+      "oos_summary": {
+        "baseline_max_drawdown_bps": 11003.939982368345,
+        "cost_bps": 43661.55627656869,
+        "gate_pass": false,
+        "gross_pnl_bps": -65692.67958250115,
+        "max_drawdown_bps": 125809.19100664844,
+        "net_pnl_bps": -109354.23585906984,
+        "open_at_end_count": 14,
+        "profit_factor": 0.8511571180449296,
+        "resolved_count": 6732,
+        "trade_count": 6746,
+        "win_rate": 0.49851455733808675
+      }
+    },
+    "24": {
+      "config": {
+        "cost_bps_roundtrip": 6.0,
+        "horizon_hours": 24,
+        "min_trades_for_gate": 200,
+        "profit_factor_gate": 1.05,
+        "vol_lookback_hours": 720,
+        "zscore_threshold": 1.0
+      },
+      "full_sample_summary": {
+        "baseline_max_drawdown_bps": null,
+        "cost_bps": 65880.00000000009,
+        "gate_pass": false,
+        "gross_pnl_bps": 25073.661130882403,
+        "max_drawdown_bps": 140335.33963288245,
+        "net_pnl_bps": -40806.33886911768,
+        "open_at_end_count": 5,
+        "profit_factor": 0.9739052713317587,
+        "resolved_count": 10980,
+        "trade_count": 10985,
+        "win_rate": 0.5269581056466303
+      },
+      "in_sample_summary": {
+        "baseline_max_drawdown_bps": null,
+        "cost_bps": 40446.652315218744,
+        "gate_pass": false,
+        "gross_pnl_bps": -8049.829946858114,
+        "max_drawdown_bps": 105393.02351320299,
+        "net_pnl_bps": -48496.48226207686,
+        "open_at_end_count": 0,
+        "profit_factor": 0.9527415588892287,
+        "resolved_count": 7039,
+        "trade_count": 7039,
+        "win_rate": 0.5270635033385425
+      },
+      "oos_summary": {
+        "baseline_max_drawdown_bps": 11003.939982368345,
+        "cost_bps": 25433.34768478133,
+        "gate_pass": false,
+        "gross_pnl_bps": 33123.49107774052,
+        "max_drawdown_bps": 65719.65557307951,
+        "net_pnl_bps": 7690.143392959186,
+        "open_at_end_count": 5,
+        "profit_factor": 1.0143051186126162,
+        "resolved_count": 3941,
+        "trade_count": 3946,
+        "win_rate": 0.5267698553666582
+      }
+    },
+    "48": {
+      "config": {
+        "cost_bps_roundtrip": 6.0,
+        "horizon_hours": 48,
+        "min_trades_for_gate": 200,
+        "profit_factor_gate": 1.05,
+        "vol_lookback_hours": 720,
+        "zscore_threshold": 1.0
+      },
+      "full_sample_summary": {
+        "baseline_max_drawdown_bps": null,
+        "cost_bps": 36222.00000000003,
+        "gate_pass": false,
+        "gross_pnl_bps": -167621.1433795838,
+        "max_drawdown_bps": 281964.8359128903,
+        "net_pnl_bps": -203843.14337958384,
+        "open_at_end_count": 7,
+        "profit_factor": 0.8397565575527962,
+        "resolved_count": 6037,
+        "trade_count": 6044,
+        "win_rate": 0.4989233062779526
+      },
+      "in_sample_summary": {
+        "baseline_max_drawdown_bps": null,
+        "cost_bps": 22019.372536208713,
+        "gate_pass": false,
+        "gross_pnl_bps": -218165.51376299086,
+        "max_drawdown_bps": 259276.74647917505,
+        "net_pnl_bps": -240184.88629919957,
+        "open_at_end_count": 0,
+        "profit_factor": 0.7220539472164609,
+        "resolved_count": 3821,
+        "trade_count": 3821,
+        "win_rate": 0.47422140800837476
+      },
+      "oos_summary": {
+        "baseline_max_drawdown_bps": 11003.939982368345,
+        "cost_bps": 14202.627463791338,
+        "gate_pass": false,
+        "gross_pnl_bps": 50544.37038340705,
+        "max_drawdown_bps": 71610.73675758616,
+        "net_pnl_bps": 36341.74291961571,
+        "open_at_end_count": 7,
+        "profit_factor": 1.0890855528204553,
+        "resolved_count": 2216,
+        "trade_count": 2223,
+        "win_rate": 0.5415162454873647
+      }
+    },
+    "6": {
+      "config": {
+        "cost_bps_roundtrip": 6.0,
+        "horizon_hours": 6,
+        "min_trades_for_gate": 200,
+        "profit_factor_gate": 1.05,
+        "vol_lookback_hours": 720,
+        "zscore_threshold": 1.0
+      },
+      "full_sample_summary": {
+        "baseline_max_drawdown_bps": null,
+        "cost_bps": 188490.0,
+        "gate_pass": false,
+        "gross_pnl_bps": -66551.51318186954,
+        "max_drawdown_bps": 299157.9803781697,
+        "net_pnl_bps": -255041.51318186955,
+        "open_at_end_count": 8,
+        "profit_factor": 0.8938819845573862,
+        "resolved_count": 31415,
+        "trade_count": 31423,
+        "win_rate": 0.5065096291580455
+      },
+      "in_sample_summary": {
+        "baseline_max_drawdown_bps": null,
+        "cost_bps": 116557.10292569007,
+        "gate_pass": false,
+        "gross_pnl_bps": 6000.700510499594,
+        "max_drawdown_bps": 150468.32995989826,
+        "net_pnl_bps": -110556.40241519047,
+        "open_at_end_count": 0,
+        "profit_factor": 0.9277233034593898,
+        "resolved_count": 20295,
+        "trade_count": 20295,
+        "win_rate": 0.5148066026114807
+      },
+      "oos_summary": {
+        "baseline_max_drawdown_bps": 11003.939982368345,
+        "cost_bps": 71932.89707430995,
+        "gate_pass": false,
+        "gross_pnl_bps": -72552.21369236913,
+        "max_drawdown_bps": 151148.97678133618,
+        "net_pnl_bps": -144485.11076667908,
+        "open_at_end_count": 8,
+        "profit_factor": 0.8346377353602653,
+        "resolved_count": 11120,
+        "trade_count": 11128,
+        "win_rate": 0.4913669064748201
+      }
+    }
+  },
+  "family_b_cells": {
+    "12": {
+      "config": {
+        "cost_bps_roundtrip": 6.0,
+        "decile_k": 2,
+        "horizon_hours": 12,
+        "vol_lookback_hours": 720
+      },
+      "full_sample_summary": {
+        "net_pnl_bps": -17822.879923504737,
+        "profit_factor": 0.8147795238408236,
+        "rebalance_count": 2131,
+        "resolved_count": 2130
+      }
+    },
+    "24": {
+      "config": {
+        "cost_bps_roundtrip": 6.0,
+        "decile_k": 2,
+        "horizon_hours": 24,
+        "vol_lookback_hours": 720
+      },
+      "full_sample_summary": {
+        "net_pnl_bps": -9035.007716818463,
+        "profit_factor": 0.8725166812713091,
+        "rebalance_count": 1065,
+        "resolved_count": 1064
+      }
+    },
+    "48": {
+      "config": {
+        "cost_bps_roundtrip": 6.0,
+        "decile_k": 2,
+        "horizon_hours": 48,
+        "vol_lookback_hours": 720
+      },
+      "full_sample_summary": {
+        "net_pnl_bps": 2492.8071326746413,
+        "profit_factor": 1.0560582504943314,
+        "rebalance_count": 532,
+        "resolved_count": 531
+      }
+    },
+    "6": {
+      "config": {
+        "cost_bps_roundtrip": 6.0,
+        "decile_k": 2,
+        "horizon_hours": 6,
+        "vol_lookback_hours": 720
+      },
+      "full_sample_summary": {
+        "net_pnl_bps": -45588.87043906427,
+        "profit_factor": 0.69393641822403,
+        "rebalance_count": 4263,
+        "resolved_count": 4262
+      }
+    }
+  },
+  "gate_decision": "NAO_PASSA",
+  "generated_at_utc": "2026-07-05T17:19:48.441586+00:00",
+  "oos_start": "2025-06-01",
+  "primary_horizon_hours": 24
+}

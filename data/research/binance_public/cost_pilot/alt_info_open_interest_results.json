@@ -1,0 +1,176 @@
+{
+  "bars_csv": "C:\\Users\\arthu\\Desktop\\Aula\\Projects\\Crypto-Pair-Trading\\data\\research\\binance_public\\normalized\\sprint7_binance_usdm_202306_202605_bars.csv.gz",
+  "forward_horizon_hours": 24,
+  "generated_at_utc": "2026-07-07T03:28:25.816011+00:00",
+  "magnitude_threshold": 0.03,
+  "oi_csv": "C:\\Users\\arthu\\Desktop\\Aula\\Projects\\Crypto-Pair-Trading\\data\\research\\binance_public\\normalized\\sprint_alt_open_interest_202306_202605.csv.gz",
+  "period_boundaries_ms": [
+    1685577600000,
+    1717200000000,
+    1748736000000,
+    1780272000000
+  ],
+  "period_labels": [
+    "2023-06_2024-05",
+    "2024-06_2025-05",
+    "2025-06_2026-05"
+  ],
+  "results": {
+    "oi_acceleration": {
+      "feature_name": "oi_acceleration",
+      "full_sample_n": 523692,
+      "full_sample_rho": -0.009481899721352475,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": true,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 174048,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": -0.019352977733540246,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 174924,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": -0.008595124165610455,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 174720,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": -7.121964205194659e-05,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "oi_delta": {
+      "feature_name": "oi_delta",
+      "full_sample_n": 524488,
+      "full_sample_rho": -0.0188673283996614,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": true,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 174752,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": -0.03205881638645964,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 175016,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": -0.020176053246489727,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 174720,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": -0.0048442012335067905,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "oi_percentile": {
+      "feature_name": "oi_percentile",
+      "full_sample_n": 428718,
+      "full_sample_rho": 0.0014094997458662427,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": true,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 87526,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": 0.011742799153740406,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 167168,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": 0.0038826795612512018,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 174024,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.013430907457683623,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "oi_price_divergence": {
+      "feature_name": "oi_price_divergence",
+      "full_sample_n": 427638,
+      "full_sample_rho": 0.010877544229238992,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": false,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 86546,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": 0.006803875080074713,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 167092,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": -0.0025291508515395797,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 174000,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.026729545408685544,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "oi_volume_ratio": {
+      "feature_name": "oi_volume_ratio",
+      "full_sample_n": 524824,
+      "full_sample_rho": -0.01466584378001037,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": true,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 174996,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": -0.016205835347008635,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 175108,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": -0.00998904876505656,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 174720,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": -0.009336168599117442,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    }
+  },
+  "rolling_window_hours": 2160
+}

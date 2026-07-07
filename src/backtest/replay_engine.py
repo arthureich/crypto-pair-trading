@@ -33,7 +33,12 @@ from src.research.sprint8 import (
     pair_symbols,
 )
 
-from .execution_simulator import RoundTripTradeResult, simulate_round_trip_trade
+from .execution_simulator import (
+    DEFAULT_EXECUTION_STYLE,
+    ExecutionStyle,
+    RoundTripTradeResult,
+    simulate_round_trip_trade,
+)
 from .fill_model import FillModelConfig, TopOfBookQuote
 
 DEFAULT_HOLDING_PERIOD_MS = 60 * 60 * 1000
@@ -53,6 +58,7 @@ class ReplayConfig:
     holding_period_ms: int = DEFAULT_HOLDING_PERIOD_MS
     fill_config: FillModelConfig = field(default_factory=FillModelConfig)
     day_cache_size: int = DEFAULT_DAY_CACHE_SIZE
+    execution_style: ExecutionStyle = DEFAULT_EXECUTION_STYLE
 
     def __post_init__(self) -> None:
         if self.holding_period_ms <= 0:
@@ -175,6 +181,7 @@ def replay_pair(
                 quotes_b=quotes_b,
                 holding_period_ms=config.holding_period_ms,
                 config=config.fill_config,
+                execution_style=config.execution_style,
             )
         )
     return tuple(results)

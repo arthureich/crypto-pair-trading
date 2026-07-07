@@ -1,21 +1,403 @@
 # CURRENT_SPRINT
 
-Last updated: 2026-07-03
+Last updated: 2026-07-07
 
-## Workstream atual (pos-SIG-004)
+## Workstream atual: Research Phase II -- Familias G e F ambas FECHADAS sem informacao (ADR-0019/0020); J e near-miss de G pendentes
 
-Signal Iteration 1 - ENCERRADA como hipotese rejeitada (ADR-0010).
+`TASK-ALT-002` (Familia F, Open Interest, DONE): novo download real e
+pequeno (~21.920 arquivos diarios, ~260MB, checksum SHA256 verificado
+em cada um) via a familia `metrics` do bucket publico da Binance --
+Open Interest + long/short ratios em 5min, resample memory-safe para 1h.
+Resultado: `data/research/binance_public/normalized/sprint_alt_open_interest_202306_202605.csv.gz`
+(525.784 linhas, 20 symbols).
 
-Status: TASK-SIG-001, TASK-SIG-002, TASK-SIG-003 e TASK-SIG-004 DONE.
+5 features formalizadas (`oi_delta`, `oi_volume_ratio`, `oi_percentile`,
+`oi_acceleration`, `oi_price_divergence`), mesma metodologia/limiar/
+subperiodos de TASK-ALT-001. Resultado real
+(`reports/alt_info_open_interest_diagnostic.md`): **nenhuma cumpre o
+criterio** -- a mais forte (`oi_delta`, rho=-0,0189) fica a 0,0111 do
+limiar de 0,03, mais de 2x mais longe que o near-miss da Familia G.
+Padrao notavel: `oi_delta`/`oi_acceleration` mostram sinal consistente
+mas magnitude DECAINDO monotonicamente nos 3 subperiodos (ex.: oi_delta
+-0,0321 -> -0,0202 -> -0,0048), quase zero no periodo mais recente --
+leitura de eficiencia de mercado crescente.
 
-Decisao consolidada: o sinal Kalman/OU/z-score deste universo nao mostrou
-edge liquido exploravel por diagnostico bruto, timing causal de saida,
-filtro causal de entrada por half-life, nem checagem exploratoria intrahora
-em barras de 5m. Sprint 10 permanece NAO ABERTA automaticamente.
+**Estado atual da Research Phase II:** G e F ambas fechadas sem
+informacao. Pendencias: (1) near-miss de `funding_price_divergence`
+(TASK-ALT-001) como candidato a task futura separada; (2) Familia J
+(Regime Detection) ainda nao iniciada; (3) Familia H (Order Flow)
+continua adiada/cara; (4) Familia I (Liquidation Dynamics) continua
+BLOQUEADA por falta de fonte historica.
 
-Proxima decisao pertence ao usuario: pivotar a formulacao do sinal, abrir
-outra hipotese de pesquisa do roadmap, ou abrir Sprint 10 conscientemente
-apesar do gate economico negativo ja documentado.
+## Workstream anterior: Research Phase II -- Alternative Information aberta (ADR-0019); TASK-ALT-001 (Familia G, Funding Structure) FECHADA sem informacao (near-miss notavel)
+
+Apos Research Family E fechar (ambos CS-001/CS-002 NAO PASSA), o usuario
+propos uma mudanca de paradigma: nao mais uma nova familia de sinal
+sobre OHLCV, mas uma nova FASE de pesquisa sobre fontes de informacao
+alternativas (Open Interest, Funding Structure, Order Flow, Liquidation
+Dynamics, Regime Detection), invertendo a ordem de trabalho (medir
+conteudo informacional antes de desenhar regra).
+
+Reconnaissance real de dados (leitura de listagem S3 do bucket publico
+`data.binance.vision`, sem download comitado): Familia G (funding) ja
+tem dado no dataset existente; Familia F (Open Interest) tem dado
+disponivel via a familia `metrics` (5min, mesma infra, download
+pequeno); Familia H (Order Flow/L2) continua cara; Familia I
+(Liquidation Dynamics) esta **BLOQUEADA** -- `liquidationSnapshot` vazio
+para todos os symbols no bucket publico, sem fonte historica.
+
+Decisoes travadas: sequenciar G -> F; adiar I indefinidamente; Familia J
+(Regime Detection) pode usar OHLCV (nao afirma alfa, so segmenta);
+metodologia de "conteudo informacional primeiro" usa correlacao de
+Spearman + estabilidade de sinal em 3 subperiodos (nao mutual
+information).
+
+`TASK-ALT-001` (DONE, `docs/pre_registers/TASK-ALT-001.md`): 4 features
+de funding formalizadas (extreme z-score 90d causal, reversal 24h,
+acceleration, price divergence), rodadas contra retorno futuro 24h.
+`src/research/info_content.py` criado como motor generico reutilizavel
+para toda a Fase II.
+
+Resultado real (`reports/alt_info_funding_structure_diagnostic.md`):
+**nenhuma das 4 features cumpre o criterio pre-registrado** (rho
+absoluto >=0,03 E sinal consistente em 3 subperiodos). 3 mostram
+inversao de sinal entre subperiodos (ruido). A 4a
+(`funding_price_divergence`) mostra sinal POSITIVO notavelmente estavel
+(0,0276/0,0230/0,0239 nos 3 subperiodos, 0,0248 na amostra completa) mas
+fica a 0,0052 do limiar -- near-miss classificado estritamente como SEM
+informacao, sem ajuste de limiar. Documentado como pista para uma futura
+task independente, nao um re-teste. Familia F (Open Interest) e a
+proxima na sequencia.
+
+## Workstream anterior (fechado): Research Family E -- Cross-Sectional Factors FECHADA (CS-001 e CS-002, ambos NAO PASSA, ADR-0017/0018)
+
+Por recomendacao explicita do usuario (nao pivotar para Order Flow ainda;
+replicar literatura documentada antes de inventar), foi aberta a
+Research Family E, executada sequencialmente (uma task por vez).
+
+`TASK-CS-001` (DONE): replicacao fiel de Cross-Sectional Momentum
+semanal estilo Liu & Tsyvinski (2021, JFE) -- rank por retorno bruto de
+formacao (168h), quintil K=4 de 20 symbols, equal-weight dollar-neutro,
+full rebalance, custo 6,0bps, mesmo split OOS do TASK-TSREV-001. Ver
+`docs/pre_registers/TASK-CS-001.md`.
+
+Resultado real (`reports/cs_momentum_backtest_final.md`): gate **NAO
+PASSA decisivamente** -- net PF 0,98 (abaixo do empate), net PnL
+-370,61bps sobre 408 pernas OOS. Nem o efeito bruto pre-custo existe
+(gross PnL OOS negativo, -64,61bps) e o win rate fica em ~50% em ambos
+os periodos (ruido), contrastando com o TSREV primario (sinal
+direcional real ~52,7% em ambos os periodos, que falhou so na
+economia). Drawdown isoladamente teria passado.
+
+`TASK-CS-002` (DONE): antes de escrever o pre-registro, uma verificacao
+matematica mostrou que espelhar CS-001 no MESMO horizonte (168h) faria o
+net PnL OOS negativo por construcao (`gross_reversal=-gross_momentum`,
+custo identico) -- confirmado numericamente sem rodar nenhum backtest.
+Por isso `docs/pre_registers/TASK-CS-002.md` usa 24h, genuinamente
+distinto, com divulgacao previa explicita de que TSREV Familia B (24h,
+z-score, descritivo) ja mostrava profit factor 0,87 na mesma direcao.
+
+Resultado real (`reports/cs_reversion_backtest_final.md`): gate **NAO
+PASSA** em todos os 3 cortes (OOS/IS/full-sample, PF 0,94/1,00/0,98 --
+nunca cruza 1,10). Gross PnL OOS tambem negativo (-801,35bps). Win rate
+49,35% (OOS), ruido. Drawdown isolado teria passado.
+
+**Decisao final (ADR-0018, recomendacao do usuario):** com CS-001 e
+CS-002 ambos NAO PASSA, a linha de pesquisa baseada EXCLUSIVAMENTE em
+fatores classicos de preco fecha nesta sessao -- cumulativamente 5
+familias (A: Kalman/OU; Funding Carry; TSMOM; C: TSREV; E:
+Cross-Sectional) todas NAO PASSA sob custo realista neste
+universo/periodo. CS-003 (Residual Momentum), CS-004 (PCA Statistical
+Arbitrage), CS-005 (Ensemble) permanecem backlog formalmente nao
+cancelado. O usuario tambem decidiu explicitamente NAO mudar o universo
+agora (para small-caps/menor liquidez, onde a literatura sugere maior
+edge bruto mas tambem maior custo) -- registrado como ideia futura, nao
+iniciada, para preservar comparabilidade com toda a pesquisa ja feita.
+Proximo passo recomendado (nao automatico, decisao do usuario): abrir
+uma categoria nova de informacao -- Market Microstructure/Alternative
+Data (open interest, order flow, liquidacoes, funding como feature) --
+com seu proprio pre-registro.
+
+## Workstream em paralelo: Research Family D -- Payoff Engineering, Fase 2 PRE-REGISTRADA (TASK-PAYOFF-002/ADR-0016), execucao BLOCKED aguardando dados novos
+
+Apos o encerramento da Funding Carry Signal Iteration (ADR-0013), o usuario
+conduziu tres pivots de sinal sucessivos, todos com pre-registro formal e
+todos com gate **NAO PASSA**:
+
+```text
+TSMOM-1  (Donchian breakout + ATR trailing stop, TASK-TSMOM-001): net PF 1,005 vs gate 1,20
+Family C (TSREV, celula primaria 24h, OOS, ADR-0014/TASK-TSREV-001/002): net PF 1,0143 vs gate 1,05;
+          drawdown ~6x o baseline buy-and-hold; win rate estavel 52,68% (OOS) vs 52,71% (in-sample)
+```
+
+Apos o fechamento da Family C, o usuario abriu Research Family D --
+**Payoff Engineering** (ADR-0015). Fase 1 (`TASK-PAYOFF-001`, DONE) e um
+estudo puramente diagnostico/distributivo sobre as trades JA produzidas
+pela celula primaria TSREV -- sem novo sinal, sem gate, sem re-tuning. Ver
+`reports/tsrev_payoff_attribution.md` para a analise completa. Achado mais
+acionavel: assimetria forte SHORT (net +37.938bps, WR 55,2%) vs LONG (net
+-30.248bps, WR 50,5%), reforcada por symbol/liquidez (BTC/ETH e o quartil
+de maior liquidez sao os piores desempenhos). Alerta metodologico
+explicito no relatorio: qualquer filtro derivado desses cortes (SHORT-only,
+exclusao BTC/ETH, exclusao de alta liquidez) so pode ser validado numa
+Fase 2 com um split out-of-sample GENUINAMENTE NOVO (dados posteriores a
+2026-05) -- nunca reaproveitando o mesmo periodo OOS que gerou a hipotese.
+
+**Fase 2 (TASK-PAYOFF-002) foi pre-registrada (ADR-0016) mas a EXECUCAO
+esta BLOCKED aguardando dados.** O usuario decidiu direcionar o proximo
+passo para validar as hipoteses da Fase 1 em um periodo out-of-sample
+genuinamente novo -- nao para Order Flow. Como o dataset termina em
+2026-05-31 (hoje: 2026-07-05), nao existe ainda um periodo novo real
+disponivel. Diante de 3 opcoes (baixar dados ja disponiveis agora ~5
+semanas/~350-400 trades; aguardar mais meses; usar holdout interno do OOS
+ja usado), o usuario escolheu **aguardar acumulacao real de dados novos**.
+
+Design travado ANTES de qualquer dado novo existir
+(`docs/pre_registers/TASK-PAYOFF-002.md`):
+
+```text
+Primaria (decisoria): SHORT-only na celula TSREV Family A 24h (escolhida
+                       pelo maior efeito absoluto da Fase 1, replicado de
+                       forma independente pelo diagnostico Z-score
+                       anterior).
+Secundarias (descritivas): exclusao BTC/ETH; regime causal por retorno
+                       trailing 30 dias; filtro de liquidez Q2.
+Gate (so na primaria, so no OOS novo): mesma estrutura da TASK-TSREV-001
+                       (net PF>1,05 E net PnL>0 E DD<=baseline recalculado
+                       E trade_count SHORT>=200).
+Gatilho de retomada (operacional): dataset estendido alem de 2026-05-31
+                       com >=500 trades totais resolvidos (~1,5 meses de
+                       dado novo estimado).
+```
+
+**Order Flow/L2 microstructure permanece explicitamente deferido** --
+so seria considerado se a Fase 2 tambem falhar o gate, per a recomendacao
+do usuario.
+
+## Historico (fechado): Sprint 10 (Execution Risk Gate) PAUSADA; pivot de sinal (ADR-0012)
+
+Sprint 10 Bloco 1 (Passive/Maker Execution Variant) esta DONE -- ver
+resultado real na secao `## Resultado real (2026-07-05)` abaixo e
+`reports/passive_execution_variant.md`. Com base nesse resultado (0/13
+pares liquido-positivos sob execucao passiva, selecao adversa evidente,
+exposicao residual +27%), o usuario decidiu (ADR-0012, `DECISIONS.md`)
+**pausar** o escopo completo da Sprint 10 (Execution Risk Gate) e pivotar
+para uma nova familia de sinal, estruturalmente diferente de reversao a
+media de curto prazo.
+
+Candidatos apresentados pelo usuario:
+
+```text
+(a) Momentum cross-sectional
+(b) Funding rate stat-arb / basis  <- ESCOLHIDO (usuario confirmou, "pode ir")
+(c) Anomalias de fluxo de ordens intradiario (HFT, timeframes menores)
+```
+
+## Workstream aberto: Funding Carry Signal Iteration (ADR-0013)
+
+`TASK-FUND-001` (DONE): hipotese pre-registrada em
+`tasks/funding_carry/TASK-FUND-001-define-hypothesis.md`. Resumo: carry de
+funding-rate cross-sectional -- a cada settlement real de funding (~3x/dia),
+ranquear os 20 simbolos do universo estatistico da Sprint 7 por
+`funding_rate_asof` (real, causal, cobertura 100%, dado ja existente --
+nenhum novo download), short nos K de funding mais alto / long nos K de
+funding mais baixo, dollar-neutro, rebalanceado a cada intervalo.
+Configuracao primaria K=5, gate net profit factor >= 1,10 (mesmo limiar do
+Sprint 8 canonico), K=3/K=8 apenas descritivos. Nenhum parametro muda apos
+ver o resultado de K=5.
+
+`TASK-FUND-002` (DONE): `src/research/funding_carry.py` implementado
+exatamente per o pre-registro; `scripts/run_funding_carry_backtest.py`
+rodado real no dataset ja existente (sem novo download). Resultado:
+
+```text
+K=5 (primario):  net profit factor 0.840, net PnL -10.729,82 bps (3.287 rebalanceamentos)
+K=3 (descritivo): net profit factor 0.869, net PnL -11.232,14 bps
+K=8 (descritivo): net profit factor 0.743, net PnL -14.039,04 bps
+Gate (K=5): NAO PASSA (limiar >= 1,10)
+```
+
+Gross edge e real e positivo em todos os K (funding + componente de preco
+correlacionado), mas o custo de rebalancear 100% do book a cada 8h por 3
+anos (19.722,00 bps acumulados) excede o gross edge (8.992,18 bps em K=5).
+Ver `reports/funding_carry_backtest.md`.
+
+### TASK-FUND-003 (DONE): rebalanceamento incremental por limiar de rendimento
+
+Regra pre-registrada, aprovada explicitamente pelo usuario: manter uma
+perna held a menos que a troca por um candidato melhore o funding em mais
+que `cost_bps_per_leg_roundtrip` (6,0bps, a MESMA constante -- nenhum
+parametro novo). Resultado real
+(`reports/funding_carry_incremental_backtest.md`):
+
+```text
+K=5 (primario):  net profit factor 1,0904 (limiar 1,10 -- faltam so 0,0096, NAO PASSA)
+K=3 (descritivo): net profit factor 1,1356 (PASSA, mas nao substitui K=5)
+K=8 (descritivo): net profit factor 1,0856 (NAO PASSA)
+
+Custo cai de 19.722,00 bps (fase 1) para 33,60 bps em K=5 (-99,83%)
+Net PnL vira positivo: -10.729,82 -> +5.620,99 bps em K=5
+Gate (K=5): NAO PASSA -- mas por margem minima, com amostra grande
+(3.287 rebalanceamentos, 6,57x o piso de 500), nao e problema de poder
+estatistico.
+```
+
+Per a disciplina pre-registrada deste projeto (ADR-0010), K=3 passar nao
+substitui a decisao de K=5 -- nenhum re-teste com K diferente apos ver o
+resultado.
+
+**Decisao final do usuario (2026-07-05, Addendum ADR-0013): aceitar NAO
+PASSA como resultado final e ENCERRAR a Funding Carry Signal Iteration.**
+Usuario recusou explicitamente abrir TASK-FUND-004 (K=4) por seria
+curve-fitting pos-resultado. Esta linha nao sera reaberta. Proxima
+hipotese de sinal em decisao entre momentum cross-sectional e order-flow
+intradiario/HFT.
+
+Nenhuma nova sprint numerada foi aberta ainda. A secao
+`## Sprint 10 -- Passive/Maker Execution Variant` abaixo permanece como
+registro historico do bloco 1, ja concluido.
+
+## Workstream anterior (fechado): Sprint 10 aberta (escopada) -- Passive/Maker Execution Variant
+
+Decisao do usuario (registrada em `project_control/DECISIONS.md` ADR-0011):
+abrir Sprint 10, mas escopado apenas ao primeiro bloco recomendado pelo
+Execution/Risk Agent no fechamento da Sprint 9 -- testar uma variante de
+execucao passiva/LIMIT/maker antes de qualquer conclusao definitiva sobre
+edge. O escopo completo de Sprint 10 do `ROADMAP.md` (Execution Risk Gate
+com limites de perda/drawdown diarios, kill switch, etc.) permanece **fora
+de escopo** deste bloco.
+
+Ver secao `## Sprint 10 -- Passive/Maker Execution Variant` abaixo para
+objetivo, escopo, invariantes e tasks. A secao `## Sprint 9` mais abaixo
+neste arquivo permanece como registro historico da sprint anterior, ja
+fechada, e nao foi alterada.
+
+## Sprint 10 -- Passive/Maker Execution Variant + Execution Risk Gate prep
+
+### Por que existe
+
+`reports/backtest_executable_v1.md` (Sprint 9) mostrou 0/13 pares
+liquido-positivos, mas usando MARKET_IOC agressivo (cruza o spread) nos dois
+lados de entrada e saida -- o cenario de custo mais caro possivel, nao o
+unico testado. O Execution/Risk Agent recomendou explicitamente testar uma
+variante passiva/maker (`simulate_limit_fill`, ja implementada e testada na
+Sprint 9, mas nunca chamada pelo runner real) antes de concluir que a
+estrategia nao tem edge.
+
+### Objetivo
+
+Comparar, nos mesmos 13 pares aprovados, os mesmos sinais causais e os
+mesmos dados reais de Junho/2023, dois estilos de execucao:
+
+```text
+MARKET_IOC       -- baseline Sprint 9, reproduzido aqui como regressao
+LIMIT_MAKER_TTL  -- ordem passiva cotada no touch (bid para BUY, ask para
+                    SELL), nunca cruza o spread ao ser colocada, so
+                    preenche se o mercado cruzar de volta dentro do TTL
+```
+
+### Escopo permitido
+
+```text
+- src/backtest/fill_model.py: simulate_limit_fill ganha reference_price
+  opcional para slippage_bps consistente com MARKET_IOC (corrige debito
+  P3 do QA Agent, Sprint 9); no_quote_fill_outcome exposto publicamente.
+- src/backtest/execution_simulator.py: novo ExecutionStyle
+  (MARKET_IOC / LIMIT_MAKER_TTL); simulate_round_trip_trade aceita
+  execution_style (default MARKET_IOC, compatibilidade retroativa).
+- src/backtest/replay_engine.py: ReplayConfig.execution_style propagado.
+- scripts/run_sprint10_passive_execution_variant.py: roda os dois estilos
+  nos mesmos 13 pares / mesmos sinais / mesmos dados reais, com checagem
+  de reproducao exata do baseline MARKET_IOC contra
+  sprint9_replay_results.json antes de confiar na comparacao.
+- reports/passive_execution_variant.md.
+```
+
+### Fora de escopo
+
+```text
+- Execution Risk Gate completo (limites de perda/drawdown diarios, kill
+  switch, sizing) -- isso e o resto do Sprint 10 do ROADMAP.md, nao este
+  bloco.
+- Qualquer promocao de par a paper trading ou live trading.
+- Novo download de dados alem do necessario para repor o raw bookTicker
+  de Junho/2023 (450 arquivos, 17.98GB, checksum-verificados) que nao
+  estava presente nesta maquina -- mesmos dados, mesmo processo do
+  ADR-0007, autorizados explicitamente pelo usuario nesta sessao para
+  D:/CryptoPairTrading/cost_pilot_raw (fora do repositorio, fora de C:).
+- Mudar geracao de sinal, gate de aprovacao de pares, ou politica de
+  promocao.
+- Apagar ou mover data/research/binance_public/cost_pilot/raw/ (permanece
+  fora do escopo tocar TASK-008-08, que continua BLOCKED).
+```
+
+### Invariantes obrigatorios
+
+```text
+- sem cotacao => NO_QUOTE
+- sem fill dentro do TTL => EXPIRED
+- partial fill => exposicao residual explicita (unclosed_residual_quantity)
+- ACK_UNKNOWN continua forcando reconciliacao simulada (evaluate_ack_guard)
+- LIMIT_MAKER_TTL nunca cruza o spread na colocacao -- so preenche se uma
+  cotacao POSTERIOR cruzar o preco (testado em
+  tests/test_execution_simulator.py)
+- MARKET_IOC com execution_style default deve reproduzir exatamente o
+  resultado da Sprint 9 (checagem automatica no runner)
+- nenhum resultado mascara exposicao residual como PnL positivo
+```
+
+### Sprint 10 tasks
+
+| ID | Tarefa | Dono | Revisor | Status | Progresso |
+|---|---|---|---|---|---:|
+| TASK-010-01 | Abrir Sprint 10 escopado e definir contrato da variante passiva | PM Agent | Execution / Risk Agent | DONE | 100% |
+| TASK-010-02 | Adaptar fill_model/execution_simulator/replay_engine para ExecutionStyle | Backtest Agent | QA / Chaos Testing Agent + Execution / Risk Agent | DONE | 100% |
+| TASK-010-03 | Criar scripts/run_sprint10_passive_execution_variant.py | Backtest Agent | PM Agent | DONE | 100% |
+| TASK-010-04 | Rodar replay real (MARKET_IOC vs LIMIT_MAKER_TTL) nos 13 pares | Backtest Agent | PM Agent + Quant Research Agent | DONE | 100% |
+| TASK-010-05 | Gerar reports/passive_execution_variant.md | Documentation Agent | PM Agent + Backtest Agent | DONE | 100% |
+| TASK-010-06 | Atualizar TEST_MATRIX/TASK_BOARD/CURRENT_SPRINT/PROJECT_STATE/HANDOFFS/RISKS | PM Agent | - | DONE | 100% |
+
+### Nota de dados (2026-07-04)
+
+O diretorio `data/research/binance_public/cost_pilot/raw/` (17.98GB,
+checksum-verificado, gitignored por design) nao estava presente nesta
+maquina/sessao. O usuario autorizou explicitamente re-baixar os MESMOS 450
+arquivos de Junho/2023 (11 simbolos necessarios para os 13 pares
+aprovados) via `scripts/run_sprint7_execution_cost_download.py`, com
+destino em `D:/CryptoPairTrading/cost_pilot_raw` (fora do repositorio, por
+falta de espaco em C:). Isto nao e um novo escopo de dados -- e o mesmo
+dado, mesmo processo (ADR-0007), apenas reposicionado por falta de espaco
+local. O download foi interrompido uma vez por queda da sessao anterior e
+retomado com sucesso (o script pula download de arquivos ja existentes);
+330 arquivos/checksums (11 simbolos x 30 dias, 11GB) verificados no total.
+
+### Resultado real (2026-07-05)
+
+Checagem de reproducao do baseline: **PASS** (MARKET_IOC rerodado pelo novo
+codigo `ExecutionStyle`-aware reproduz exatamente o resultado da Sprint 9 --
+todos os deltas de metricas em 0).
+
+Comparando os 13 pares nos dois estilos:
+
+```text
+Pares liquido-positivos:     0/13 em ambos os estilos (MARKET_IOC e LIMIT_MAKER_TTL)
+Portfolio net PnL:           MARKET_IOC -$2266.27  ->  LIMIT_MAKER_TTL -$2005.91  (+$260.35, ~11.5%)
+Unclosed residual quantity:  MARKET_IOC 11470.92   ->  LIMIT_MAKER_TTL 14565.31   (+27%, PIOR)
+Entry/exit legs EXPIRED:     0 (impossivel no MARKET_IOC)  ->  65 entrada / 36 saida no LIMIT_MAKER_TTL
+```
+
+Execucao passiva reduz o custo (11 dos 13 pares melhoram), mas nao chega
+perto de tornar nenhum par liquido-positivo, e aumenta a exposicao residual
+nao fechada em 27% no agregado (2 pares -- ETCUSDT/ETHUSDT e
+ETCUSDT/LTCUSDT -- pioram sob o estilo passivo). Gate para "PnL liquido
+positivo em cenario conservador" permanece **NAO PASSA**. Ver
+`reports/passive_execution_variant.md` para metodologia completa,
+tabela por par, e analise de riscos.
+
+Isto fecha a pergunta especifica deixada aberta pela Sprint 9: o resultado
+0/13 nao e simplesmente um artefato de testar apenas o estilo de execucao
+mais caro. Nenhuma decisao de promocao a paper/live foi tomada; ADR-0011
+nao muda politica de gate.
 
 | ID | Tarefa | Dono | Revisor | Status | Progresso |
 |---|---|---|---|---|---:|

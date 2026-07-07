@@ -1,0 +1,55 @@
+{
+  "bars_csv": "C:\\Users\\arthu\\Desktop\\Aula\\Projects\\Crypto-Pair-Trading\\data\\research\\binance_public\\normalized\\sprint7_binance_usdm_202306_202605_bars.csv.gz",
+  "baseline_max_drawdown_bps_oos": 11003.939982368345,
+  "config": {
+    "cost_bps_roundtrip": 6.0,
+    "formation_hours": 24,
+    "min_trades_for_gate": 200,
+    "profit_factor_gate": 1.1,
+    "quintile_k": 4
+  },
+  "full_sample_summary": {
+    "baseline_max_drawdown_bps": null,
+    "cost_bps": 6564.000000000009,
+    "gate_pass": false,
+    "gross_pnl_bps": 3284.127653296837,
+    "max_drawdown_bps": 6305.713528100267,
+    "net_pnl_bps": -3279.872346703172,
+    "open_at_end_count": 8,
+    "profit_factor": 0.9807788698908175,
+    "resolved_count": 8752,
+    "trade_count": 8760,
+    "win_rate": 0.49874314442413165
+  },
+  "gate_decision": "NAO_PASSA",
+  "generated_at_utc": "2026-07-06T02:05:36.696095+00:00",
+  "in_sample_bar_count": 350880,
+  "in_sample_summary": {
+    "baseline_max_drawdown_bps": null,
+    "cost_bps": 4380.000000000006,
+    "gate_pass": false,
+    "gross_pnl_bps": 4085.4758036881612,
+    "max_drawdown_bps": 5711.467710904141,
+    "net_pnl_bps": -294.5241963118449,
+    "open_at_end_count": 0,
+    "profit_factor": 0.997524846152147,
+    "resolved_count": 5840,
+    "trade_count": 5840,
+    "win_rate": 0.5013698630136987
+  },
+  "oos_start": "2025-06-01",
+  "oos_summary": {
+    "baseline_max_drawdown_bps": 11003.939982368345,
+    "cost_bps": 2184.0000000000023,
+    "gate_pass": false,
+    "gross_pnl_bps": -801.3481503913245,
+    "max_drawdown_bps": 3396.376759494794,
+    "net_pnl_bps": -2985.3481503913267,
+    "open_at_end_count": 8,
+    "profit_factor": 0.942196633044577,
+    "resolved_count": 2912,
+    "trade_count": 2920,
+    "win_rate": 0.49347527472527475
+  },
+  "out_of_sample_bar_count": 175200
+}

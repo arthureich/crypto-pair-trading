@@ -1,0 +1,87 @@
+{
+  "bars_csv": "C:\\Users\\arthu\\Desktop\\Aula\\Projects\\Crypto-Pair-Trading\\data\\research\\binance_public\\normalized\\sprint7_binance_usdm_202306_202605_bars.csv.gz",
+  "gate_decision": "NAO_PASSA",
+  "generated_at_utc": "2026-07-05T04:05:49.697832+00:00",
+  "primary_k": 5,
+  "secondary_ks": [
+    3,
+    8
+  ],
+  "variants": {
+    "3": {
+      "config": {
+        "cost_bps_per_leg_roundtrip": 6.0,
+        "k": 3,
+        "min_rebalances_for_gate": 500,
+        "profit_factor_gate": 1.1,
+        "rebalance_interval_hours": 8
+      },
+      "summary": {
+        "avg_net_pnl_bps": 3.4347979233349877,
+        "cost_bps": 53.0,
+        "funding_pnl_bps": 2233.1621,
+        "gross_pnl_bps": 11343.180774002105,
+        "hit_rate": 0.5278369333738971,
+        "insufficient_symbols_count": 0,
+        "net_pnl_bps": 11290.180774002105,
+        "no_data_count": 1,
+        "price_pnl_bps": 9110.018674002105,
+        "profit_factor": 1.1355788286304733,
+        "profit_factor_gate_pass": true,
+        "rebalance_count": 3288,
+        "resolved_count": 3287
+      },
+      "total_swap_count": 53
+    },
+    "5": {
+      "config": {
+        "cost_bps_per_leg_roundtrip": 6.0,
+        "k": 5,
+        "min_rebalances_for_gate": 500,
+        "profit_factor_gate": 1.1,
+        "rebalance_interval_hours": 8
+      },
+      "summary": {
+        "avg_net_pnl_bps": 1.7100678565695653,
+        "cost_bps": 33.6,
+        "funding_pnl_bps": 1631.9050300000001,
+        "gross_pnl_bps": 5654.593044544161,
+        "hit_rate": 0.5208396714329175,
+        "insufficient_symbols_count": 0,
+        "net_pnl_bps": 5620.993044544161,
+        "no_data_count": 1,
+        "price_pnl_bps": 4022.688014544161,
+        "profit_factor": 1.0903815758956261,
+        "profit_factor_gate_pass": false,
+        "rebalance_count": 3288,
+        "resolved_count": 3287
+      },
+      "total_swap_count": 56
+    },
+    "8": {
+      "config": {
+        "cost_bps_per_leg_roundtrip": 6.0,
+        "k": 8,
+        "min_rebalances_for_gate": 500,
+        "profit_factor_gate": 1.1,
+        "rebalance_interval_hours": 8
+      },
+      "summary": {
+        "avg_net_pnl_bps": 1.2570645474196411,
+        "cost_bps": 18.0,
+        "funding_pnl_bps": 1038.52393125,
+        "gross_pnl_bps": 4149.9711673683605,
+        "hit_rate": 0.5150593246121083,
+        "insufficient_symbols_count": 0,
+        "net_pnl_bps": 4131.9711673683605,
+        "no_data_count": 1,
+        "price_pnl_bps": 3111.4472361183607,
+        "profit_factor": 1.0856200242809626,
+        "profit_factor_gate_pass": false,
+        "rebalance_count": 3288,
+        "resolved_count": 3287
+      },
+      "total_swap_count": 48
+    }
+  }
+}

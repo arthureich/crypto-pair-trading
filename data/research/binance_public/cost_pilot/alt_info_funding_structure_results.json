@@ -1,0 +1,144 @@
+{
+  "bars_csv": "C:\\Users\\arthu\\Desktop\\Aula\\Projects\\Crypto-Pair-Trading\\data\\research\\binance_public\\normalized\\sprint7_binance_usdm_202306_202605_bars.csv.gz",
+  "forward_horizon_hours": 24,
+  "generated_at_utc": "2026-07-07T02:37:44.205794+00:00",
+  "magnitude_threshold": 0.03,
+  "period_boundaries_ms": [
+    1685577600000,
+    1717200000000,
+    1748736000000,
+    1780272000000
+  ],
+  "period_labels": [
+    "2023-06_2024-05",
+    "2024-06_2025-05",
+    "2025-06_2026-05"
+  ],
+  "results": {
+    "funding_acceleration": {
+      "feature_name": "funding_acceleration",
+      "full_sample_n": 524640,
+      "full_sample_rho": 0.0063525994492221105,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": false,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 174720,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": -0.016050122446059495,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 175200,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": 0.009437494669444872,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 174720,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.023760486449338248,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "funding_extreme": {
+      "feature_name": "funding_extreme",
+      "full_sample_n": 482400,
+      "full_sample_rho": -0.004968266125578087,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": false,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 132480,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": 0.024384713678984593,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 175200,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": 0.008366124666445936,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 174720,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": -0.041385203485553836,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "funding_price_divergence": {
+      "feature_name": "funding_price_divergence",
+      "full_sample_n": 481920,
+      "full_sample_rho": 0.024809740227726043,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": true,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 132000,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": 0.02762136360797092,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 175200,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": 0.022987348454281003,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 174720,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.023857895078474557,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "funding_reversal": {
+      "feature_name": "funding_reversal",
+      "full_sample_n": 525120,
+      "full_sample_rho": -0.004406683885462786,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": false,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 175200,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": -0.011405849649710888,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 175200,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": 0.011808083414973556,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 174720,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": -0.013495600156059717,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    }
+  },
+  "rolling_window_hours": 2160
+}

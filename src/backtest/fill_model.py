@@ -147,7 +147,7 @@ def simulate_market_fill(
 
     quote = _select_quote_after_latency(quotes, decision_time, cfg.latency_ms)
     if quote is None:
-        return _no_quote_outcome(
+        return no_quote_fill_outcome(
             order_id, OrderType.MARKET_IOC, resolved_side, quantity, decision_time
         )
 
@@ -194,6 +194,7 @@ def simulate_limit_fill(
     quotes: Sequence[TopOfBookQuote],
     decision_time: int,
     config: FillModelConfig | None = None,
+    reference_price: float | None = None,
 ) -> FillOutcome:
     """Simulate a resting LIMIT order: fills only while a later quote crosses it.
 
@@ -210,11 +211,7 @@ def simulate_limit_fill(
 
     earliest_live_time = decision_time + cfg.latency_ms
     ttl_end = decision_time + cfg.limit_ttl_ms
-    candidates = [
-        quote
-        for quote in quotes
-        if earliest_live_time <= quote.event_time <= ttl_end
-    ]
+    candidates = [quote for quote in quotes if earliest_live_time <= quote.event_time <= ttl_end]
     candidates.sort(key=lambda quote: quote.event_time)
 
     remaining = quantity
@@ -242,7 +239,7 @@ def simulate_limit_fill(
     else:
         status = FillStatus.FILLED
     average_price = (filled_notional / filled_quantity) if filled_quantity > 0.0 else None
-    slippage_bps = 0.0 if filled_quantity > 0.0 else None
+    slippage_bps = _limit_slippage_bps(average_price, reference_price, resolved_side)
     return _build_outcome(
         order_id=order_id,
         order_type=OrderType.LIMIT,
@@ -256,6 +253,34 @@ def simulate_limit_fill(
         execution_time=last_execution_time,
         config=cfg,
     )
+
+
+def _limit_slippage_bps(
+    average_price: float | None,
+    reference_price: float | None,
+    side: SlippageSide,
+) -> float | None:
+    """Slippage of a filled LIMIT order vs. an external reference price.
+
+    Uses the same sign convention as ``_realized_price_and_slippage`` for
+    MARKET orders (positive = adverse to the order's side), so LIMIT and
+    MARKET fills are comparable on the same metric. Previously this always
+    returned ``0.0`` when filled regardless of ``reference_price`` -- an
+    inconsistent definition versus MARKET orders (QA Agent finding, Sprint 9
+    review) that would have made a passive-vs-aggressive execution
+    comparison misleading. Returns ``None`` when no reference price is
+    supplied, rather than fabricating a zero.
+    """
+
+    if average_price is None or reference_price is None:
+        return None
+    average = Decimal(str(average_price))
+    reference = Decimal(str(reference_price))
+    if side is SlippageSide.BUY:
+        bps = ((average - reference) / reference) * Decimal("10000")
+    else:
+        bps = ((reference - average) / reference) * Decimal("10000")
+    return float(bps)
 
 
 def _crossing_level(
@@ -352,13 +377,21 @@ def _build_outcome(
     )
 
 
-def _no_quote_outcome(
+def no_quote_fill_outcome(
     order_id: str,
     order_type: OrderType,
     side: SlippageSide,
     quantity: float,
     decision_time: int,
 ) -> FillOutcome:
+    """Build a NO_QUOTE outcome for a leg with no observable book at decision time.
+
+    Exposed publicly (not just used internally by ``simulate_market_fill``)
+    so callers that construct their own limit price from a book quote --
+    e.g. ``execution_simulator.py`` choosing a passive touch price -- can
+    fail closed the same way when no causal quote exists yet, instead of
+    duplicating this outcome shape.
+    """
     return FillOutcome(
         order_id=order_id,
         order_type=order_type,
@@ -425,6 +458,7 @@ __all__ = [
     "FillStatus",
     "OrderType",
     "TopOfBookQuote",
+    "no_quote_fill_outcome",
     "simulate_limit_fill",
     "simulate_market_fill",
 ]

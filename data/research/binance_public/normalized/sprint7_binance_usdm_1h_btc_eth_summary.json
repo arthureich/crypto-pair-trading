@@ -1,0 +1,52 @@
+{
+  "accepted_symbols": [
+    "BTCUSDT",
+    "ETHUSDT"
+  ],
+  "candidate_pair_diagnostics": [
+    {
+      "accepted_by_stationarity": true,
+      "adf_p_value": 0.0,
+      "aligned_observations": 26304,
+      "kalman_beta_last": 0.5977368502676103,
+      "kalman_beta_max": 1.3311922228909183,
+      "kalman_beta_min": 0.4862041369113428,
+      "kalman_beta_unstable": false,
+      "kalman_unstable_reasons": [],
+      "kpss_p_value": 0.08589518672553166,
+      "latest_rolling_zscore": -1.0530524401548522,
+      "ou_half_life_hours": 0.8227031865715189,
+      "ou_mu": 2.6499403107556813e-05,
+      "ou_sigma": 0.0017992889294199633,
+      "ou_status": "MEAN_REVERTING",
+      "ou_theta": 0.8425240012118136,
+      "pair": "BTCUSDT/ETHUSDT",
+      "scope": "FULL_SAMPLE_EXPLORATORY",
+      "stationarity_reasons": [
+        "historical z-score outlier exceeds stability threshold",
+        "rolling standard deviation ratio exceeds stability threshold"
+      ],
+      "status": "WARN"
+    }
+  ],
+  "candidate_pairs": [
+    {
+      "correlation": 0.829051526985358,
+      "cost_filters_applied": false,
+      "funding_carry_bps_per_day": 4.0707,
+      "pair": "BTCUSDT/ETHUSDT",
+      "score": 0.829051526985
+    }
+  ],
+  "end_month_exclusive": "2026-06",
+  "expected_bars": 26304,
+  "gate_note": "Statistical-only run. Cost-gated Sprint 7 PASS still requires verified historical top-of-book/L2 execution-cost evidence.",
+  "normalized_path": "C:\\Users\\arthu\\Desktop\\Aula\\Projects\\Crypto-Pair-Trading\\data\\research\\binance_public\\normalized\\sprint7_binance_usdm_1h_btc_eth_bars.csv",
+  "rejected_pairs": [],
+  "rejected_symbols": [],
+  "start_month": "2023-06",
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT"
+  ]
+}

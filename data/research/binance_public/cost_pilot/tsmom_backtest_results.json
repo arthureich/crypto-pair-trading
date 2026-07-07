@@ -1,0 +1,207 @@
+{
+  "bars_csv": "C:\\Users\\arthu\\Desktop\\Aula\\Projects\\Crypto-Pair-Trading\\data\\research\\binance_public\\normalized\\sprint7_binance_usdm_202306_202605_bars.csv.gz",
+  "config": {
+    "atr_period_hours": 14,
+    "atr_stop_multiplier": 3.0,
+    "cost_bps_roundtrip": 12.0,
+    "donchian_window_hours": 24,
+    "min_win_rate": 0.3,
+    "profit_factor_gate": 1.2
+  },
+  "gate_decision": "NAO_PASSA",
+  "generated_at_utc": "2026-07-05T05:38:49.251582+00:00",
+  "per_symbol": [
+    {
+      "net_pnl_bps": 6019.267163202675,
+      "open_at_end_count": 1,
+      "resolved_count": 553,
+      "symbol": "ADAUSDT",
+      "trade_count": 554,
+      "win_count": 187,
+      "win_rate": 0.33815551537070526
+    },
+    {
+      "net_pnl_bps": -4668.849489226046,
+      "open_at_end_count": 0,
+      "resolved_count": 557,
+      "symbol": "APTUSDT",
+      "trade_count": 557,
+      "win_count": 183,
+      "win_rate": 0.32854578096947934
+    },
+    {
+      "net_pnl_bps": 3323.7602709515872,
+      "open_at_end_count": 1,
+      "resolved_count": 556,
+      "symbol": "ARBUSDT",
+      "trade_count": 557,
+      "win_count": 192,
+      "win_rate": 0.34532374100719426
+    },
+    {
+      "net_pnl_bps": -7722.546672879272,
+      "open_at_end_count": 1,
+      "resolved_count": 574,
+      "symbol": "ATOMUSDT",
+      "trade_count": 575,
+      "win_count": 208,
+      "win_rate": 0.3623693379790941
+    },
+    {
+      "net_pnl_bps": 6382.402129762912,
+      "open_at_end_count": 0,
+      "resolved_count": 566,
+      "symbol": "AVAXUSDT",
+      "trade_count": 566,
+      "win_count": 206,
+      "win_rate": 0.36395759717314485
+    },
+    {
+      "net_pnl_bps": -19327.618608891185,
+      "open_at_end_count": 1,
+      "resolved_count": 539,
+      "symbol": "BCHUSDT",
+      "trade_count": 540,
+      "win_count": 173,
+      "win_rate": 0.3209647495361781
+    },
+    {
+      "net_pnl_bps": 5457.980772230237,
+      "open_at_end_count": 0,
+      "resolved_count": 558,
+      "symbol": "BNBUSDT",
+      "trade_count": 558,
+      "win_count": 187,
+      "win_rate": 0.33512544802867383
+    },
+    {
+      "net_pnl_bps": -1162.278671605514,
+      "open_at_end_count": 1,
+      "resolved_count": 564,
+      "symbol": "BTCUSDT",
+      "trade_count": 565,
+      "win_count": 185,
+      "win_rate": 0.3280141843971631
+    },
+    {
+      "net_pnl_bps": 16938.939548182803,
+      "open_at_end_count": 1,
+      "resolved_count": 526,
+      "symbol": "DOGEUSDT",
+      "trade_count": 527,
+      "win_count": 186,
+      "win_rate": 0.35361216730038025
+    },
+    {
+      "net_pnl_bps": -1652.0313699903159,
+      "open_at_end_count": 1,
+      "resolved_count": 547,
+      "symbol": "DOTUSDT",
+      "trade_count": 548,
+      "win_count": 191,
+      "win_rate": 0.3491773308957952
+    },
+    {
+      "net_pnl_bps": -13773.660775180935,
+      "open_at_end_count": 1,
+      "resolved_count": 566,
+      "symbol": "ETCUSDT",
+      "trade_count": 567,
+      "win_count": 176,
+      "win_rate": 0.31095406360424027
+    },
+    {
+      "net_pnl_bps": 3752.021703834135,
+      "open_at_end_count": 1,
+      "resolved_count": 541,
+      "symbol": "ETHUSDT",
+      "trade_count": 542,
+      "win_count": 188,
+      "win_rate": 0.34750462107208874
+    },
+    {
+      "net_pnl_bps": 371.4772280286769,
+      "open_at_end_count": 1,
+      "resolved_count": 566,
+      "symbol": "LINKUSDT",
+      "trade_count": 567,
+      "win_count": 202,
+      "win_rate": 0.3568904593639576
+    },
+    {
+      "net_pnl_bps": -15320.521006929896,
+      "open_at_end_count": 1,
+      "resolved_count": 554,
+      "symbol": "LTCUSDT",
+      "trade_count": 555,
+      "win_count": 180,
+      "win_rate": 0.3249097472924188
+    },
+    {
+      "net_pnl_bps": -2610.7172480438553,
+      "open_at_end_count": 1,
+      "resolved_count": 562,
+      "symbol": "OPUSDT",
+      "trade_count": 563,
+      "win_count": 193,
+      "win_rate": 0.34341637010676157
+    },
+    {
+      "net_pnl_bps": 8520.011449757138,
+      "open_at_end_count": 1,
+      "resolved_count": 570,
+      "symbol": "SOLUSDT",
+      "trade_count": 571,
+      "win_count": 203,
+      "win_rate": 0.356140350877193
+    },
+    {
+      "net_pnl_bps": 13788.038317321923,
+      "open_at_end_count": 1,
+      "resolved_count": 547,
+      "symbol": "SUIUSDT",
+      "trade_count": 548,
+      "win_count": 195,
+      "win_rate": 0.35648994515539306
+    },
+    {
+      "net_pnl_bps": 9038.17601203133,
+      "open_at_end_count": 1,
+      "resolved_count": 599,
+      "symbol": "TRXUSDT",
+      "trade_count": 600,
+      "win_count": 223,
+      "win_rate": 0.3722871452420701
+    },
+    {
+      "net_pnl_bps": -7714.481641047162,
+      "open_at_end_count": 1,
+      "resolved_count": 563,
+      "symbol": "UNIUSDT",
+      "trade_count": 564,
+      "win_count": 185,
+      "win_rate": 0.3285968028419183
+    },
+    {
+      "net_pnl_bps": 8547.892785724907,
+      "open_at_end_count": 1,
+      "resolved_count": 524,
+      "symbol": "XRPUSDT",
+      "trade_count": 525,
+      "win_count": 175,
+      "win_rate": 0.33396946564885494
+    }
+  ],
+  "summary": {
+    "cost_bps": 133584.0,
+    "gate_pass": false,
+    "gross_pnl_bps": 141771.26189723416,
+    "max_drawdown_bps": 85654.61843748766,
+    "net_pnl_bps": 8187.261897234144,
+    "open_at_end_count": 17,
+    "profit_factor": 1.005285526103853,
+    "resolved_count": 11132,
+    "trade_count": 11149,
+    "win_rate": 0.34297520661157027
+  }
+}
