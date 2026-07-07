@@ -1,0 +1,53 @@
+{
+  "bars_csv": "/home/arthur/Downloads/crypto-pair-trading/data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_bars.csv.gz",
+  "baseline_max_drawdown_bps_oos": 11003.939982368345,
+  "baseline_summary": {
+    "baseline_max_drawdown_bps": 11003.939982368345,
+    "cost_bps": 25433.34768478133,
+    "gate_pass": false,
+    "gross_pnl_bps": 33123.49107774052,
+    "max_drawdown_bps": 65719.65557307951,
+    "net_pnl_bps": 7690.143392959186,
+    "open_at_end_count": 5,
+    "profit_factor": 1.0143051186126162,
+    "resolved_count": 3941,
+    "trade_count": 3946,
+    "win_rate": 0.5267698553666582
+  },
+  "blocked_oos_trades": 1187,
+  "config": {
+    "cost_bps_roundtrip": 6.0,
+    "horizon_hours": 24,
+    "min_trades_for_gate": 200,
+    "profit_factor_gate": 1.05,
+    "vol_lookback_hours": 720,
+    "zscore_threshold": 1.0
+  },
+  "filter": {
+    "allow_rule": "realized_vol_168h[t] <= prior_90d_q67[t]",
+    "feature": "realized_vol_168h",
+    "high_vol_quantile": 0.67,
+    "missing_regime": "BLOCK_ENTRY",
+    "quantile_lookback_hours": 2160,
+    "realized_vol_window_hours": 168
+  },
+  "filtered_oos_trades": 2759,
+  "filtered_summary": {
+    "baseline_max_drawdown_bps": 11003.939982368345,
+    "cost_bps": 16548.00000000002,
+    "gate_pass": false,
+    "gross_pnl_bps": 10437.3621679491,
+    "max_drawdown_bps": 61748.504476684415,
+    "net_pnl_bps": -6110.637832050918,
+    "open_at_end_count": 1,
+    "profit_factor": 0.9821570804718243,
+    "resolved_count": 2758,
+    "trade_count": 2759,
+    "win_rate": 0.5177664974619289
+  },
+  "gate_decision": "NAO_PASSA",
+  "generated_at_utc": "2026-07-07T20:31:48.867686+00:00",
+  "oos_start": "2025-06-01",
+  "scope_warning": "feasibility only; 2025-06/2026-05 was already analyzed, so PASSA would still require a future new-OOS validation",
+  "total_oos_trades": 3946
+}

@@ -1,5 +1,54 @@
 # Daily Log
 
+## 2026-07-07 (TASK-ALT-004 - regime-conditioning TSREV fechado NAO_PASSA)
+
+Depois da Family J mostrar informacao robusta de volatilidade/regime, abri
+uma task separada de feasibility (ADR-0022/TASK-ALT-004) para testar o uso
+operacional minimo e mais conservador: bloquear entradas da TSREV 24h quando
+`realized_vol_168h` estivesse acima do percentil causal 67% da historia 90d
+do proprio symbol. Pre-registrei explicitamente que isto nao seria validacao
+final, pois o OOS 2025-06/2026-05 ja foi analisado varias vezes.
+
+Implementei `scripts/run_regime_conditioned_tsrev.py` e
+`tests/test_regime_conditioned_tsrev.py`: filtro causal, missing regime
+fail-closed, no-lookahead por mutacao de futuro, filtro de trades por
+allow_entry explicito e renormalizacao inverse-vol apos o filtro.
+
+Resultado real: NAO_PASSA. O filtro bloqueou 1.187 trades OOS, manteve
+2.758 trades resolvidas, mas piorou PF/net PnL (PF 0,9822; net
+-6.110,64bps) e max drawdown seguiu enorme (61.748,50bps vs baseline
+buy-and-hold 11.003,94bps). Decisao: esta variante de regime-conditioning
+encerra; nao abrir novo-OOS deste filtro exato.
+
+Verificacao: 18 testes focados, 424 testes na suite completa, ruff limpo
+nos arquivos novos.
+
+## 2026-07-07 (TASK-ALT-003 - Family J Regime Detection fechada)
+
+Continuei a Research Phase II apos G/F fecharem sem informacao. Abri
+ADR-0021 e `docs/pre_registers/TASK-ALT-003.md` antes de executar a
+Family J, mantendo a excecao de ADR-0019: OHLCV permitido apenas como
+camada de regime/contexto, nao como alpha direcional.
+
+Implementei `scripts/diagnostic_alt_regime_detection.py` com target
+`future_abs_return_24h = abs(log_price[t+24h] - log_price[t])` e 6 features
+causais (`realized_vol_24h`, `realized_vol_168h`,
+`trend_intensity_168h`, `volume_shock_24h`, `market_dispersion_24h`,
+`market_abs_return_24h`). Adicionei `tests/test_alt_regime_detection.py`
+cobrindo target absoluto, no-lookahead por mutacao de futuro, repeticao de
+features de mercado por symbol e fail-closed para colunas faltantes/linhas
+duplicadas.
+
+Resultado real no dataset Sprint 7 normalizado, sem novo download: as 6
+features passam `TEM_INFORMACAO` contra retorno absoluto futuro de 24h.
+Mais fortes: `realized_vol_168h` rho=0,3009 e `realized_vol_24h`
+rho=0,2927; todas com sinal positivo nos 3 subperiodos. Interpretacao
+registrada: informacao de volatilidade/regime, nao alpha direcional.
+
+Atualizei PROJECT_STATE, CURRENT_SPRINT, TASK_BOARD, HANDOFFS, TEST_MATRIX
+e RISKS. Verificacao: 5 testes focados novos, 418 testes na suite completa,
+ruff limpo nos arquivos novos.
+
 ## 2026-07-03 (TASK-SIG-004 - checagem intrahora 5m fechada)
 
 Continuei a partir da revisao formal da TASK-SIG-004. O trabalho tecnico

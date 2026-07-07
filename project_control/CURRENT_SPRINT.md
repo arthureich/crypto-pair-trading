@@ -2,7 +2,60 @@
 
 Last updated: 2026-07-07
 
-## Workstream atual: Research Phase II -- Familias G e F ambas FECHADAS sem informacao (ADR-0019/0020); J e near-miss de G pendentes
+## Workstream atual: Research Phase II -- TASK-ALT-004 FECHADA NAO_PASSA (ADR-0022)
+
+`TASK-ALT-004` (regime-conditioning sobre TSREV 24h, DONE): follow-up da
+Family J, feasibility only. Filtro pre-registrado: bloquear entradas da
+TSREV Family A 24h quando `realized_vol_168h[t]` esta acima do percentil
+causal 67% da propria historia 90d do symbol; missing regime bloqueia;
+trades remanescentes sao renormalizadas por inverse-vol.
+
+Resultado real (`reports/regime_conditioned_tsrev_feasibility.md`):
+**NAO_PASSA**. O filtro bloqueou 1.187 de 3.946 trades OOS e manteve
+2.758 resolvidas, mas piorou a economia:
+
+```text
+Original TSREV 24h OOS:        PF 1,0143; net +7.690,14bps; DD 65.719,66bps
+Regime-filtered TSREV 24h OOS: PF 0,9822; net -6.110,64bps; DD 61.748,50bps
+Buy-and-hold DD baseline:      11.003,94bps
+```
+
+Decisao: variante encerrada. A informacao de regime existe, mas este
+filtro simples de alto-vol nao salva TSREV nem merece novo-OOS proprio.
+
+**Estado atual da Research Phase II:** G e F fecharam sem informacao;
+J encontrou informacao de regime; o primeiro uso operacional minimo de J
+(TASK-ALT-004) falhou. Pendencias: near-miss de
+`funding_price_divergence`, Familia H adiada/cara, Familia I BLOQUEADA,
+PAYOFF-002 bloqueada aguardando dados novos.
+
+## Workstream anterior: Research Phase II -- Familia J FECHADA com informacao de regime (ADR-0021)
+
+`TASK-ALT-003` (Familia J, Regime Detection, DONE): diagnostico de
+contexto/risco, nao alpha direcional. Target pre-registrado:
+`future_abs_return_24h = abs(log_price[t+24h] - log_price[t])`, para medir
+risco/volatilidade futura, nao lado long/short.
+
+Seis features causais OHLCV/contexto foram testadas no dataset Sprint 7 ja
+normalizado, sem novo download: `realized_vol_24h`,
+`realized_vol_168h`, `trend_intensity_168h`, `volume_shock_24h`,
+`market_dispersion_24h`, `market_abs_return_24h`.
+
+Resultado real (`reports/alt_info_regime_detection_diagnostic.md`): **as
+6 features cumprem o criterio `TEM_INFORMACAO`** contra retorno absoluto
+futuro de 24h. Mais fortes: `realized_vol_168h` rho=0,3009 e
+`realized_vol_24h` rho=0,2927; todas mantem sinal positivo nos 3
+subperiodos. Interpretacao: informacao robusta de volatilidade/regime
+(volatility clustering/contexto de stress), nao edge direcional.
+
+**Estado atual da Research Phase II:** G e F fecharam sem informacao
+direcional/alternativa; J encontrou informacao de regime. Pendencias:
+(1) decidir se abre uma task futura separada para uso operacional de regime
+como camada de condicionamento; (2) near-miss de
+`funding_price_divergence` como candidato separado; (3) Familia H continua
+adiada/cara; (4) Familia I continua BLOQUEADA por falta de fonte historica.
+
+## Workstream anterior: Research Phase II -- Familias G e F ambas FECHADAS sem informacao (ADR-0019/0020); J e near-miss de G pendentes
 
 `TASK-ALT-002` (Familia F, Open Interest, DONE): novo download real e
 pequeno (~21.920 arquivos diarios, ~260MB, checksum SHA256 verificado
@@ -22,12 +75,12 @@ mas magnitude DECAINDO monotonicamente nos 3 subperiodos (ex.: oi_delta
 -0,0321 -> -0,0202 -> -0,0048), quase zero no periodo mais recente --
 leitura de eficiencia de mercado crescente.
 
-**Estado atual da Research Phase II:** G e F ambas fechadas sem
-informacao. Pendencias: (1) near-miss de `funding_price_divergence`
-(TASK-ALT-001) como candidato a task futura separada; (2) Familia J
-(Regime Detection) ainda nao iniciada; (3) Familia H (Order Flow)
-continua adiada/cara; (4) Familia I (Liquidation Dynamics) continua
-BLOQUEADA por falta de fonte historica.
+**Estado naquela etapa da Research Phase II:** G e F ambas fechadas sem
+informacao. Este trecho foi supersedido pelo workstream atual acima:
+Familia J ja foi executada e fechou com informacao de regime. Pendencias
+remanescentes depois de `TASK-ALT-004`: near-miss de
+`funding_price_divergence`, Familia H adiada/cara e Familia I BLOQUEADA
+por falta de fonte historica.
 
 ## Workstream anterior: Research Phase II -- Alternative Information aberta (ADR-0019); TASK-ALT-001 (Familia G, Funding Structure) FECHADA sem informacao (near-miss notavel)
 

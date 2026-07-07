@@ -2,6 +2,181 @@
 
 Last updated: 2026-07-07
 
+## HANDOFF - TASK-ALT-004: Regime-Conditioned TSREV Feasibility Closed NAO_PASSA
+
+### Status
+
+DONE. Follow-up da Family J para testar um uso operacional minimo de
+regime como filtro de risco sobre TSREV 24h. Feasibility only: mesmo se
+passasse, exigiria novo OOS futuro; como falhou, esta variante encerra.
+
+### O que foi feito
+
+- Criado `docs/pre_registers/TASK-ALT-004.md` e ADR-0022 antes da
+  execucao.
+- Implementado `scripts/run_regime_conditioned_tsrev.py`.
+- Filtro unico: bloquear entrada quando `realized_vol_168h[t]` excede
+  o percentil causal 67% da historia 90d do proprio symbol.
+- Entradas sem regime calculavel bloqueiam.
+- Trades filtradas foram renormalizadas pelo mesmo inverse-vol sizing da
+  TSREV original.
+- Rodado feasibility real no dataset normalizado existente, sem novo
+  download.
+
+### Resultado real
+
+```text
+Gate: NAO_PASSA
+
+Original TSREV 24h OOS:
+  trades resolvidas: 3.941
+  net PF:            1,0143
+  net PnL:           +7.690,14bps
+  max DD:            65.719,66bps
+
+Regime-filtered TSREV 24h OOS:
+  trades resolvidas: 2.758
+  net PF:            0,9822
+  net PnL:           -6.110,64bps
+  max DD:            61.748,50bps
+
+Buy-and-hold DD baseline: 11.003,94bps
+```
+
+O filtro bloqueou 1.187 trades, mas nao reduziu drawdown de forma
+material e destruiu a economia liquida. A informacao de volatilidade e
+real, mas este uso operacional simples nao funciona.
+
+### Arquivos alterados
+
+```text
+project_control/DECISIONS.md
+project_control/PROJECT_STATE.md
+project_control/CURRENT_SPRINT.md
+project_control/TASK_BOARD.md
+project_control/HANDOFFS.md
+project_control/TEST_MATRIX.md
+project_control/RISKS.md
+project_control/DAILY_LOG.md
+docs/pre_registers/TASK-ALT-004.md
+scripts/run_regime_conditioned_tsrev.py
+tests/test_regime_conditioned_tsrev.py
+reports/regime_conditioned_tsrev_feasibility.md
+data/research/binance_public/cost_pilot/regime_conditioned_tsrev_results.json
+```
+
+### Testes rodados
+
+```text
+PYTHONPATH=. UV_CACHE_DIR=.uv-cache uv run --offline --with pytest pytest tests/test_regime_conditioned_tsrev.py tests/test_tsrev.py
+Result: 18 passed.
+
+PYTHONPATH=. UV_CACHE_DIR=.uv-cache uv run --offline --with pytest pytest tests
+Result: 424 passed, 1 warning (pytest config asyncio_mode desconhecido neste ambiente).
+
+UV_CACHE_DIR=.uv-cache uv run --offline --with ruff ruff check scripts/run_regime_conditioned_tsrev.py tests/test_regime_conditioned_tsrev.py
+Result: passed.
+```
+
+### Proximo passo recomendado
+
+Nao abrir nova validacao deste filtro de regime. As linhas restantes sao:
+near-miss de `funding_price_divergence` como task separada, Familia H
+Order Flow/L2 (cara), Familia I bloqueada, ou aguardar novo OOS para
+PAYOFF-002.
+
+### Proximo agente recomendado
+
+PM Agent.
+
+## HANDOFF - TASK-ALT-003: Family J (Regime Detection) Closed With Regime Information Found
+
+### Status
+
+DONE. Family J foi executada como diagnostico de contexto/risco, nao como
+estrategia. A excecao de ADR-0019 permite OHLCV aqui porque Regime
+Detection nao gera trades nem afirma alpha direcional.
+
+### O que foi feito
+
+- Criado `docs/pre_registers/TASK-ALT-003.md` e ADR-0021 antes da
+  execucao.
+- Target definido como `future_abs_return_24h =
+  abs(log_price[t+24h] - log_price[t])`, deliberadamente nao-direcional.
+- Implementado `scripts/diagnostic_alt_regime_detection.py`.
+- Testadas 6 features causais: `realized_vol_24h`,
+  `realized_vol_168h`, `trend_intensity_168h`, `volume_shock_24h`,
+  `market_dispersion_24h`, `market_abs_return_24h`.
+- Rodado diagnostico real sobre o dataset Sprint 7 normalizado existente,
+  sem novo download.
+- Escrito `reports/alt_info_regime_detection_diagnostic.md` e
+  `data/research/binance_public/cost_pilot/alt_info_regime_results.json`.
+
+### Resultado real
+
+```text
+realized_vol_24h       rho=0.2927  TEM_INFORMACAO
+realized_vol_168h      rho=0.3009  TEM_INFORMACAO
+trend_intensity_168h   rho=0.0690  TEM_INFORMACAO
+volume_shock_24h       rho=0.1369  TEM_INFORMACAO
+market_dispersion_24h  rho=0.1175  TEM_INFORMACAO
+market_abs_return_24h  rho=0.0799  TEM_INFORMACAO
+```
+
+Todas as 6 features mantem sinal positivo nos 3 subperiodos
+pre-registrados. Leitura: informacao robusta de volatilidade/regime
+(volatility clustering/contexto de stress), nao sinal long/short.
+
+### Arquivos alterados
+
+```text
+project_control/DECISIONS.md
+project_control/PROJECT_STATE.md
+project_control/CURRENT_SPRINT.md
+project_control/TASK_BOARD.md
+project_control/HANDOFFS.md
+project_control/TEST_MATRIX.md
+project_control/RISKS.md
+project_control/DAILY_LOG.md
+docs/pre_registers/TASK-ALT-003.md
+scripts/diagnostic_alt_regime_detection.py
+tests/test_alt_regime_detection.py
+reports/alt_info_regime_detection_diagnostic.md
+data/research/binance_public/cost_pilot/alt_info_regime_results.json
+```
+
+### Testes rodados
+
+```text
+PYTHONPATH=. UV_CACHE_DIR=.uv-cache uv run --with pytest pytest tests/test_alt_regime_detection.py tests/test_info_content.py
+Result: 16 passed.
+
+PYTHONPATH=. UV_CACHE_DIR=.uv-cache uv run --with pytest pytest tests
+Result: 418 passed, 1 warning (pytest config asyncio_mode desconhecido neste ambiente).
+
+UV_CACHE_DIR=.uv-cache uv run --with ruff ruff check scripts/diagnostic_alt_regime_detection.py tests/test_alt_regime_detection.py
+Result: passed.
+```
+
+### Pendencias
+
+```text
+Nenhum uso operacional autorizado. A task futura minima de
+regime-conditioning (`TASK-ALT-004`) ja foi aberta e fechou NAO_PASSA;
+nao ha follow-up recomendado para esse filtro exato.
+```
+
+### Proximo passo recomendado
+
+Superado por `TASK-ALT-004`: o uso operacional minimo de regime ja foi
+testado e falhou. Restam como decisoes futuras: near-miss
+`funding_price_divergence`, Familia H, Familia I, PAYOFF-002 quando houver
+novo OOS, ou encerrar a fase.
+
+### Proximo agente recomendado
+
+PM Agent + Quant Research Agent.
+
 ## HANDOFF - TASK-ALT-002: Family F (Open Interest) Closed With No Information Found (Decay Pattern, Not Stability)
 
 ### Status
@@ -89,12 +264,11 @@ esta task com parametros ajustados.
 
 ### Proxima decisao
 
-Pertence ao usuario, sem proxima acao ja acordada: (1) abrir Familia J
-(Regime Detection, ainda nao iniciada); (2) investigar o near-miss de
-`funding_price_divergence` numa task separada com dado/periodo
-genuinamente novo; (3) reconsiderar Familia H (cara) ou Familia I
-(BLOQUEADA); (4) encerrar a Research Phase II como um todo. Nenhuma
-dessas opcoes foi iniciada ou pre-aprovada por este handoff.
+Superado pelo handoff mais recente de `TASK-ALT-003`: Familia J ja foi
+executada e fechou com informacao de regime. Permanecem como decisoes
+futuras: uso operacional de regime como task separada, near-miss de
+`funding_price_divergence`, Familia H (cara), Familia I (BLOQUEADA), ou
+encerramento da Research Phase II.
 
 ## HANDOFF - TASK-ALT-001: Research Phase II Opened (Alternative Information); Family G (Funding Structure) Closed With No Information Found (Stable Near-Miss)
 

@@ -1523,3 +1523,118 @@ Open Interest downloader/normalizer, run the real download (checksum
 verified), compute the 5 features, run the same
 `src/research/info_content.py` diagnostic, write
 `reports/alt_info_open_interest_diagnostic.md`.
+
+## ADR-0021 - Execute Family J (Regime Detection): Context/Risk Diagnostic, Not Directional Alpha
+
+## Status
+
+Accepted
+
+## Context
+
+`TASK-ALT-001` (Funding Structure) and `TASK-ALT-002` (Open Interest)
+both closed without information under the pre-registered ADR-0019
+criterion. Remaining Research Phase II branches are: Family H (Order
+Flow/L2), still expensive/deferred; Family I (Liquidation Dynamics),
+blocked by lack of historical public data; a future separate follow-up
+on the `funding_price_divergence` near-miss; and Family J (Regime
+Detection), explicitly allowed by ADR-0019 to use OHLCV-derived inputs
+because it is a non-trading conditioning layer, not an alpha claim.
+
+## Decision
+
+Open `TASK-ALT-003` for Family J. This is a pure information-content
+diagnostic, not a strategy. To preserve that distinction, the target is
+not signed future return. The target is future 24h absolute log-return:
+`abs(log_price[t+24h] - log_price[t])`, measuring future movement
+intensity/risk. Six causal, pre-registered regime features are tested:
+`realized_vol_24h`, `realized_vol_168h`, `trend_intensity_168h`,
+`volume_shock_24h`, `market_dispersion_24h`, and
+`market_abs_return_24h`.
+
+The diagnostic reuses the same generic Spearman + 3-subperiod
+sign-stability methodology and the same `|rho| >= 0.03` threshold from
+ADR-0019/TASK-ALT-001. No new data download is needed; the Sprint 7
+normalized hourly bars are sufficient.
+
+## Consequences
+
+A positive result means only that a regime/context variable has stable
+information about future volatility/risk. It does not authorize a
+SignalIntent, side selection, entry filter, exit filter, sizing rule, ML
+feature in live logic, or any Execution/Ledger/Recovery change. Any
+operational use requires a future separately pre-registered task.
+
+## Agent Impact
+
+- PM Agent
+- Quant Research Agent
+- Backtest Agent
+
+## Migration
+
+Add `TASK-ALT-003` to `TASK_BOARD.md`. Add
+`docs/pre_registers/TASK-ALT-003.md`, implement
+`scripts/diagnostic_alt_regime_detection.py`, add focused tests, run the
+real diagnostic on the existing normalized dataset, write
+`reports/alt_info_regime_detection_diagnostic.md`, and update
+`PROJECT_STATE.md`, `CURRENT_SPRINT.md`, `HANDOFFS.md`, `RISKS.md`, and
+`TEST_MATRIX.md`.
+
+## ADR-0022 - Test Minimal Regime Conditioning On TSREV 24h As Feasibility Only
+
+## Status
+
+Accepted
+
+## Context
+
+`TASK-ALT-003` found strong, stable information about future absolute
+24h returns in causal regime features, especially realized volatility.
+This is not directional alpha. The most disciplined operational follow-up
+is therefore not a new signal, but a risk-conditioning diagnostic applied
+to an already-known failed strategy: TSREV Family A 24h, whose original
+failure was dominated by excessive drawdown versus buy-and-hold.
+
+The available TSREV OOS period (2025-06 through 2026-05) has already been
+analyzed repeatedly. Therefore this task cannot be treated as final
+confirmation. It is a feasibility screen: a PASSA only motivates a future
+new-OOS validation; a NAO_PASSA stops this regime-conditioning variant.
+
+## Decision
+
+Open `TASK-ALT-004`. Primary and only tested filter: block TSREV 24h
+entries when `realized_vol_168h[t]` is above the symbol's own causal
+90-day 67th percentile. Missing regime data fails closed. The 67th
+percentile is fixed before execution as the top-tercile high-volatility
+cut; no sweep is allowed. Remaining trades are renormalized by the same
+inverse-vol sizing convention as TSREV, so the result is not helped merely
+by lower total exposure.
+
+Feasibility gate reuses the TSREV primary gate on the filtered OOS sample:
+net PF > 1.05, net PnL > 0, max drawdown <= buy-and-hold max drawdown for
+the same period, and at least 200 resolved trades.
+
+## Consequences
+
+This task may show whether regime information can plausibly reduce TSREV's
+drawdown problem. It cannot authorize paper/live trading, SignalIntent
+changes, execution filters, ML features, or any ledger/execution/recovery
+changes. Any positive result requires a future separately pre-registered
+new-OOS validation.
+
+## Agent Impact
+
+- PM Agent
+- Quant Research Agent
+- Backtest Agent
+
+## Migration
+
+Add `TASK-ALT-004` to `TASK_BOARD.md`. Add
+`docs/pre_registers/TASK-ALT-004.md`, implement
+`scripts/run_regime_conditioned_tsrev.py`, add focused tests, run the real
+feasibility diagnostic on the existing normalized dataset, write
+`reports/regime_conditioned_tsrev_feasibility.md`, and update
+`PROJECT_STATE.md`, `CURRENT_SPRINT.md`, `HANDOFFS.md`, `RISKS.md`, and
+`TEST_MATRIX.md`.

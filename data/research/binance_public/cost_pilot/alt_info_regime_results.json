@@ -1,0 +1,208 @@
+{
+  "bars_csv": "/home/arthur/Downloads/crypto-pair-trading/data/research/binance_public/normalized/sprint7_binance_usdm_202306_202605_bars.csv.gz",
+  "forward_horizon_hours": 24,
+  "generated_at_utc": "2026-07-07T20:18:30.941066+00:00",
+  "magnitude_threshold": 0.03,
+  "period_boundaries_ms": [
+    1685577600000,
+    1717200000000,
+    1748736000000,
+    1780272000000
+  ],
+  "period_labels": [
+    "2023-06_2024-05",
+    "2024-06_2025-05",
+    "2025-06_2026-05"
+  ],
+  "results": {
+    "market_abs_return_24h": {
+      "feature_name": "market_abs_return_24h",
+      "full_sample_n": 525120,
+      "full_sample_rho": 0.07991970764712929,
+      "has_information": true,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": true,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 175200,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": 0.10317173099804977,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 175200,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": 0.08173278689325854,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 174720,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.028249232141380837,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "market_dispersion_24h": {
+      "feature_name": "market_dispersion_24h",
+      "full_sample_n": 525120,
+      "full_sample_rho": 0.11749584957792045,
+      "has_information": true,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": true,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 175200,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": 0.1766220156654199,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 175200,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": 0.1029169398776587,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 174720,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.05034153819194457,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "realized_vol_168h": {
+      "feature_name": "realized_vol_168h",
+      "full_sample_n": 522220,
+      "full_sample_rho": 0.3009340913972538,
+      "has_information": true,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": true,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 172300,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": 0.33223816981376897,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 175200,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": 0.26619219926194854,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 174720,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.2681134597426749,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "realized_vol_24h": {
+      "feature_name": "realized_vol_24h",
+      "full_sample_n": 525100,
+      "full_sample_rho": 0.2927318293711589,
+      "has_information": true,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": true,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 175180,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": 0.33551360611930686,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 175200,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": 0.2741938050406818,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 174720,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.23490005498769886,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "trend_intensity_168h": {
+      "feature_name": "trend_intensity_168h",
+      "full_sample_n": 522220,
+      "full_sample_rho": 0.06900516683277534,
+      "has_information": true,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": true,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 172300,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": 0.0845459156343489,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 175200,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": 0.0604232107466381,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 174720,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.060833932902360804,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "volume_shock_24h": {
+      "feature_name": "volume_shock_24h",
+      "full_sample_n": 481920,
+      "full_sample_rho": 0.13687812390273044,
+      "has_information": true,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": true,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 132000,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": 0.1969277048705164,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 175200,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": 0.13299927677782308,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 174720,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.09893491015613232,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    }
+  },
+  "rolling_window_hours": 2160,
+  "target": "future_abs_return_24h",
+  "target_formula": "abs(log_price[t+24h] - log_price[t])"
+}

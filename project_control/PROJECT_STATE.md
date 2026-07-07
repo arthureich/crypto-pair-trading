@@ -2,6 +2,71 @@
 
 Last updated: 2026-07-07
 
+## Atualizacao 2026-07-07: TASK-ALT-004 (Regime Conditioning sobre TSREV 24h) fechada NAO_PASSA -- volatilidade informa risco, mas nao salva a estrategia (ADR-0022)
+
+Como follow-up disciplinado da Family J, foi aberta uma task separada de
+feasibility, nao validacao final: usar a informacao de regime encontrada
+em `TASK-ALT-003` apenas como filtro de risco sobre a celula TSREV
+primaria 24h. `docs/pre_registers/TASK-ALT-004.md` e ADR-0022 fixaram
+antes da execucao um unico filtro: bloquear entradas quando
+`realized_vol_168h[t]` esta acima do percentil causal 67% da propria
+historia recente de 90 dias do symbol. Entradas sem regime calculavel
+falham fechadas. Trades remanescentes sao renormalizadas pelo mesmo
+criterio inverse-vol da TSREV original, para nao "passar" apenas por
+reduzir exposicao total.
+
+**Resultado real** (`reports/regime_conditioned_tsrev_feasibility.md`):
+gate **NAO_PASSA**. O filtro bloqueou 1.187 de 3.946 trades OOS, manteve
+2.758 trades resolvidas, mas transformou o resultado de net positivo fraco
+em net negativo:
+
+```text
+Original TSREV 24h OOS:        net PF 1,0143; net PnL +7.690,14bps; max DD 65.719,66bps
+Regime-filtered TSREV 24h OOS: net PF 0,9822; net PnL -6.110,64bps; max DD 61.748,50bps
+Buy-and-hold DD baseline:      11.003,94bps
+```
+
+Interpretacao: a volatilidade realizada carrega informacao forte sobre
+risco futuro, mas o bloqueio simples de alto regime de volatilidade nao
+resolve a economia nem o drawdown estrutural da TSREV. Esta variante de
+regime-conditioning para aqui; nao ha motivo para abrir validacao novo-OOS
+deste filtro exato. 6 testes novos; suite completa: 424 testes; ruff limpo.
+
+## Atualizacao 2026-07-07: TASK-ALT-003 (Familia J, Regime Detection) fechada com informacao de regime -- nao alpha direcional (ADR-0021)
+
+Aberta e executada a Familia J da Research Phase II como diagnostico de
+contexto/risco, nao como estrategia. Per ADR-0019, esta e a unica familia
+da fase que pode usar features OHLCV porque nao afirma descobrir alpha nem
+gera trades. Para preservar essa separacao, ADR-0021 e
+`docs/pre_registers/TASK-ALT-003.md` fixaram ANTES da execucao um target
+nao-direcional:
+
+```text
+future_abs_return_24h[t] = abs(log_price[t+24h] - log_price[t])
+```
+
+Seis features causais foram formalizadas: `realized_vol_24h`,
+`realized_vol_168h`, `trend_intensity_168h`, `volume_shock_24h`,
+`market_dispersion_24h`, `market_abs_return_24h`. Nenhum novo download:
+`scripts/diagnostic_alt_regime_detection.py` roda sobre o dataset horario
+normalizado Sprint 7 ja versionado.
+
+**Resultado real** (`reports/alt_info_regime_detection_diagnostic.md`):
+as 6 features cumprem o criterio pre-registrado de informacao (|rho| >=
+0,03 full-sample e sinal consistente nos 3 subperiodos). Mais fortes:
+`realized_vol_168h` rho=0,3009 e `realized_vol_24h` rho=0,2927, com sinal
+positivo estavel em todas as janelas. As features de mercado agregado
+tambem passam (`market_dispersion_24h` rho=0,1175,
+`market_abs_return_24h` rho=0,0799), embora com decaimento de magnitude no
+periodo mais recente.
+
+Interpretacao: ha informacao robusta de volatilidade/regime (volatility
+clustering e contexto de stress), mas isso **nao e alpha direcional** e
+nao autoriza SignalIntent, filtro operacional, sizing, ML live, Execution
+Plane, Ledger ou Recovery. Qualquer uso operacional exige nova task
+separadamente pre-registrada. 5 testes novos; suite completa: 418 testes;
+ruff limpo.
+
 ## Atualizacao 2026-07-07: TASK-ALT-002 (Familia F, Open Interest) fechada sem informacao -- padrao de decaimento, nao estabilidade (ADR-0020)
 
 Seguindo a sequencia ja acordada em ADR-0019 (G primeiro, depois F),
@@ -874,14 +939,13 @@ classica baseada em fatores de preco (candles) fechou nesta sessao
 (Families A, Funding Carry, TSMOM, C/TSREV, E/Cross-Sectional, todas NAO
 PASSA). A Research Phase II (Alternative Information, ADR-0019) esta em
 andamento sequencial: `TASK-ALT-001` (Familia G, Funding Structure) e
-`TASK-ALT-002` (Familia F, Open Interest) fecharam AMBAS sem
-informacao -- nenhuma das 9 features formalizadas (4 de funding + 5 de
-OI) cumpriu o criterio pre-registrado, embora `funding_price_divergence`
-(Familia G) mostre um near-miss estavel em 3 subperiodos independentes.
+`TASK-ALT-002` (Familia F, Open Interest) fecharam sem informacao pelo
+criterio pre-registrado; `TASK-ALT-003` (Familia J, Regime Detection)
+fechou com informacao de regime/volatilidade, nao alpha direcional.
 
 Decisao pendente do usuario (nao ha proxima acao ja acordada): (1) abrir
-Familia J (Regime Detection, ainda nao iniciada, unica que pode usar
-OHLCV); (2) abrir uma task separada investigando o near-miss de
+uma task separada para testar uso operacional de regime como camada de
+condicionamento; (2) abrir uma task separada investigando o near-miss de
 `funding_price_divergence` com dado/periodo genuinamente novo (mesma
 disciplina de nao reusar a mesma amostra que gerou a pista); (3)
 reconsiderar Familia H (Order Flow, cara) ou Familia I (Liquidation
