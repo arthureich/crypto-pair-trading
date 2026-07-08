@@ -1451,3 +1451,115 @@ TASK-ALT-005 remains IN_PROGRESS at 60%; real 2026-06 download,
 normalization, data gate, rho diagnostic, report, JSON, and final control
 updates remain pending.
 ```
+
+2026-07-07 - TASK-ALT-005 real execution completed, NAO_PROMOVE (sign reversed):
+
+```text
+User said "continue" in a follow-up session. Ran the exact deferred
+command from docs/pre_registers/TASK-ALT-005.md:
+PYTHONPATH=. UV_CACHE_DIR=.uv-cache uv run --offline python scripts/diagnostic_alt_funding_divergence_new_oos.py --start-month 2026-06 --end-month-exclusive 2026-07 --dataset-version sprint_alt_funding_divergence_202606 --download-workers 4
+No code changed for this run -- runner/tests already implemented and
+verified in the prior entry.
+Downloaded 100 monthly archives (20 symbols x 5 families: klines,
+markPriceKlines, indexPriceKlines, premiumIndexKlines, fundingRate) for
+2026-06 only, all SHA256 checksum-verified. Normalized to
+sprint_alt_funding_divergence_202606_bars.csv.gz.
+Data gate: PASS (20/20 symbols, 5/5 families, coverage >=99%, no
+duplicates, full_sample_n=13920, above the 10000 floor).
+Information result: rho=-0.118324 (n=13920, single complete month) --
+sign REVERSED vs the 3 original sub-periods (all positive, 0.0230 to
+0.0276), magnitude ~4x the original full-sample rho.
+Decision: NAO_PROMOVE, applied strictly per the pre-registered rule
+(rho>=0.03 AND positive) -- no threshold adjustment, no new feature, no
+second month tested after seeing this result.
+funding_price_divergence closes definitively: SEM_INFORMACAO in the
+original window (TASK-ALT-001) and NAO_PROMOVE in the new OOS
+(TASK-ALT-005). Family G has no remaining open threads.
+Updated project_control/DECISIONS.md (ADR-0023 addendum),
+docs/pre_registers/TASK-ALT-005.md (status DONE), TASK_BOARD.md,
+CURRENT_SPRINT.md, PROJECT_STATE.md, HANDOFFS.md, RISKS.md,
+TEST_MATRIX.md.
+Verification: full suite 431 tests passed, ruff clean (src tests
+scripts docs).
+No Execution, Ledger, Recovery, ML, live, SignalIntent, or
+order-routing files touched.
+```
+
+2026-07-07 - TASK-ALT-006 pre-registered, execution blocked (data-mining risk flagged):
+
+```text
+User asked "oq agora?" after TASK-ALT-005 closed. Chose to keep
+exploring Family J's regime information via a different operational
+mechanism, rather than reconsidering Order Flow or closing the phase.
+Decomposed TASK-ALT-004's already-closed result: the 1187 EXCLUDED
+high-vol trades carried +13800.78bps net in isolation (more than the
+strategy's entire original +7690.14bps profit); the 2758 KEPT
+low/mid-vol trades are net -6110.64bps in isolation. TSREV's edge is
+concentrated entirely inside the high-volatility regime.
+Flagged explicitly: the natural next hypothesis ("keep only high-vol
+entries") was built directly from seeing this number on the
+2025-06/2026-05 window already analyzed multiple times -- the most
+direct data-mining risk this session (more direct than the Payoff
+Engineering SHORT-only lead or funding_price_divergence).
+Asked user how to handle it; user chose to pre-register the exact
+inverse filter now (docs/pre_registers/TASK-ALT-006.md, ADR-0024:
+realized_vol_168h[t] > causal 67th percentile, same feature/window as
+TASK-ALT-004, same TSREV-001 gate structure) but BLOCK execution until
+genuinely new OOS data exists -- same discipline as TASK-PAYOFF-002.
+Operational resume trigger: >=750 new resolved TSREV Family A 24h
+trades (all vol levels) past 2026-05-31, estimated ~2.3 months given
+the historical ~30.08% high-vol ratio (yields ~226 high-vol trades,
+margin over the 200-trade gate floor). TASK-ALT-005's already-
+downloaded 2026-06 month is reusable without a new download once the
+window grows.
+Updated project_control/DECISIONS.md (ADR-0024), TASK_BOARD.md,
+CURRENT_SPRINT.md, PROJECT_STATE.md, HANDOFFS.md, RISKS.md.
+No code written, no download, no execution -- pre-registration only.
+No Execution, Ledger, Recovery, ML, live, SignalIntent, or
+order-routing files touched.
+```
+
+2026-07-08 - TASK-ALT-007 (Familia H) reconnaissance + implementation, download interrupted mid-run:
+
+```text
+With TASK-ALT-006 blocked on calendar time, user authorized a
+cost/scoping reconnaissance of Family H (Order Flow) -- last original
+Research Phase II family, deferred since ADR-0019 for cost.
+Real S3 listing probes against data.binance.vision found `bookDepth`
+(percentage-from-mid-price aggregated depth, event-sampled), a
+DIFFERENT family from `bookTicker` (the 17.98GB/month, gapped-since-
+2024-04 source used in Sprint 7/9/10). Confirmed: continuous coverage
+2023-01 through at least 2026-06 for all 20 symbols, ~432-515KB/day/
+symbol, ~10.2GB estimated for the full 3-year window -- cheaper than
+one month of bookTicker.
+User approved pre-registering TASK-ALT-007 (docs/pre_registers/TASK-ALT-007.md,
+ADR-0025): 5 features (book_imbalance_1pct, book_imbalance_5pct,
+depth_concentration, depth_change_24h, imbalance_price_divergence),
+same methodology/threshold/sub-periods/24h horizon as G/F/J -- not
+re-decided per family.
+Implemented scripts/download_alt_book_depth.py (dedicated daily
+downloader, reuses verify_checksum_file unchanged, memory-safe per
+symbol) and scripts/diagnostic_alt_order_flow.py (reuses
+info_content.py unchanged). Smoke test (BTCUSDT, 3 days) validated the
+full pipeline before the real download started. Added
+tests/test_download_alt_book_depth.py (9 tests). Full suite 438
+passed, ruff clean.
+Started the real ~10.2GB download; SESSION DROPPED mid-run (not a code
+error) during the 3rd symbol (ARBUSDT). State on disk: ADAUSDT and
+APTUSDT complete (~31.7M event rows each -> ~26,250-26,274 hourly
+rows), ARBUSDT partial, ~1.4GB cached under
+data/research/binance_public/cost_pilot/raw/book_depth/ (gitignored,
+not lost). The downloader is idempotent (skips files already on disk),
+so resuming should pick up exactly where it stopped.
+No normalized output CSV exists yet (written only after all 20 symbols
+finish) and the diagnostic has not run -- no rho, no
+TEM_INFORMACAO/SEM_INFORMACAO verdict for any of the 5 features yet.
+Updated project_control/DECISIONS.md (ADR-0025), TASK_BOARD.md,
+CURRENT_SPRINT.md, PROJECT_STATE.md, HANDOFFS.md, RISKS.md to reflect
+the interrupted, in-progress state honestly (not as if it finished).
+Next step already locked, just needs to run:
+  UV_CACHE_DIR=.uv-cache uv run --offline python scripts/download_alt_book_depth.py
+  UV_CACHE_DIR=.uv-cache uv run --offline python scripts/diagnostic_alt_order_flow.py
+No Execution, Ledger, Recovery, ML, live, SignalIntent, or
+order-routing files touched.
+```

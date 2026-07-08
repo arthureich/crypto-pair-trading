@@ -1,6 +1,182 @@
 # PROJECT_STATE
 
-Last updated: 2026-07-07
+Last updated: 2026-07-08
+
+## Atualizacao 2026-07-08: TASK-ALT-007 (Familia H, Order Flow) em andamento -- reconnaissance encontrou fonte viavel, download real interrompido no meio (ADR-0025)
+
+Com `TASK-ALT-006` bloqueada por calendario, o usuario autorizou uma
+reconnaissance de custo da Familia H (Order Flow/L2) -- ultima familia
+original da Research Phase II ainda nao executada, deliberadamente
+adiada desde ADR-0019 por custo.
+
+**Achado real que mudou o calculo de custo:** probes de leitura contra
+`data.binance.vision` (sem download comitado) encontraram `bookDepth`
+-- uma familia DIFERENTE de `bookTicker` (a fonte usada no Sprint
+7/9/10, que custou 17,98GB para UM MES e tem um gap de cobertura
+confirmado desde 2024-04, per `TASK-007-10`). `bookDepth` fornece
+profundidade agregada por faixa percentual de distancia do mid-price
+(-5% a +5%), amostrada por evento (~2.660 amostras/dia no BTCUSDT).
+Confirmado: cobertura CONTINUA desde 2023-01 (todos os 20 symbols
+comecam antes de 2023-06-01) ate pelo menos 2026-06 (verificado por
+HEAD request direto), tamanho real ~432-515KB/dia/symbol, estimativa
+de **~10,2GB para os 3 anos inteiros** -- menor que um UNICO MES de
+`bookTicker`. Mesmo formato de checksum SHA256 ja usado.
+
+Isso reverteu a premissa de "Familia H e cara demais" que vinha sendo
+repetida desde ADR-0019. O usuario aprovou pre-registrar
+`TASK-ALT-007`.
+
+`docs/pre_registers/TASK-ALT-007.md` (ADR-0025): 5 features de book
+depth formalizadas ANTES de qualquer diagnostico rodar --
+`book_imbalance_1pct`, `book_imbalance_5pct` (imbalance bid/ask perto e
+longe do topo), `depth_concentration` (liquidez concentrada vs
+espalhada), `depth_change_24h` (choque de liquidez), e
+`imbalance_price_divergence` (mesma formalizacao de
+`funding_price_divergence`/`oi_price_divergence`, trocando a variavel
+de origem). Reusa integralmente a metodologia, limiar (0,03),
+subperiodos, e horizonte de 24h ja fixados em ADR-0019 -- nao
+re-decidida por familia, mesmo que a teoria de microestrutura sugerisse
+um horizonte mais curto (registrado como limitacao explicita, candidato
+a task futura separada).
+
+`scripts/download_alt_book_depth.py` (downloader dedicado para
+arquivos diarios de `bookDepth`, reusa `verify_checksum_file` sem
+modificacao, memory-safe symbol-a-symbol) e
+`scripts/diagnostic_alt_order_flow.py` (reusa
+`src/research/info_content.py` sem modificacao) implementados. Smoke
+test em escopo minimo (1 symbol BTCUSDT, 3 dias) validou download,
+checksum, parsing, resample (ultimo valor por hora) e conversao de
+epoch antes do download real. 9 testes novos cobrindo resample/parsing
+puro (sem mock de rede -- mesmo precedente aceito de
+`historical_dataset.py`/`download_alt_open_interest.py`). Ruff limpo,
+suite completa 438 testes.
+
+**Download real EM ANDAMENTO, interrompido por uma queda de sessao
+(nao um erro do codigo):** dos 20 symbols, 2 completos (ADAUSDT,
+APTUSDT: ~31,7M linhas de evento cada -> ~26.250-26.274 linhas
+horarias), ARBUSDT parcial. ~1,4GB ja em cache local
+(`data/research/binance_public/cost_pilot/raw/book_depth/`, gitignored
+por design, mas reutilizavel -- `_download_and_parse_one_day` checa se
+o arquivo ja existe no disco antes de baixar de novo, entao retomar o
+script deve pular direto para o trabalho restante).
+
+**Nenhum resultado real de `TASK-ALT-007` existe ainda** -- nao ha
+`rho` calculado para nenhuma das 5 features, nao ha veredito de
+TEM_INFORMACAO/SEM_INFORMACAO, nenhum JSON ou relatorio foi escrito.
+Proximo passo (ja travado, so precisa executar):
+
+```text
+UV_CACHE_DIR=.uv-cache uv run --offline python scripts/download_alt_book_depth.py
+UV_CACHE_DIR=.uv-cache uv run --offline python scripts/diagnostic_alt_order_flow.py
+```
+
+## Atualizacao 2026-07-07: TASK-ALT-006 pre-registrada -- TSREV restrita a alta-vol, execucao BLOCKED aguardando novo OOS (ADR-0024)
+
+Apos `TASK-ALT-005` fechar (Familia G sem pistas abertas), o usuario
+escolheu explorar um uso operacional diferente da informacao de regime
+de Familia J, em vez de reconsiderar Order Flow (Familia H) ou encerrar
+a Research Phase II.
+
+**Achado motivador, decomposto do resultado ja fechado de
+`TASK-ALT-004`:** o filtro que bloqueava entradas TSREV em alta
+volatilidade (`realized_vol_168h[t]` acima do percentil causal 67%)
+piorou a economia (net PF 1,0143 -> 0,9822). Decompondo por que: as
+1.187 trades EXCLUIDAS (alta-vol) tinham net **+13.800,78bps**
+isoladamente -- mais que o lucro total original da estrategia
+(+7.690,14bps). As 2.758 trades MANTIDAS (baixa/media vol) sao net
+**-6.110,64bps isoladamente**. Conclusao: o edge da TSREV esta
+inteiramente concentrado no regime de alta volatilidade; fora dele, a
+estrategia perde dinheiro -- o inverso da intuicao de "reduzir
+exposicao em alta vol para reduzir risco".
+
+**Risco de data-mining explicito, tratado antes de qualquer
+pre-registro:** a hipotese natural seguinte -- manter SO as entradas de
+alta-vol -- foi construida DIRETAMENTE a partir de ter visto o
+resultado de `TASK-ALT-004` no periodo 2025-06/2026-05. Testar essa
+hipotese no MESMO periodo que a revelou nao teria valor probatorio;
+seria confirmar um padrao no mesmo dado que o gerou, nao testar algo
+independente -- um risco mais direto que o SHORT-only do Payoff
+Engineering ou `funding_price_divergence`.
+
+Perguntado como tratar isso, o usuario escolheu: pre-registrar o
+desenho completo AGORA (trava o filtro exato, o gate, e o baseline
+antes de qualquer dado novo existir) mas BLOQUEAR a execucao ate
+existir OOS genuinamente novo -- mesma disciplina ja estabelecida para
+`TASK-PAYOFF-002`.
+
+`TASK-ALT-006` (`docs/pre_registers/TASK-ALT-006.md`, ADR-0024): TSREV
+Family A 24h restrita a `realized_vol_168h[t] > percentil causal 67%`
+da propria historia 90d do symbol -- o filtro EXATAMENTE INVERSO de
+`TASK-ALT-004` (mesma feature, mesmo percentil, mesma janela causal,
+so a direcao do corte muda). Mesmo custo/peso/renormalizacao
+inverse-vol de `TASK-ALT-004`. Mesmo gate estrutural da
+`TASK-TSREV-001` (net PF>1,05 E net PnL>0 E max DD<=baseline
+recalculado no novo periodo E trade_count pos-filtro >=200).
+
+**Gatilho operacional de retomada:** dataset estendido alem de
+2026-05-31 com >=750 trades TSREV totais novas resolvidas (todos os
+niveis de vol, antes do filtro) -- estimativa baseada na proporcao
+historica de alta-vol (~30,08% do total, 1.187/3.946), dando margem
+sobre o piso de 200 trades pos-filtro do gate (~226 trades de alta-vol
+esperadas com 750 totais). Ao ritmo historico (~328 trades/mes), isto
+equivale a ~2,3 meses de dado novo (por volta de 2026-08).
+`TASK-ALT-005` ja baixou e normalizou o mes completo de 2026-06
+(`sprint_alt_funding_divergence_202606_bars.csv.gz`, checksum
+verificado) -- reutilizavel sem novo download quando a janela crescer;
+meses adicionais precisarao ser baixados conforme completarem.
+
+**`TASK-ALT-006` esta BLOCKED** (nao READY, nao IN_PROGRESS): nenhum
+codigo, nenhuma execucao ate o gatilho ser atingido. E apenas um teste
+de feasibility -- mesmo um PASS futuro nao autoriza SignalIntent,
+paper/live, sizing dinamico adicional, Execution, Ledger, Recovery, ML,
+ou qualquer acao de ordem. Sizing continuo por vol (ideia relacionada,
+mencionada mas nao pre-registrada) permanece candidato futuro distinto.
+
+## Atualizacao 2026-07-07: TASK-ALT-005 executada e fechada -- NAO_PROMOVE, sinal invertido no novo OOS (ADR-0023 addendum)
+
+O download/diagnostico real de 2026-06, deixado pendente por decisao
+explicita do usuario na etapa anterior, foi executado nesta sessao:
+
+```text
+PYTHONPATH=. UV_CACHE_DIR=.uv-cache uv run --offline python scripts/diagnostic_alt_funding_divergence_new_oos.py --start-month 2026-06 --end-month-exclusive 2026-07 --dataset-version sprint_alt_funding_divergence_202606 --download-workers 4
+```
+
+100 arquivos mensais (20 symbols x 5 familias -- `klines`,
+`markPriceKlines`, `indexPriceKlines`, `premiumIndexKlines`,
+`fundingRate` -- para 2026-06 apenas) baixados e checksum SHA256
+verificados, normalizados em
+`sprint_alt_funding_divergence_202606_bars.csv.gz`. A feature exata
+`funding_price_divergence` de `TASK-ALT-001` foi recalculada, usando o
+dataset antigo (2023-06/2026-05) apenas como contexto causal de 90
+dias -- nenhuma linha anterior a 2026-06-01 entrou no resultado
+decisorio.
+
+**Data gate: PASS** (20/20 symbols, 5/5 familias checksum-verificadas,
+cobertura acima do piso de 99%, sem duplicatas, 13.920 observacoes
+validas -- acima do piso de 10.000).
+
+**Resultado informacional: rho = -0,118324** (n=13.920, mes unico
+2026-06). Isto NAO e apenas "abaixo do limiar" -- e um sinal
+INVERTIDO em relacao aos 3 subperiodos originais de `TASK-ALT-001`
+(todos positivos e estaveis: +0,0276, +0,0230, +0,0239), com magnitude
+~4x maior. **Decisao: `NAO_PROMOVE`**, aplicada estritamente per o
+pre-registro (exige rho>=0,03 E positivo) -- nenhum ajuste de limiar,
+nenhuma nova feature, nenhum segundo mes testado apos ver este
+resultado.
+
+Esta e exatamente a leitura que a exigencia de "novo OOS genuino" foi
+desenhada para produzir: a estabilidade observada em 2023-06/2026-05
+nao se estendeu para dado realmente inedito. Se o teste tivesse
+reusado o mesmo periodo (ou um holdout interno dele), a conclusao
+poderia ter parecido uma confirmacao razoavel.
+
+**`funding_price_divergence` fecha definitivamente.** Familia G
+(Funding Structure) nao tem mais nenhuma pista aberta -- SEM_INFORMACAO
+no periodo original (`TASK-ALT-001`) e NAO_PROMOVE no novo OOS
+(`TASK-ALT-005`). Ver `reports/alt_info_funding_divergence_new_oos.md`.
+Nenhum codigo novo foi alterado nesta execucao (o runner e os testes ja
+haviam sido implementados e verificados na etapa anterior); suite
+completa: 431 testes, ruff limpo.
 
 ## Atualizacao 2026-07-07: TASK-ALT-005 aberta para validar funding_price_divergence somente em novo OOS (ADR-0023)
 
@@ -968,29 +1144,53 @@ LIMIT/maker antes de concluir que a estrategia nao tem edge.
 Sprint 10 completa permanece pausada (ADR-0012). A pesquisa estatistica
 classica baseada em fatores de preco (candles) fechou nesta sessao
 (Families A, Funding Carry, TSMOM, C/TSREV, E/Cross-Sectional, todas NAO
-PASSA). A Research Phase II (Alternative Information, ADR-0019) esta em
-andamento sequencial: `TASK-ALT-001` (Familia G, Funding Structure) e
-`TASK-ALT-002` (Familia F, Open Interest) fecharam sem informacao pelo
-criterio pre-registrado; `TASK-ALT-003` (Familia J, Regime Detection)
-fechou com informacao de regime/volatilidade, nao alpha direcional.
+PASSA). A Research Phase II (Alternative Information, ADR-0019) chegou a
+um ponto de fechamento amplo: `TASK-ALT-001` (Familia G, Funding
+Structure) e `TASK-ALT-002` (Familia F, Open Interest) fecharam sem
+informacao pelo criterio pre-registrado; `TASK-ALT-003` (Familia J,
+Regime Detection) fechou COM informacao real de regime/volatilidade, mas
+seu unico uso operacional testado (`TASK-ALT-004`, filtro de alto-vol
+sobre TSREV) fechou NAO_PASSA; `TASK-ALT-005` (near-miss
+`funding_price_divergence` em novo OOS genuino) fechou NAO_PROMOVE, com
+o sinal invertido no dado novo.
 
-Decisao pendente do usuario (nao ha proxima acao ja acordada): (1) abrir
-uma task separada para testar uso operacional de regime como camada de
-condicionamento; (2) abrir uma task separada investigando o near-miss de
-`funding_price_divergence` com dado/periodo genuinamente novo (mesma
-disciplina de nao reusar a mesma amostra que gerou a pista); (3)
-reconsiderar Familia H (Order Flow, cara) ou Familia I (Liquidation
-Dynamics, BLOQUEADA); (4) encerrar a Research Phase II como um todo.
+O usuario escolheu continuar explorando a informacao de regime de J,
+via um mecanismo diferente do testado em `TASK-ALT-004`:
+`TASK-ALT-006` (TSREV restrita a alta-vol, o filtro exatamente inverso)
+foi pre-registrada, mas sua execucao esta BLOCKED aguardando dado
+genuinamente novo (>=750 trades TSREV novas, ~2,3 meses estimados) --
+a hipotese foi construida diretamente do resultado de TASK-ALT-004, e
+testa-la no mesmo periodo nao teria valor probatorio.
 
-Uma linha fica pendente por bloqueio de dados (nao por decisao): Fase 2
-do Payoff Engineering (TASK-PAYOFF-002, ADR-0016) -- pre-registrada e
-travada, mas BLOCKED aguardando periodo OOS posterior a 2026-05-31 com
->=500 trades novos.
+Duas linhas ficam pendentes por bloqueio de dados (nao por decisao):
+Fase 2 do Payoff Engineering (TASK-PAYOFF-002, ADR-0016) -- BLOCKED
+aguardando periodo OOS posterior a 2026-05-31 com >=500 trades novos;
+e `TASK-ALT-006` (ADR-0024) -- BLOCKED aguardando >=750 trades TSREV
+novas (~2,3 meses estimados). Ambas reusam o mes de 2026-06 ja baixado
+por `TASK-ALT-005` quando aplicavel, mas precisam de mais meses
+completos para atingir seus gatilhos.
+
+Enquanto os dois gatilhos de dados amadurecem, o usuario autorizou
+reconsiderar Familia H (Order Flow) -- uma reconnaissance real
+encontrou `bookDepth` como fonte viavel (~10,2GB para os 3 anos
+inteiros, sem o gap do `bookTicker`), revertendo a premissa de "cara
+demais." `TASK-ALT-007` esta pre-registrada (ADR-0025) e IN_PROGRESS:
+codigo implementado e testado, download real iniciado mas
+INTERROMPIDO no meio (2/20 symbols completos) por uma queda de sessao
+-- precisa ser retomado (comando idempotente, ja documentado acima) e
+o diagnostico real ainda precisa rodar.
+
+Decisoes pendentes do usuario, sem proxima acao ja acordada alem de
+concluir `TASK-ALT-007` e acompanhar os dois gatilhos de dados
+(`TASK-PAYOFF-002`, `TASK-ALT-006`): (1) reconsiderar Familia I
+(Liquidation Dynamics, BLOQUEADA); (2) encerrar a Research Phase II
+como um todo e decidir a proxima fase do projeto, dependendo do
+resultado de H e de quanto os gatilhos de dados demorarem.
 
 Linhas formalmente adiadas/bloqueadas, nao pendentes de decisao imediata:
-Familia H (Order Flow/L2, cara/machine-local); Familia I (Liquidation
-Dynamics, BLOQUEADA -- sem fonte historica disponivel); CS-003/004/005
-(backlog nao cancelado da Research Family E, usuario ja indicou
+Familia I (Liquidation Dynamics, BLOQUEADA -- sem fonte historica
+disponivel); CS-003/004/005 (backlog nao cancelado da Research Family
+E, usuario ja indicou
 preferencia por nao continuar); mudanca de universo de trading
 (small-caps/menor liquidez, adiada para preservar comparabilidade).
 

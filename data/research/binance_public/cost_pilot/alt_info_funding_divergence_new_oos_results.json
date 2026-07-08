@@ -1,0 +1,64 @@
+{
+  "archive_count": 100,
+  "base_bars_csv": "C:\\Users\\arthu\\Desktop\\Aula\\Projects\\Crypto-Pair-Trading\\data\\research\\binance_public\\normalized\\sprint7_binance_usdm_202306_202605_bars.csv.gz",
+  "checksums_verified": true,
+  "data_gate": {
+    "actual_symbol_count": 20,
+    "duplicate_row_count": 0,
+    "expected_rows_per_symbol": 720,
+    "expected_symbol_count": 20,
+    "full_sample_n": 13920,
+    "min_symbol_coverage": 1.0,
+    "reasons": [],
+    "status": "PASS"
+  },
+  "dataset_version": "sprint_alt_funding_divergence_202606",
+  "decision": "NAO_PROMOVE",
+  "end_month_exclusive": "2026-07",
+  "extension_bars_csv": "C:\\Users\\arthu\\Desktop\\Aula\\Projects\\Crypto-Pair-Trading\\data\\research\\binance_public\\normalized\\sprint_alt_funding_divergence_202606_bars.csv.gz",
+  "forward_horizon_hours": 24,
+  "generated_at_utc": "2026-07-07T23:42:43.289777+00:00",
+  "information_result": {
+    "feature_name": "funding_price_divergence",
+    "full_sample_n": 13920,
+    "full_sample_rho": -0.11832422696718832,
+    "has_information": true,
+    "magnitude_threshold": 0.03,
+    "sign_consistent": true,
+    "sub_periods": [
+      {
+        "end_time_ms": 1782864000000,
+        "n_obs": 13920,
+        "period_label": "2026-06",
+        "spearman_rho": -0.11832422696718832,
+        "start_time_ms": 1780272000000
+      }
+    ]
+  },
+  "magnitude_threshold": 0.03,
+  "rolling_window_hours": 2160,
+  "start_month": "2026-06",
+  "symbols": [
+    "ADAUSDT",
+    "APTUSDT",
+    "ARBUSDT",
+    "ATOMUSDT",
+    "AVAXUSDT",
+    "BCHUSDT",
+    "BNBUSDT",
+    "BTCUSDT",
+    "DOGEUSDT",
+    "DOTUSDT",
+    "ETCUSDT",
+    "ETHUSDT",
+    "LINKUSDT",
+    "LTCUSDT",
+    "OPUSDT",
+    "SOLUSDT",
+    "SUIUSDT",
+    "TRXUSDT",
+    "UNIUSDT",
+    "XRPUSDT"
+  ],
+  "task": "TASK-ALT-005"
+}

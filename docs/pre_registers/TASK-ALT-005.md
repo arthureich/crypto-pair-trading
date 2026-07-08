@@ -2,10 +2,14 @@
 
 ## Status
 
-IN_PROGRESS: implementacao e testes unitarios prontos; download e
-diagnostico real de 2026-06 pendentes. Esta task foi aberta depois de
-`TASK-ALT-004` fechar NAO_PASSA e antes de qualquer diagnostico sobre
-dados posteriores a 2026-05 ser rodado.
+DONE. Decisao final: **`NAO_PROMOVE`**. Download real de 2026-06
+executado (100 arquivos mensais, 20 symbols x 5 familias, checksum
+SHA256 verificado), gate de dados PASS (13.920 observacoes validas),
+rho no novo OOS = **-0,118324** -- sinal invertido em relacao aos 3
+subperiodos originais (todos positivos, ~0,023-0,028), magnitude ~4x
+maior. A pista de `TASK-ALT-001` NAO se replicou em dado genuinamente
+novo. Ver `reports/alt_info_funding_divergence_new_oos.md` e o addendum
+de 2026-07-07 em `project_control/DECISIONS.md` ADR-0023.
 
 ## Workstream
 
@@ -241,7 +245,7 @@ git diff --check
 Result: passed.
 ```
 
-Execucao real pendente, explicitamente deixada para uma sessao posterior:
+Execucao real completada em 2026-07-07:
 
 ```text
 PYTHONPATH=. UV_CACHE_DIR=.uv-cache uv run --offline python scripts/diagnostic_alt_funding_divergence_new_oos.py \
@@ -249,9 +253,16 @@ PYTHONPATH=. UV_CACHE_DIR=.uv-cache uv run --offline python scripts/diagnostic_a
   --end-month-exclusive 2026-07 \
   --dataset-version sprint_alt_funding_divergence_202606 \
   --download-workers 4
+
+Resultado:
+100 arquivos mensais baixados (20 symbols x 5 familias), todos
+checksum-verificados.
+data_gate=PASS, full_sample_n=13920.
+rho=-0,118324 (novo OOS, 2026-06 apenas).
+Decisao: NAO_PROMOVE (sinal negativo, o pre-registro exige positivo
+E >=0,03).
 ```
 
-Se o ambiente `uv --offline` nao tiver dependencias locais suficientes,
-usar o mesmo comando sem `--offline`. O download esperado e apenas OHLCV/
-funding mensal de 2026-06 para 20 symbols x 5 familias; `bookTicker`/L2
-continua fora de escopo.
+Ver `reports/alt_info_funding_divergence_new_oos.md` para a tabela
+completa e o addendum de 2026-07-07 em
+`project_control/DECISIONS.md` ADR-0023 para a interpretacao.

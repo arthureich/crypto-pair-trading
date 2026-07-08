@@ -1698,3 +1698,221 @@ Add `TASK-ALT-005` to `TASK_BOARD.md`. Add
 runner/test pair, write a report and JSON artifact, and update
 `PROJECT_STATE.md`, `CURRENT_SPRINT.md`, `HANDOFFS.md`, `RISKS.md`,
 `TEST_MATRIX.md`, and `DAILY_LOG.md`.
+
+## Addendum (2026-07-07) - TASK-ALT-005 Executed: NAO_PROMOVE, Sign Reversed
+
+The deferred real execution ran:
+`scripts/diagnostic_alt_funding_divergence_new_oos.py --start-month
+2026-06 --end-month-exclusive 2026-07 --dataset-version
+sprint_alt_funding_divergence_202606 --download-workers 4`. This
+downloaded 100 monthly archives (20 symbols x 5 families, `klines`,
+`markPriceKlines`, `indexPriceKlines`, `premiumIndexKlines`,
+`fundingRate`, for 2026-06 only), checksum-verified, normalized to
+`sprint_alt_funding_divergence_202606_bars.csv.gz`, and computed the
+EXACT `funding_price_divergence` feature from `TASK-ALT-001` on the new
+month, using the old 2023-06/2026-05 dataset only as causal 90-day
+rolling context (no old-window row entered the decisive result).
+
+Data gate: `PASS` (20/20 symbols, 5/5 families checksum-verified,
+coverage above the 99% floor, no duplicate keys, 13,920 valid
+feature/target pairs -- comfortably above the 10,000 floor).
+
+Information result: full-sample rho on the genuine new OOS is
+**-0.118324** (n=13,920) -- NOT a near-miss in the promoting direction.
+The sign flipped from consistently positive across all 3 original
+subperiods (+0.0276, +0.0230, +0.0239) to strongly negative, and the
+magnitude (0.118) is roughly 4x the original full-sample rho (0.0248),
+in the wrong direction for promotion.
+
+Decision: **`NAO_PROMOVE`**, per the pre-registered rule
+(rho must be `>= 0.03` AND positive). No threshold was adjusted, no
+feature was redesigned, no second month was cherry-picked after seeing
+this result. This is the disciplined outcome the task was built to
+produce: the near-miss did not replicate on genuinely new data and is
+closed as a rejected hypothesis, not reopened with adjusted parameters.
+
+`funding_price_divergence` is now closed across BOTH the original
+window (`TASK-ALT-001`, SEM_INFORMACAO, near-miss) and the genuine new
+OOS (`TASK-ALT-005`, NAO_PROMOVE, sign-reversed) -- Family G (Funding
+Structure) has no remaining open threads. See
+`reports/alt_info_funding_divergence_new_oos.md` and
+`data/research/binance_public/cost_pilot/alt_info_funding_divergence_new_oos_results.json`.
+
+## ADR-0024 - Pre-Register High-Volatility-Only TSREV Feasibility Now; Block Execution Until Genuine New OOS (Direct Data-Mining Risk)
+
+## Status
+
+Accepted
+
+## Context
+
+`TASK-ALT-004` tested blocking TSREV Family A 24h entries when
+`realized_vol_168h[t]` was above the causal 67th percentile of the
+symbol's own 90-day history, on the hypothesis that high volatility
+means risk to avoid. On the already-analyzed OOS window
+(2025-06/2026-05), the filter made the economics worse (net PF 1.0143
+-> 0.9822; net PnL +7,690.14 -> -6,110.64bps). Decomposing this result
+reveals a genuinely useful, counter-intuitive fact: the 1,187 EXCLUDED
+high-vol trades carried net +13,800.78bps on their own -- more than the
+strategy's entire original profit -- while the 2,758 KEPT low/mid-vol
+trades are net -6,110.64bps in isolation. TSREV's edge is concentrated
+entirely inside the high-volatility regime; outside it, the strategy
+loses money.
+
+This motivates the opposite hypothesis: keep ONLY high-volatility
+entries. But this hypothesis was constructed directly from having seen
+`TASK-ALT-004`'s actual result on the 2025-06/2026-05 window -- a more
+direct data-mining risk than any other case this session (the
+Payoff Engineering SHORT-only lead, or `funding_price_divergence`).
+Testing "keep only high-vol" on the SAME window that revealed the
+pattern would have no probative value -- it would confirm a pattern in
+the exact data that produced it, not test an independent hypothesis.
+
+The user was asked how to handle this and chose to pre-register the
+design now (locking the exact filter, gate, and baseline before any
+new data exists) but block execution until genuinely new OOS data is
+available -- the same discipline already established for
+`TASK-PAYOFF-002`.
+
+## Decision
+
+1. Pre-register `TASK-ALT-006`
+   (`docs/pre_registers/TASK-ALT-006.md`): TSREV Family A 24h restricted
+   to entries where `realized_vol_168h[t]` is ABOVE the causal 67th
+   percentile of the symbol's own 90-day history -- the exact inverse
+   filter of `TASK-ALT-004` (same feature, same percentile, same causal
+   window, only the cutoff direction flips). Same cost, weighting, and
+   composite gate structure already used by `TASK-TSREV-001`
+   (net PF>1.05 AND net PnL>0 AND max DD<=baseline AND resolved
+   trade_count>=200, post-filter).
+2. Execution is explicitly BLOCKED, not abandoned, until the dataset
+   extends past 2026-05-31 with an estimated >=750 total resolved TSREV
+   Family A 24h trades (all volatility levels, pre-filter) -- an
+   operational trigger, not a gate criterion, sized to leave a margin
+   above the 200-trade floor given the historical ~30% high-vol trade
+   ratio. `TASK-ALT-005` already downloaded and normalized the complete
+   2026-06 month (`sprint_alt_funding_divergence_202606_bars.csv.gz`,
+   checksum-verified); this can be reused without a new download once
+   the trigger window grows to include it.
+3. This is a feasibility test only -- even a PASS does not authorize
+   SignalIntent, paper/live, additional dynamic sizing, Execution,
+   Ledger, Recovery, ML, or any order-routing change; it only permits
+   opening a future operational-design task with its own
+   pre-registration.
+4. Continuous volatility-based position sizing (as opposed to a binary
+   entry filter) remains a distinct, not-yet-pre-registered idea --
+   noted but not opened by this ADR.
+
+## Consequences
+
+If a future genuinely-new-OOS run passes, TSREV's high-volatility
+segment becomes a credible feasibility candidate for a separately
+pre-registered operational design (still requiring its own paper/live
+gating). If it fails, the "concentrate in high-vol regime" line closes
+without parameter re-tuning (67th percentile, 168h window), consistent
+with every other closed hypothesis this session.
+
+## Agent Impact
+
+- PM Agent
+- Quant Research Agent
+- Backtest Agent
+
+## Migration
+
+Add `TASK-ALT-006` to `TASK_BOARD.md` with status BLOCKED (data
+trigger). Update `CURRENT_SPRINT.md`, `PROJECT_STATE.md`, `HANDOFFS.md`,
+`RISKS.md`, `DAILY_LOG.md` to record the pre-registration and the
+resume trigger. No code, no backtest run, no report until the trigger
+condition is met.
+
+## ADR-0025 - Execute Family H (Order Flow) Via `bookDepth`, Not `bookTicker`: Reconnaissance Found A Cheaper, Gap-Free Source
+
+## Status
+
+Accepted
+
+## Context
+
+Family H (Order Flow/L2) was deliberately deferred throughout Research
+Phase II (ADR-0019) because the only L2 source this project had
+previously used, `bookTicker` (Sprint 7/9/10), costs 17.98GB for a
+SINGLE month (June 2023, 15 symbols) and has a confirmed coverage gap
+-- `TASK-007-10` found no `bookTicker` data exists for any symbol from
+2024-04 onward. With `TASK-ALT-006` blocked on calendar time (see
+ADR-0024) and the user asking what to do next, a low-commitment
+reconnaissance of Family H's cost was authorized (scoping only, no
+download).
+
+The reconnaissance found a DIFFERENT public-data family, `bookDepth`
+(order book depth aggregated into percentage-from-mid-price bands:
+-5%, -4%, -3%, -2%, -1%, -0.2%, +0.2%, +1%, +2%, +3%, +4%, +5%, event-
+sampled rather than every tick, ~2,660 samples/day for BTCUSDT).
+Verified before writing this ADR:
+
+```text
+- Continuous coverage confirmed from before 2023-06-01 (newest symbol,
+  SUIUSDT, from 2023-05-03) through at least 2026-06 (direct HEAD
+  request) for all 20 universe symbols -- no gap like `bookTicker`'s.
+- Real per-day-per-symbol compressed size: ~432KB-515KB (sampled
+  across 4 symbols, liquid and less liquid).
+- Full 3-year, 20-symbol estimate: ~10.2GB -- LESS than what
+  `bookTicker` cost for a single month.
+- Same `.CHECKSUM` SHA256 format already verified and reused by
+  `verify_checksum_file` (`historical_dataset.py`) -- no new
+  verification logic needed.
+```
+
+This is not tick-level L2 (the exact order book cannot be
+reconstructed), but it is a genuine, causal representation of book
+shape sufficient to measure imbalance/depth/liquidity-shock features,
+without the tick-level memory/scale risk `bookTicker` would carry.
+
+## Decision
+
+1. Pre-register `TASK-ALT-007`
+   (`docs/pre_registers/TASK-ALT-007.md`): 5 `bookDepth`-derived
+   features formalized before any code runs (`book_imbalance_1pct`,
+   `book_imbalance_5pct`, `depth_concentration`, `depth_change_24h`,
+   `imbalance_price_divergence`), reusing the exact same
+   information-content methodology, sub-period boundaries, magnitude
+   threshold (0.03), and forward-return horizon (24h) already fixed in
+   ADR-0019/`TASK-ALT-001`/`TASK-ALT-002` -- not re-decided per family,
+   even though microstructure theory would suggest a shorter horizon
+   might be more natural (recorded as an explicit limitation, a
+   candidate for a future separate task, not tested here).
+2. Build a new, dedicated daily-archive downloader for `bookDepth`
+   (same shape as `download_alt_open_interest.py` for `metrics`),
+   reusing `verify_checksum_file` unchanged. Process one symbol at a
+   time, resample event-driven snapshots to hourly (last-observation-
+   in-hour, consistent with `TASK-ALT-002`'s convention), discard the
+   raw per-symbol frame before moving to the next symbol.
+3. `bookTicker` is NOT reused or revisited by this task -- `bookDepth`
+   is a categorically different, cheaper, gap-free source, not an
+   attempt to route around the known `bookTicker` gap.
+
+## Consequences
+
+If Family H also shows no information, per the same discipline as
+`TASK-ALT-001`/`TASK-ALT-002` the result is final for these 5 exact
+features (no parameter re-tuning after seeing results), and this would
+close the last originally-planned Research Phase II family
+(F, G, H, J all executed; I remains formally blocked on data
+availability, not attempted). If it shows information, an operational
+follow-up -- including testing a shorter, microstructure-motivated
+horizon -- would require its own separate pre-registration.
+
+## Agent Impact
+
+- PM Agent
+- Quant Research Agent
+- Backtest Agent
+
+## Migration
+
+Add `TASK-ALT-007` to `TASK_BOARD.md`. Update `CURRENT_SPRINT.md`,
+`PROJECT_STATE.md`, `HANDOFFS.md`, `RISKS.md`, `DAILY_LOG.md`.
+Implement a new daily `bookDepth` downloader/normalizer, run the real
+download (checksum verified, ~10.2GB estimated), compute the 5
+features, run the same `src/research/info_content.py` diagnostic,
+write `reports/alt_info_order_flow_diagnostic.md`.
