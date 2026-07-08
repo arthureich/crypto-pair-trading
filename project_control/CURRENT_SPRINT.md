@@ -2,7 +2,47 @@
 
 Last updated: 2026-07-08
 
-## Workstream atual: Research Phase II -- TASK-ALT-007 (Familia H, Order Flow) IN_PROGRESS, download real interrompido (ADR-0025)
+## Workstream atual: Research Phase II -- TASK-ALT-007 (Familia H, Order Flow) FECHADA sem informacao; ultimo avenue original da fase concluido (ADR-0025)
+
+O download real (~10,2GB, 20 symbols) foi concluido apos dois
+incidentes reais tratados em sequencia:
+
+```text
+1. Disco C: encheu durante o download de OPUSDT. O tratamento de
+   excecao original (`except Exception: return None`) engoliu
+   silenciosamente os erros de escrita local como "dia ausente" (404),
+   corrompendo OPUSDT (5,45M de 31,7M linhas esperadas). Corrigido:
+   trocado por `except HTTPError` especifico -- so 404 real e tratado
+   como ausente, qualquer outro erro (incluindo falha de disco)
+   propaga. Mesmo bug corrigido em `download_alt_open_interest.py`
+   para consistencia (nao precisou re-rodar, ja tinha sido bem
+   sucedido antes).
+2. Cache raw movido de C: para `D:/CryptoPairTrading/book_depth_raw`
+   (mesmo precedente do `bookTicker`) para liberar espaco. OPUSDT e o
+   SOLUSDT parcial foram apagados e re-baixados do zero com o codigo
+   corrigido -- contagens corretas confirmadas.
+3. Dois `ConnectionResetError` transitorios reais durante o restante
+   do download. Adicionado retry com backoff (4 tentativas) para
+   `URLError`, sem afetar o tratamento fail-closed do 404.
+```
+
+**Download real completo:** 20/20 symbols, 524.878 linhas horarias
+normalizadas, todos checksum-verificados.
+
+**Resultado do diagnostico** (`reports/alt_info_order_flow_diagnostic.md`):
+as 5 features SEM_INFORMACAO. `book_imbalance_1pct` e
+`depth_concentration` mostram sinal consistente mas DECAINDO (terceira
+vez nesta fase, apos `oi_delta`/`oi_acceleration` -- eficiencia de
+mercado crescente). `imbalance_price_divergence` e o near-miss mais
+proximo (rho=0,0208, a 0,0092 do limiar de 0,03) e o UNICO com
+trajetoria CRESCENTE nos 3 subperiodos (0,0131 -> 0,0215 -> 0,0236) --
+padrao distinto de tudo visto antes na Fase II.
+
+**Isto fecha o ultimo avenue originalmente planejado da Research Phase
+II.** Familias F, G, H, J todas executadas; Familia I permanece
+formalmente BLOQUEADA por falta de fonte de dados historica.
+
+## Workstream anterior: Research Phase II -- TASK-ALT-007 (Familia H, Order Flow) IN_PROGRESS, download real interrompido (ADR-0025)
 
 Com `TASK-ALT-006` bloqueada por calendario, o usuario autorizou uma
 reconnaissance de custo de Familia H (Order Flow) -- escopo limitado,

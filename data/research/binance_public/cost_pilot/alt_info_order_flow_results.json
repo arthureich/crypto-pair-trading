@@ -1,0 +1,176 @@
+{
+  "bars_csv": "C:\\Users\\arthu\\Desktop\\Aula\\Projects\\Crypto-Pair-Trading\\data\\research\\binance_public\\normalized\\sprint7_binance_usdm_202306_202605_bars.csv.gz",
+  "book_depth_csv": "C:\\Users\\arthu\\Desktop\\Aula\\Projects\\Crypto-Pair-Trading\\data\\research\\binance_public\\normalized\\sprint_alt_book_depth_202306_202605.csv.gz",
+  "forward_horizon_hours": 24,
+  "generated_at_utc": "2026-07-08T22:14:39.355968+00:00",
+  "magnitude_threshold": 0.03,
+  "period_boundaries_ms": [
+    1685577600000,
+    1717200000000,
+    1748736000000,
+    1780272000000
+  ],
+  "period_labels": [
+    "2023-06_2024-05",
+    "2024-06_2025-05",
+    "2025-06_2026-05"
+  ],
+  "results": {
+    "book_imbalance_1pct": {
+      "feature_name": "book_imbalance_1pct",
+      "full_sample_n": 524398,
+      "full_sample_rho": -0.017601902525357923,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": true,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 175084,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": -0.03078462089269694,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 174740,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": -0.0063137970397178405,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 174574,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": -0.005959592188424601,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "book_imbalance_5pct": {
+      "feature_name": "book_imbalance_5pct",
+      "full_sample_n": 524398,
+      "full_sample_rho": -0.002541367024544405,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": false,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 175084,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": 0.001690862447241461,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 174740,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": -0.022543647462019794,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 174574,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.02070566422520146,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "depth_change_24h": {
+      "feature_name": "depth_change_24h",
+      "full_sample_n": 522856,
+      "full_sample_rho": -0.006511918930587146,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": false,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 174148,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": -0.017388381859399515,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 174280,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": -0.018456225481448457,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 174428,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.01362829502917766,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "depth_concentration": {
+      "feature_name": "depth_concentration",
+      "full_sample_n": 524398,
+      "full_sample_rho": -0.010786634454636814,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": true,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 175084,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": -0.017707124387549768,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 174740,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": -0.016624413770015833,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 174574,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": -0.000803012531914149,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "imbalance_price_divergence": {
+      "feature_name": "imbalance_price_divergence",
+      "full_sample_n": 392611,
+      "full_sample_rho": 0.020833157359173404,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": true,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 105072,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": 0.013114912146574521,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 128900,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": 0.021511834460713437,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 158639,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.023552620838017478,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    }
+  },
+  "rolling_window_hours": 2160
+}

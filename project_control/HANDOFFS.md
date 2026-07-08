@@ -2,6 +2,106 @@
 
 Last updated: 2026-07-08
 
+## HANDOFF - TASK-ALT-007: Family H (Order Flow) Closed -- No Information, Two Real Incidents Fixed En Route
+
+### Status
+
+DONE. The `bookDepth` download completed (20/20 symbols, 524,878
+hourly rows, checksum-verified) after fixing a real data-corruption
+bug and adding retry handling for genuine transient network failures.
+
+### Incident 1: silent data corruption from a disk-full condition (real bug, fixed)
+
+C: drive filled up during OPUSDT's download (14th of 20 symbols). The
+original exception handling in `_download_and_parse_one_day`
+(`except Exception: return None`) treated ANY error -- including a
+local disk-write failure -- identically to a genuine 404 (day absent
+before the symbol's listing start). This silently corrupted OPUSDT:
+only 5.45M of the expected ~31.7M event rows were captured, with no
+visible error.
+
+**Fix:** replaced the catch-all with `except HTTPError as exc: if
+exc.code == 404: return None` -- only a confirmed 404 is treated as
+"genuinely absent"; every other error (disk failure, non-404 network
+error, corrupt zip) now propagates and stops the run. The identical
+bug was also fixed in `scripts/download_alt_open_interest.py` for
+consistency (that task had already succeeded and did not need
+re-running, but carried the same latent defect).
+
+After the fix: moved the `book_depth` raw cache (~6.6GB at the time)
+from `C:` (which had ~0.01GB free) to
+`D:/CryptoPairTrading/book_depth_raw` -- the same precedent already
+established in this project for `bookTicker`. Deleted the corrupted
+OPUSDT and the incomplete SOLUSDT (interrupted mid-flight, not
+bug-affected but incomplete) and re-downloaded both from scratch with
+the fixed code; both confirmed correct counts (~31.7M event rows each)
+afterward.
+
+### Incident 2: genuine transient network failures (not a bug)
+
+Two real `ConnectionResetError` (`[WinError 10054]`) failures
+interrupted the download later. Added retry-with-backoff (4 attempts,
+specifically for `URLError`) to `_fetch_to_file` in both downloaders,
+without changing the fail-closed 404 handling.
+
+### Real result (`reports/alt_info_order_flow_diagnostic.md`)
+
+**None of the 5 pre-registered features meet the information-content
+threshold:**
+
+```text
+book_imbalance_1pct:         rho=-0.0176  sign-consistent, DECAYS (-0.0308 -> -0.0063 -> -0.0060)
+book_imbalance_5pct:         rho=-0.0025  sign-inconsistent
+depth_concentration:         rho=-0.0108  sign-consistent, DECAYS (-0.0177 -> -0.0166 -> -0.0008)
+depth_change_24h:            rho=-0.0065  sign-inconsistent
+imbalance_price_divergence:  rho=+0.0208  sign-consistent, GROWS (0.0131 -> 0.0215 -> 0.0236)
+```
+
+`book_imbalance_1pct` and `depth_concentration` repeat the DECAY
+pattern already seen in Family F's `oi_delta`/`oi_acceleration` --
+third time a market-structure signal fades toward zero in the most
+recent sub-period, reinforcing the growing-market-efficiency reading.
+`imbalance_price_divergence` is this task's closest near-miss (0.0092
+short of the 0.03 threshold) and the ONLY pattern across the entire
+Research Phase II with a GROWING (not stable, not decaying)
+trajectory -- flagged as a legitimate candidate for a future
+genuinely-new-OOS validation task, not a retest on this same data.
+
+### Agente
+
+PM Agent (reconnaissance, bug diagnosis and fix, retry logic,
+execution, report interpretation).
+
+### Artefatos
+
+```text
+project_control/DECISIONS.md (ADR-0025)
+docs/pre_registers/TASK-ALT-007.md
+scripts/download_alt_book_depth.py (bug fix + retry logic)
+scripts/download_alt_open_interest.py (same bug fix + retry logic, no re-run needed)
+scripts/diagnostic_alt_order_flow.py
+tests/test_download_alt_book_depth.py
+reports/alt_info_order_flow_diagnostic.md
+data/research/binance_public/normalized/sprint_alt_book_depth_202306_202605.csv.gz
+data/research/binance_public/cost_pilot/alt_info_order_flow_results.json
+```
+
+### Estado final da Research Phase II
+
+Isto fecha o ultimo avenue originalmente planejado (ADR-0019): F, G,
+H, J todos executados com dado real. Familia I permanece formalmente
+BLOQUEADA por falta de fonte de dados historica.
+
+### Proxima decisao
+
+Pertence ao usuario, sem proxima acao ja acordada: (1) reconsiderar
+Familia I; (2) pre-registrar uma validacao futura de
+`imbalance_price_divergence` em OOS genuinamente novo (mesma
+disciplina de `funding_price_divergence`); (3) encerrar a Research
+Phase II como um todo. Os dois gatilhos de dados existentes
+(`TASK-PAYOFF-002`, `TASK-ALT-006`) continuam sendo monitorados
+separadamente, sem mudanca.
+
 ## HANDOFF - TASK-ALT-007: Family H (Order Flow) In Progress -- Cheap Gap-Free Source Found, Real Download Interrupted Mid-Run
 
 ### Status

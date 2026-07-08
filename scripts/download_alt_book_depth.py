@@ -20,11 +20,13 @@ from __future__ import annotations
 
 import io
 import sys
+import time
 import zipfile
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from datetime import date, timedelta
 from pathlib import Path
+from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
 
 import pandas as pd
@@ -33,13 +35,10 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.research.historical_dataset import (  # noqa: E402
-    HistoricalDatasetError,
-    verify_checksum_file,
-)
+from src.research.historical_dataset import verify_checksum_file  # noqa: E402
 
 BASE_URL = "https://data.binance.vision"
-RAW_ROOT = PROJECT_ROOT / "data/research/binance_public/cost_pilot/raw/book_depth"
+RAW_ROOT = Path("D:/CryptoPairTrading/book_depth_raw")
 OUTPUT_CSV = (
     PROJECT_ROOT
     / "data/research/binance_public/normalized/sprint_alt_book_depth_202306_202605.csv.gz"
@@ -84,6 +83,9 @@ PERCENTAGE_LEVELS = (
 )
 MAX_WORKERS = 16
 DOWNLOAD_TIMEOUT_SECONDS = 20.0
+HTTP_NOT_FOUND = 404
+MAX_FETCH_RETRIES = 4
+RETRY_BACKOFF_SECONDS = 2.0
 
 
 @dataclass(frozen=True, slots=True)
@@ -165,20 +167,34 @@ def _download_and_parse_one_day(spec: DailyBookDepthSpec) -> pd.DataFrame | None
         if not checksum_path.exists():
             _fetch_to_file(spec.checksum_url, checksum_path)
         verify_checksum_file(archive_path, checksum_path)
-    except HistoricalDatasetError:
+    except HTTPError as exc:
+        if exc.code == HTTP_NOT_FOUND:
+            # Archive genuinely absent for this symbol/day (e.g. before
+            # listing start) -- confirmed 404, not a local/transient error.
+            return None
         raise
-    except Exception:
-        # Archive genuinely absent for this symbol/day (e.g. before listing
-        # start) -- Binance returns 404, not a corrupt/mismatched file.
-        return None
     return _parse_book_depth_zip(archive_path)
 
 
 def _fetch_to_file(url: str, destination: Path) -> None:
     destination.parent.mkdir(parents=True, exist_ok=True)
-    with urlopen(url, timeout=DOWNLOAD_TIMEOUT_SECONDS) as response:  # noqa: S310
-        payload = response.read()
-    destination.write_bytes(payload)
+    for attempt in range(MAX_FETCH_RETRIES):
+        try:
+            with urlopen(url, timeout=DOWNLOAD_TIMEOUT_SECONDS) as response:  # noqa: S310
+                payload = response.read()
+            destination.write_bytes(payload)
+            return
+        except HTTPError:
+            # Structured HTTP response (e.g. 404) -- the caller decides
+            # what a specific status code means; retrying the identical
+            # request would not change it.
+            raise
+        except URLError:
+            # Connection-level failure (reset, timeout, DNS blip) -- retry
+            # with backoff.
+            if attempt == MAX_FETCH_RETRIES - 1:
+                raise
+            time.sleep(RETRY_BACKOFF_SECONDS * (attempt + 1))
 
 
 def _parse_book_depth_zip(archive_path: Path) -> pd.DataFrame:

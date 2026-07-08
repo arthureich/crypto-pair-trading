@@ -1563,3 +1563,48 @@ Next step already locked, just needs to run:
 No Execution, Ledger, Recovery, ML, live, SignalIntent, or
 order-routing files touched.
 ```
+
+2026-07-08 - TASK-ALT-007 completed: real bug fixed, real network failures handled, closed sem informacao:
+
+```text
+Resumed the bookDepth download. C: drive filled up completely during
+OPUSDT's download (14th of 20 symbols) -- found a REAL bug: the
+original exception handling (`except Exception: return None`) treated
+ANY error, including a local disk-write failure, identically to a
+genuine 404 (day absent). This silently corrupted OPUSDT (5.45M of
+~31.7M expected event rows, no visible error).
+Fixed: replaced the catch-all with `except HTTPError as exc: if
+exc.code == 404: return None` in download_alt_book_depth.py -- only a
+confirmed 404 is treated as absent, everything else now propagates.
+Applied the identical fix to download_alt_open_interest.py (same
+latent bug, that task had already succeeded before and did not need
+re-running).
+Moved the book_depth raw cache (~6.6GB) from C: (0.01GB free) to
+D:/CryptoPairTrading/book_depth_raw, same precedent as bookTicker's
+raw cache in this project. Deleted corrupted OPUSDT and incomplete
+SOLUSDT, re-downloaded both from scratch with the fixed code --
+confirmed correct counts afterward (~31.7M event rows each).
+Two genuine ConnectionResetError ([WinError 10054]) transient network
+failures interrupted the download after the disk-full fix (not a code
+bug). Added retry-with-backoff (4 attempts, URLError specifically) to
+_fetch_to_file in both downloaders. Download completed on next resume.
+Real download completed: 20/20 symbols, 524,878 hourly rows,
+checksum-verified. Ran scripts/diagnostic_alt_order_flow.py.
+Result: NONE of the 5 features (book_imbalance_1pct,
+book_imbalance_5pct, depth_concentration, depth_change_24h,
+imbalance_price_divergence) meet the 0.03 threshold. book_imbalance_1pct
+and depth_concentration repeat the DECAYING pattern from Family F's
+oi_delta/oi_acceleration. imbalance_price_divergence is the closest
+near-miss (rho=0.0208, 0.0092 short) and the ONLY pattern in the whole
+Research Phase II with a GROWING trajectory across the 3 sub-periods
+(0.0131 -> 0.0215 -> 0.0236) -- flagged as a candidate for a future
+new-OOS validation, not a retest.
+This closes the last originally-planned Research Phase II family (F,
+G, H, J all executed with real data; I remains formally blocked).
+Updated project_control/TASK_BOARD.md, CURRENT_SPRINT.md,
+PROJECT_STATE.md, HANDOFFS.md, RISKS.md to reflect the final result.
+Verification: full suite 438 tests passed, ruff clean (src tests
+scripts docs).
+No Execution, Ledger, Recovery, ML, live, SignalIntent, or
+order-routing files touched.
+```

@@ -2,6 +2,82 @@
 
 Last updated: 2026-07-08
 
+## Atualizacao 2026-07-08: TASK-ALT-007 (Familia H, Order Flow) FECHADA sem informacao -- ultimo avenue original da Research Phase II concluido (ADR-0025)
+
+O download real (~10,2GB, 20 symbols) foi concluido apos corrigir um
+bug real de correcao de dados e lidar com falhas transitorias de rede.
+
+**Bug real encontrado e corrigido durante a execucao:** o disco C:
+encheu durante o download de OPUSDT (14o de 20 symbols). O tratamento
+de excecao original em `_download_and_parse_one_day`
+(`except Exception: return None`) tratava QUALQUER erro -- incluindo
+uma falha de escrita local por disco cheio -- da mesma forma que um
+404 real da Binance (dia genuinamente ausente antes do listing do
+symbol). Isso corrompeu silenciosamente OPUSDT: apenas 5,45M das
+~31,7M linhas de evento esperadas foram capturadas, sem nenhum erro
+visivel. Corrigido substituindo o catch-all por
+`except HTTPError as exc: if exc.code == 404: return None` -- somente
+um 404 estruturado e tratado como "dia ausente"; qualquer outro erro
+(falha de disco, erro de rede nao-404, zip corrompido) agora propaga e
+para a execucao, forcando a deteccao explicita em vez de corromper o
+dataset silenciosamente. O mesmo bug (identico) foi corrigido em
+`scripts/download_alt_open_interest.py` para consistencia -- essa
+task ja tinha sido bem-sucedida antes e nao precisou ser re-rodada,
+mas o codigo tinha o mesmo defeito latente.
+
+Apos corrigir o bug: o cache raw de `book_depth` (entao com ~6,6GB) foi
+movido de `C:` (que tinha apenas 0,01GB livre, quase zero) para
+`D:/CryptoPairTrading/book_depth_raw` -- mesmo precedente ja
+estabelecido neste projeto para o `bookTicker`. OPUSDT (corrompido) e
+o SOLUSDT parcial (interrompido no meio, nao afetado pelo bug mas
+incompleto) foram apagados e re-baixados do zero com o codigo
+corrigido; ambos confirmaram contagens corretas (~31,7M linhas de
+evento cada) apos o re-download.
+
+Durante o restante do download, dois `ConnectionResetError`
+(`[WinError 10054]`) transitorios reais interromperam a execucao --
+falhas de rede genuinas, nao um bug de codigo. Foi adicionado retry
+com backoff exponencial (4 tentativas, `URLError` especificamente) em
+`_fetch_to_file`, aplicado nos dois downloaders (`book_depth` e
+`open_interest`, por consistencia), sem afetar o tratamento fail-closed
+do 404.
+
+**Download real completo:** 20/20 symbols, 524.878 linhas horarias
+normalizadas, todos checksum-verificados, escritas em
+`data/research/binance_public/normalized/sprint_alt_book_depth_202306_202605.csv.gz`.
+
+**Resultado do diagnostico** (`reports/alt_info_order_flow_diagnostic.md`,
+`scripts/diagnostic_alt_order_flow.py`, reusa
+`src/research/info_content.py` sem modificacao): **nenhuma das 5
+features cumpre o criterio pre-registrado.**
+
+```text
+book_imbalance_1pct:         rho=-0,0176  sinal consistente, DECAI (-0,0308 -> -0,0063 -> -0,0060)
+book_imbalance_5pct:         rho=-0,0025  sinal inconsistente
+depth_concentration:         rho=-0,0108  sinal consistente, DECAI (-0,0177 -> -0,0166 -> -0,0008)
+depth_change_24h:            rho=-0,0065  sinal inconsistente
+imbalance_price_divergence:  rho=+0,0208  sinal consistente, CRESCE (0,0131 -> 0,0215 -> 0,0236)
+```
+
+`book_imbalance_1pct` e `depth_concentration` repetem o padrao de
+DECAIMENTO ja visto em `oi_delta`/`oi_acceleration` (Familia F) --
+terceira vez que um sinal de estrutura de mercado desaparece no
+periodo mais recente, reforcando a leitura de eficiencia de mercado
+crescente. `imbalance_price_divergence` e o near-miss mais proximo
+desta task (a 0,0092 do limiar de 0,03) e o UNICO com trajetoria
+CRESCENTE entre todos os padroes ja vistos na Research Phase II --
+registrado como candidato legitimo para uma futura task de validacao
+em OOS genuinamente novo, NAO um re-teste no mesmo dado (mesma
+disciplina ja aplicada a `funding_price_divergence`).
+
+**Isto fecha o ultimo avenue originalmente planejado da Research Phase
+II.** Familias F (Open Interest), G (Funding Structure), H (Order
+Flow), e J (Regime Detection) foram todas executadas com dado real;
+Familia I (Liquidation Dynamics) permanece formalmente BLOQUEADA por
+falta de fonte de dados historica. Nenhum resultado economico,
+SignalIntent, Execution, Ledger, Recovery, ML ou live foi autorizado
+ou produzido por esta task. Suite completa: 438 testes, ruff limpo.
+
 ## Atualizacao 2026-07-08: TASK-ALT-007 (Familia H, Order Flow) em andamento -- reconnaissance encontrou fonte viavel, download real interrompido no meio (ADR-0025)
 
 Com `TASK-ALT-006` bloqueada por calendario, o usuario autorizou uma
@@ -1174,18 +1250,19 @@ Enquanto os dois gatilhos de dados amadurecem, o usuario autorizou
 reconsiderar Familia H (Order Flow) -- uma reconnaissance real
 encontrou `bookDepth` como fonte viavel (~10,2GB para os 3 anos
 inteiros, sem o gap do `bookTicker`), revertendo a premissa de "cara
-demais." `TASK-ALT-007` esta pre-registrada (ADR-0025) e IN_PROGRESS:
-codigo implementado e testado, download real iniciado mas
-INTERROMPIDO no meio (2/20 symbols completos) por uma queda de sessao
--- precisa ser retomado (comando idempotente, ja documentado acima) e
-o diagnostico real ainda precisa rodar.
+demais." `TASK-ALT-007` foi executada e fechou **sem informacao** (5
+features, nenhuma cumpre o criterio) -- ver detalhes na atualizacao
+acima. Isto fecha o ultimo avenue originalmente planejado da Research
+Phase II: Familias F, G, H, J todas executadas com dado real; Familia
+I permanece formalmente BLOQUEADA.
 
 Decisoes pendentes do usuario, sem proxima acao ja acordada alem de
-concluir `TASK-ALT-007` e acompanhar os dois gatilhos de dados
-(`TASK-PAYOFF-002`, `TASK-ALT-006`): (1) reconsiderar Familia I
-(Liquidation Dynamics, BLOQUEADA); (2) encerrar a Research Phase II
-como um todo e decidir a proxima fase do projeto, dependendo do
-resultado de H e de quanto os gatilhos de dados demorarem.
+acompanhar os dois gatilhos de dados (`TASK-PAYOFF-002`,
+`TASK-ALT-006`): (1) reconsiderar Familia I (Liquidation Dynamics,
+BLOQUEADA); (2) validar `imbalance_price_divergence` (o near-miss
+crescente de `TASK-ALT-007`) em OOS genuinamente novo, mesma
+disciplina de `funding_price_divergence`; (3) encerrar a Research
+Phase II como um todo e decidir a proxima fase do projeto.
 
 Linhas formalmente adiadas/bloqueadas, nao pendentes de decisao imediata:
 Familia I (Liquidation Dynamics, BLOQUEADA -- sem fonte historica
