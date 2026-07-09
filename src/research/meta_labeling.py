@@ -116,6 +116,66 @@ def build_meta_label_panel(bars: pd.DataFrame, config: FundingCarryConfig) -> pd
     return frame
 
 
+def build_leg_interval_panel(bars: pd.DataFrame, config: FundingCarryConfig) -> pd.DataFrame:
+    """Build the per-(leg, interval) feature/label panel for TASK-ML-001 (Option 2).
+
+    One row per leg-slot the UNALTERED incremental policy holds during each
+    resolved rebalance (newly entered or carried), labelled by that single
+    interval's net PnL: funding +/- price return over [t, t+interval] at the
+    fixed 1/(2K) weight, minus the per-leg entry cost only in the interval
+    the leg entered. This yields tens of thousands of rows (vs ~38 for the
+    entry-only unit), enough to train the meta-model. Warm-up rows with
+    undefined features are dropped (``frame.attrs["n_dropped_warmup"]``).
+    """
+
+    _validate_bars(bars)
+    features = _build_feature_frames(bars)
+    results = run_incremental_funding_carry_backtest(bars, config)
+    indexed, interval_ms, _ = _build_indexed_frame_and_rebalance_times(bars, config)
+    weight = 1.0 / (2.0 * config.k)
+    entry_cost_bps = weight * config.cost_bps_per_leg_roundtrip
+
+    rows: list[dict[str, object]] = []
+    dropped_warmup = 0
+    previous_held: set[tuple[str, str]] = set()
+    for result in results:
+        if result.status is not RebalanceStatus.RESOLVED:
+            continue  # policy holds carry through NO_DATA; no interval PnL
+        t = int(result.rebalance_time)
+        snapshot = indexed.loc[t]
+        forward = indexed.loc[t + interval_ms]
+        current = {(symbol, "long") for symbol in result.held_long}
+        current |= {(symbol, "short") for symbol in result.held_short}
+
+        for symbol, side in current:
+            leg_funding, leg_price = leg_pnl_fracs(
+                snapshot, forward, symbol, is_long=(side == "long"), weight=weight
+            )
+            gross_bps = (leg_funding + leg_price) * 10_000.0
+            entered = (symbol, side) not in previous_held
+            net_pnl_bps = gross_bps - (entry_cost_bps if entered else 0.0)
+            feature_values = _lookup_features(features, t, symbol)
+            if feature_values is None:
+                dropped_warmup += 1
+                continue
+            rows.append(
+                {
+                    "decision_time_ms": t,
+                    "label_end_time_ms": t + interval_ms,
+                    "symbol": symbol,
+                    "side": side,
+                    "net_pnl_bps": net_pnl_bps,
+                    "label": 1 if net_pnl_bps > 0.0 else 0,
+                    **feature_values,
+                }
+            )
+        previous_held = current
+
+    frame = pd.DataFrame(rows, columns=list(PANEL_COLUMNS))
+    frame.attrs["n_dropped_warmup"] = dropped_warmup
+    return frame
+
+
 def _validate_bars(bars: pd.DataFrame) -> None:
     missing = [column for column in _BARS_REQUIRED_COLUMNS if column not in bars.columns]
     if missing:
@@ -438,3 +498,100 @@ def _gated_swaps(
         swap_count += 1
 
     return tuple(held_long), tuple(held_short), swap_count
+
+
+def run_leg_interval_filtered_backtest(
+    bars: pd.DataFrame,
+    config: FundingCarryConfig,
+    entry_gate: EntryGate = _allow_all_entries,
+) -> tuple[IncrementalRebalanceResult, ...]:
+    """Option-2 filter: veto held leg-slots per interval, renormalize the rest.
+
+    The primary incremental policy runs UNALTERED (its held-set evolution is
+    unchanged); the filter is a per-interval overlay. Each rebalance, any held
+    leg the gate vetoes drops to cash for that interval; the kept legs on each
+    side split 50% notional equally (dollar-neutral preserved). A leg the
+    filtered book newly holds (kept now, not kept the prior interval) pays the
+    per-leg entry cost at its current renormalized weight.
+
+    With the default allow-all gate this reproduces
+    ``run_incremental_funding_carry_backtest`` exactly (kept == held, weight
+    0.5/K == 1/(2K), entries == swap_count) -- proven in the tests.
+    """
+
+    results = run_incremental_funding_carry_backtest(bars, config)
+    indexed, interval_ms, _ = _build_indexed_frame_and_rebalance_times(bars, config)
+    return filter_leg_interval_results(results, indexed, interval_ms, config, entry_gate)
+
+
+def filter_leg_interval_results(
+    results: tuple[IncrementalRebalanceResult, ...],
+    indexed: pd.DataFrame,
+    interval_ms: int,
+    config: FundingCarryConfig,
+    entry_gate: EntryGate,
+) -> tuple[IncrementalRebalanceResult, ...]:
+    """Apply the Option-2 per-interval veto to a PRECOMPUTED held-set sequence.
+
+    Separated from the backtest so CV can run the (expensive) canonical policy
+    once per span and reuse its held sets across every gate/threshold, instead
+    of re-running it each time.
+    """
+
+    cost_bps = config.cost_bps_per_leg_roundtrip
+    out: list[IncrementalRebalanceResult] = []
+    previous_kept: set[tuple[str, str]] = set()
+    for result in results:
+        if result.status is not RebalanceStatus.RESOLVED:
+            out.append(result)  # status-only; PnL summary ignores non-resolved
+            continue
+        t = int(result.rebalance_time)
+        snapshot = indexed.loc[t]
+        forward = indexed.loc[t + interval_ms]
+
+        kept_long = [s for s in result.held_long if entry_gate(s, "long", t)]
+        kept_short = [s for s in result.held_short if entry_gate(s, "short", t)]
+        weight_long = 0.5 / len(kept_long) if kept_long else 0.0
+        weight_short = 0.5 / len(kept_short) if kept_short else 0.0
+
+        funding_frac = 0.0
+        price_frac = 0.0
+        for symbol in kept_long:
+            leg_funding, leg_price = leg_pnl_fracs(
+                snapshot, forward, symbol, is_long=True, weight=weight_long
+            )
+            funding_frac += leg_funding
+            price_frac += leg_price
+        for symbol in kept_short:
+            leg_funding, leg_price = leg_pnl_fracs(
+                snapshot, forward, symbol, is_long=False, weight=weight_short
+            )
+            funding_frac += leg_funding
+            price_frac += leg_price
+        funding_pnl_bps = funding_frac * 10_000.0
+        price_pnl_bps = price_frac * 10_000.0
+        gross_pnl_bps = funding_pnl_bps + price_pnl_bps
+
+        kept = {(s, "long") for s in kept_long} | {(s, "short") for s in kept_short}
+        entered = kept.difference(previous_kept)
+        cost_bps_total = (
+            sum((weight_long if side == "long" else weight_short) for _, side in entered) * cost_bps
+        )
+        net_pnl_bps = gross_pnl_bps - cost_bps_total
+
+        out.append(
+            IncrementalRebalanceResult(
+                rebalance_time=t,
+                status=RebalanceStatus.RESOLVED,
+                held_long=tuple(kept_long),
+                held_short=tuple(kept_short),
+                swap_count=len(entered),
+                funding_pnl_bps=funding_pnl_bps,
+                price_pnl_bps=price_pnl_bps,
+                cost_bps=cost_bps_total,
+                gross_pnl_bps=gross_pnl_bps,
+                net_pnl_bps=net_pnl_bps,
+            )
+        )
+        previous_kept = kept
+    return tuple(out)

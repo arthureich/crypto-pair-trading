@@ -4,11 +4,18 @@
 
 ACCEPTED (locked) - travado explicitamente pelo usuario em 2026-07-09,
 antes de qualquer codigo. Ver `project_control/DECISIONS.md` ADR-0026.
+UNIDADE DE ROTULO REVISADA em 2026-07-09 (mesma data): trocada de "gatear
+so entradas/swaps" (Opcao 1) para "gatear toda perna-mantida por
+intervalo" (Opcao 2), apos o achado empirico de que a politica
+incremental K=5 faz so ~38 entradas pos-warmup em 3 anos -- amostra
+insuficiente para ML. Ver ADR-0026 Addendum. As demais travas (features,
+classe de modelo, grid, harness de CV, gate de 4 condicoes, bloqueio ate
+OOS novo) permanecem inalteradas.
 Fase de DESENVOLVIMENTO (harness de CV, features, selecao de
-modelo/threshold via CV na janela existente) autorizada a comecar agora.
-O GATE de PROMOTE/NAO_PROMOVE permanece BLOQUEADO ate o holdout de OOS
-novo (>= 500 rebalanceamentos resolvidos apos 2026-05-31) existir --
-nenhum veredito de promocao pode ser computado antes disso.
+modelo/threshold via CV na janela existente) autorizada. O GATE de
+PROMOTE/NAO_PROMOVE permanece BLOQUEADO ate o holdout de OOS novo (>= 500
+rebalanceamentos resolvidos apos 2026-05-31) existir -- nenhum veredito
+de promocao pode ser computado antes disso.
 
 ## Workstream
 
@@ -61,35 +68,41 @@ escolhe lado. Ele so faz um corte binario sobre pernas que o sinal
 primario ja escolheu.
 
 ```text
-Fluxo (semantica travada pelo usuario 2026-07-09: gatear so
-ENTRADAS/SWAPS -- Opcao 1):
+Fluxo (unidade REVISADA 2026-07-09 apos achado empirico: gatear TODA
+PERNA-MANTIDA por intervalo -- Opcao 2. Motivo: a politica incremental
+K=5 faz so ~66 entradas em 3 anos (~38 pos-warmup); gatear so entradas
+-- a Opcao 1 originalmente travada -- deixa o ML com ~38 amostras,
+inviavel. Ver ADR-0026 Addendum):
   Funding carry incremental K=5  (sinal primario, INALTERADO)
         v
-  a cada rebalanceamento a politica incremental PROPOE entradas/swaps
-  (novas pernas que substituiriam uma perna mantida ou preencheriam um
-   slot vazio no bootstrap)
+  a cada rebalanceamento a politica mantem ate 2K pernas (K long, K short)
         v
-  meta-modelo: para CADA entrada/swap proposto, P(a nova perna sera
-  net-lucrativa ao longo do seu hold ate o proximo swap/saida)
+  meta-modelo: para CADA perna-slot que estaria no livro naquele
+  intervalo (entrada nova OU perna carregada), P(perna sera net-lucrativa
+  NESTE intervalo)
         v
-  se P < threshold, VETA o swap: mantem a perna anterior no slot (ou
-  fica em caixa se o slot estava vazio -- so no bootstrap). NUNCA gera
-  perna nova, nunca inverte lado.
+  se P < threshold, VETA o slot: ele vira CAIXA naquele intervalo (a
+  perna nao e mantida). NUNCA gera perna nova, nunca inverte lado.
         v
-  re-roda a politica incremental COM o veto aplicado e re-sumariza com
-  summarize_funding_carry_backtest (MESMA convencao de PnL/custo)
+  os pesos das pernas MANTIDAS sao renormalizados para preservar a
+  neutralidade dolar: cada lado divide 50% do notional igualmente entre
+  suas pernas mantidas (peso long = 0,5/n_long_mantidas; short analogo).
+  Se um lado fica sem nenhuma perna, aquele lado fica em caixa no intervalo.
+        v
+  re-sumariza a estrategia FILTRADA com summarize_funding_carry_backtest
 ```
 
 Distincao explicita treino vs avaliacao (padrao de meta-labeling):
-  - LABEL de TREINO = net PnL de cada entrada/swap que a politica
-    incremental NAO-FILTRADA de fato fez, ao longo do hold realizado sob
-    essa politica nao-filtrada, menos o custo de entrada. Rotula-se a
-    decisao do modelo primario como ela foi tomada.
+  - LABEL de TREINO = sinal do net PnL de UMA perna-slot em UM intervalo
+    sob a politica NAO-FILTRADA (funding +/- retorno de preco da perna
+    sobre [t, t+intervalo], na convencao de peso FIXA 1/(2K); custo de
+    entrada atribuido so ao intervalo em que a perna entrou). Uma
+    observacao por (perna, intervalo) que a politica nao-filtrada manteve.
   - AVALIACAO (OOS de cada fold da CV e holdout final) = re-roda a
-    politica incremental COM o veto do meta-modelo aplicado, mede o PnL
-    real da estrategia filtrada e compara ao baseline nao-filtrado na
-    MESMA janela. O gate final e honesto mesmo que o veto altere holds
-    futuros, porque a avaliacao usa a politica filtrada de verdade.
+    politica COM o veto por-intervalo E a renormalizacao de peso, mede o
+    PnL real da estrategia filtrada e compara ao baseline nao-filtrado na
+    MESMA janela. O gate final e honesto porque a avaliacao usa a politica
+    filtrada de verdade.
 
 O sinal primario, seu K=5, seu modelo de custo e sua convencao de sinal
 NAO sao alterados nesta task. Se alterados, seria outra task.
@@ -97,23 +110,22 @@ NAO sao alterados nesta task. Se alterados, seria outra task.
 ## Unidade de rotulo (meta-label)
 
 ```text
-Uma observacao = uma ENTRADA/SWAP (symbol, rebalanceamento de entrada)
-que a politica incremental NAO-FILTRADA de fato executou. Nao e "toda
-perna por intervalo" -- e o momento em que uma perna nova entra no
-livro.
+Uma observacao = uma PERNA-INTERVALO: um par (symbol, side) que a
+politica incremental NAO-FILTRADA manteve no livro durante o
+rebalanceamento t (recem-entrada OU carregada). ~3.287 rebalances x ate
+2K pernas => dezenas de milhares de observacoes (vs ~38 na Opcao 1).
 
 Label binario:
-  y = 1 se o net PnL realizado da perna, acumulado ao longo de TODOS os
-        intervalos em que ela ficou no livro sob a politica nao-filtrada
-        (funding recebido/pago +/- retorno de preco da perna a cada
-        intervalo), MENOS o custo de entrada por perna ja pre-registrado,
-        for > 0
+  y = 1 se o net PnL da perna NAQUELE intervalo (funding recebido/pago
+        +/- retorno de preco da perna sobre [t, t+intervalo], na convencao
+        de peso FIXA 1/(2K), MENOS o custo de entrada por perna SE a perna
+        entrou neste intervalo) for > 0
   y = 0 caso contrario.
 
-O PnL por intervalo de cada perna reusa EXATAMENTE o computo de
-_book_funding_and_price_pnl_bps / _price_return de funding_carry.py --
-nao ha nova formula de PnL nesta task. Uma perna mantida ate o fim dos
-dados (sem swap posterior) e rotulada pelo PnL acumulado ate o fim.
+O PnL por intervalo reusa EXATAMENTE `leg_pnl_fracs` de funding_carry.py
+-- nao ha nova formula de PnL nesta task. O ROTULO usa a convencao de
+peso fixa 1/(2K); a renormalizacao de peso (0,5/n_mantidas por lado) so
+entra na AVALIACAO da estrategia filtrada, nunca no rotulo.
 ```
 
 ## Features candidatas (LOCKED, deliberadamente pequenas -- 9 no total,

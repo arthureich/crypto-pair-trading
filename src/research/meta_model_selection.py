@@ -28,14 +28,15 @@ import pandas as pd
 from src.research.funding_carry import (
     HOUR_MS,
     FundingCarryConfig,
+    _build_indexed_frame_and_rebalance_times,
     run_incremental_funding_carry_backtest,
     summarize_funding_carry_backtest,
 )
 from src.research.meta_labeling import (
     FEATURE_NAMES,
     _build_feature_frames,
-    build_meta_label_panel,
-    run_filtered_incremental_backtest,
+    build_leg_interval_panel,
+    filter_leg_interval_results,
 )
 from src.research.purged_cv import purged_walk_forward_splits
 
@@ -91,9 +92,9 @@ def select_meta_model_via_cv(
     if not thresholds:
         raise MetaModelSelectionError("thresholds must not be empty")
 
-    panel = build_meta_label_panel(bars, config)
+    panel = build_leg_interval_panel(bars, config)
     if panel.empty:
-        raise MetaModelSelectionError("meta-label panel is empty (no post-warm-up entries)")
+        raise MetaModelSelectionError("leg-interval panel is empty (no post-warm-up rows)")
 
     feature_matrix = _stack_feature_matrix(_build_feature_frames(bars))
     folds = purged_walk_forward_splits(
@@ -108,7 +109,8 @@ def select_meta_model_via_cv(
     best: CvSelectionResult | None = None
     for combo_index, combo in enumerate(hyperparameter_grid, start=1):
         by_threshold: dict[float, list[ThresholdFoldMetric]] = {t: [] for t in thresholds}
-        for fold, (span_bars, baseline_pf) in zip(folds, fold_spans, strict=True):
+        for fold, span in zip(folds, fold_spans, strict=True):
+            canonical, indexed, baseline_pf = span
             train_rows = panel.iloc[fold.train_index]
             model = model_factory(**combo)
             model.fit(train_rows[list(FEATURE_NAMES)].to_numpy(), train_rows["label"].to_numpy())
@@ -119,8 +121,8 @@ def select_meta_model_via_cv(
             }
             for threshold in thresholds:
                 summary = summarize_funding_carry_backtest(
-                    run_filtered_incremental_backtest(
-                        span_bars, config, _model_gate(pred_lookup, threshold)
+                    filter_leg_interval_results(
+                        canonical, indexed, interval_ms, config, _model_gate(pred_lookup, threshold)
                     ),
                     config,
                 )
@@ -167,16 +169,21 @@ def _fold_span(
     fold: object,
     interval_ms: int,
     config: FundingCarryConfig,
-) -> tuple[pd.DataFrame, float]:
-    """Slice bars to the fold's time span (+1 interval for the last forward)."""
+) -> tuple[tuple, pd.DataFrame, float]:
+    """Run the canonical policy ONCE on the fold's span; reuse for every gate.
+
+    Returns the canonical held-set sequence, the indexed frame, and the
+    unfiltered baseline profit factor for the span. The (expensive) canonical
+    run happens once per fold, not once per (hyperparameter, threshold).
+    """
 
     start = fold.test_start_time_ms  # type: ignore[attr-defined]
     end = fold.test_end_time_ms + interval_ms  # type: ignore[attr-defined]
     span_bars = bars[(bars["open_time"] >= start) & (bars["open_time"] <= end)]
-    baseline = summarize_funding_carry_backtest(
-        run_incremental_funding_carry_backtest(span_bars, config), config
-    )
-    return span_bars, baseline.profit_factor
+    canonical = run_incremental_funding_carry_backtest(span_bars, config)
+    indexed, _, _ = _build_indexed_frame_and_rebalance_times(span_bars, config)
+    baseline = summarize_funding_carry_backtest(canonical, config)
+    return canonical, indexed, baseline.profit_factor
 
 
 def _stack_feature_matrix(frames: dict[str, pd.DataFrame]) -> pd.DataFrame:

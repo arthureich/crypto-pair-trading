@@ -1,8 +1,22 @@
 # CURRENT_SPRINT
 
-Last updated: 2026-07-08
+Last updated: 2026-07-09
 
-## Workstream atual: Research Phase II -- TASK-ALT-007 (Familia H, Order Flow) FECHADA sem informacao; ultimo avenue original da fase concluido (ADR-0025)
+## Workstream atual: TASK-ML-001 (programa "Funding Carry Inteligente", ADR-0026) -- infra de meta-labeling construida e testada; fase de DESENVOLVIMENTO; gate BLOQUEADO ate OOS novo
+
+Primeiro programa de ML: filtro de meta-labeling (perna-intervalo, Opcao
+2) sobre o funding carry incremental K=5 INALTERADO. Entregue e testado
+(468 testes, ruff limpo): harness de purged/embargoed CV, builder causal
+de painel (~30.140 linhas), runner filtrado com renormalizacao (com prova
+de equivalencia ao canonico), e selecao XGBoost via CV. Achado no meio do
+caminho: a Opcao 1 (gatear so entradas) so dava ~38 exemplos -> trocada
+para Opcao 2 e re-travada no pre-registro/ADR. CV de desenvolvimento:
+"melhor" PF filtrado medio 4,99 e MIRAGEM (inflada por 2 folds com PnL
+minusculo; em 3 de 5 folds o filtro PIORA) -> sinal cautelar/negativo,
+sem veredito. Gate so avaliavel em OOS genuinamente novo (>=500 rebalances
+apos 2026-05-31). Ver `reports/ml_meta_labeling_cv_selection.md`.
+
+## Workstream anterior: Research Phase II -- TASK-ALT-007 (Familia H, Order Flow) FECHADA sem informacao; ultimo avenue original da fase concluido (ADR-0025)
 
 O download real (~10,2GB, 20 symbols) foi concluido apos dois
 incidentes reais tratados em sequencia:

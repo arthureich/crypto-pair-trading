@@ -1,6 +1,45 @@
 # Handoffs
 
-Last updated: 2026-07-08
+Last updated: 2026-07-09
+
+## HANDOFF - TASK-ML-001: Funding-Carry Meta-Labeling Infrastructure Built; Development CV Is Cautionary; Gate Blocked Until New OOS
+
+First ML program of the project (ADR-0026): a meta-labeling FILTER over
+the unchanged funding-carry incremental K=5 signal. All infrastructure is
+built and tested (468 tests, ruff clean); the promotion gate is BLOCKED
+until a new-OOS holdout (>=500 rebalances after 2026-05-31) exists.
+
+### What is built
+- `src/research/purged_cv.py` -- purged+embargoed walk-forward CV splits
+  (leakage-prevention trava, 15 tests).
+- `src/research/meta_labeling.py` -- causal per-(leg, interval) panel and a
+  filtered incremental runner with dollar-neutral weight renormalization;
+  an equivalence test proves it reproduces the canonical backtest under an
+  allow-all gate. `funding_carry.py` primary signal unchanged (only a
+  behavior-preserving `leg_pnl_fracs` extraction).
+- `src/research/meta_model_selection.py` + `scripts/run_ml_meta_labeling_cv.py`
+  -- XGBoost hyperparameter/threshold selection via purged CV.
+
+### Key finding / redirect
+Option 1 (gate entries/swaps) yielded only ~38 samples (the incremental
+policy barely trades), so the unit was switched to Option 2 (gate every
+held leg-interval, ~30,140 rows) and re-locked in the pre-registration /
+ADR-0026 Addendum.
+
+### Development CV result (NO verdict)
+The selected candidate's headline mean fold PF of 4.99 is a ratio
+artifact: driven by 2 folds (PF ~11-12) with negligible net PnL (+169,
++7 bps), while in 3 of 5 folds the filter is WORSE than baseline (net
+-160, -920, -7 bps). No stable improvement in development -- looks like
+noise-fitting. Cautionary/negative signal; lowers the prior that the
+eventual new-OOS test clears the gate, but settles nothing.
+
+### Next
+Hold until new OOS accrues (~mid-Nov 2026), then run the pre-registered
+four-condition gate on the untouched holdout -- alongside PAYOFF-002 and
+ALT-006, which wait on the same data. Consider (if pursued) fixing the
+degenerate mean-PF selection objective to a consistency/net-PnL-based one,
+but only via a pre-registered change, not post-hoc retuning.
 
 ## HANDOFF - TASK-ALT-007: Family H (Order Flow) Closed -- No Information, Two Real Incidents Fixed En Route
 

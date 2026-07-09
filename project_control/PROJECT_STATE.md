@@ -1,6 +1,49 @@
 # PROJECT_STATE
 
-Last updated: 2026-07-08
+Last updated: 2026-07-09
+
+## Atualizacao 2026-07-09: TASK-ML-001 (programa "Funding Carry Inteligente", ADR-0026) -- infraestrutura de meta-labeling construida; CV de desenvolvimento com sinal CAUTELAR/negativo; gate BLOQUEADO ate OOS novo
+
+Aberto o primeiro programa de ML do projeto (ADR-0026): um FILTRO de
+meta-labeling (Lopez de Prado) sobre o funding carry incremental K=5
+INALTERADO (o near-miss mais proximo do projeto, PF 1,0904). Pre-registro
+(`docs/pre_registers/TASK-ML-001.md`) e ADR travados antes de codigo; o
+gate de PROMOTE/NAO_PROMOVE permanece BLOQUEADO ate um holdout de OOS
+genuinamente novo (>=500 rebalances resolvidos apos 2026-05-31,
+~meados nov/2026), consistente com ADR-0023/0024.
+
+Infraestrutura entregue (468 testes, ruff limpo):
+- `src/research/purged_cv.py`: splits de CV walk-forward com purga+embargo
+  (15 testes, inclui a trava de vazamento e o embargo).
+- `src/research/meta_labeling.py`: painel causal por perna-intervalo
+  (6 features de regime da Familia J + 3 de funding, todas
+  shift(1)-antes-de-rolling) e um runner filtrado com renormalizacao de
+  peso; prova de equivalencia com o backtest canonico sob veto-aprova-tudo.
+- `src/research/funding_carry.py`: `leg_pnl_fracs` extraido como fonte
+  unica da convencao de sinal por-perna (refactor que preserva
+  comportamento, 18 testes inalterados); sinal primario intocado.
+- `src/research/meta_model_selection.py` + `scripts/run_ml_meta_labeling_cv.py`:
+  selecao XGBoost de hiperparametro/threshold via purged CV, avaliando a
+  estrategia filtrada por span de fold.
+
+Achado empirico que redirecionou o desenho: a unidade de meta-label
+originalmente travada (Opcao 1, "gatear so entradas/swaps") produziu so
+~38 exemplos em 3 anos -- a estrategia incremental quase nao troca de
+perna (custo total 33,6 bps). Trocada para a Opcao 2 (gatear TODA
+perna-mantida por intervalo, ~30.140 linhas), re-travada no pre-registro
+e ADR-0026 Addendum.
+
+Resultado da CV de DESENVOLVIMENTO (sem veredito): o "melhor" candidato
+(max_depth=3, n_estimators=100, lr=0,03, min_child_weight=5,
+threshold=0,6) tem PF filtrado medio de 4,99 -- **uma miragem**. Detalhe
+por fold: PF alto so nos folds 3 e 5 (11,18 e 11,95) com PnL liquido
+minusculo (+169 e +7 bps); nos folds 1, 2 e 4 o filtro PIORA o resultado
+(net -160, -920, -7 bps; fold 2 destroi um baseline de PF 1,24). Ou seja,
+o filtro NAO mostra melhora estavel/real em desenvolvimento -- parece
+ajuste a ruido, e a metrica de PF-medio premiou inflacao de razao sobre
+PnL minusculo. Sinal cautelar/negativo; nao decide nada (o gate so pode
+ser avaliado em OOS novo), mas baixa o prior de que o teste OOS futuro
+passe. Ver `reports/ml_meta_labeling_cv_selection.md`.
 
 ## Atualizacao 2026-07-08: TASK-ALT-007 (Familia H, Order Flow) FECHADA sem informacao -- ultimo avenue original da Research Phase II concluido (ADR-0025)
 

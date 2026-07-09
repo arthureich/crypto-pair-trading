@@ -214,6 +214,14 @@ def _write_report(payload: dict, result: CvSelectionResult) -> None:
             ">= 500 kept rebalances; filtered PF exceeds the unfiltered K=5 "
             "baseline by >= +0.02).",
             "",
+            "WARNING -- read the per-fold table, not the headline mean. Profit "
+            "factor is a ratio: a fold that keeps only a few tiny winning "
+            "intervals and cuts losers shows a huge PF on negligible net PnL. A "
+            "high mean PF driven by one or two such folds, while other folds are "
+            "net-negative or below their baseline, is a ratio artifact / overfit "
+            "signal, not a robust improvement. Judge the filter by whether it "
+            "beats the baseline consistently AND with real net PnL across folds.",
+            "",
         ]
     )
     REPORT_MD.parent.mkdir(parents=True, exist_ok=True)

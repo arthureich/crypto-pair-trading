@@ -1,5 +1,29 @@
 # Daily Log
 
+## 2026-07-09 (TASK-ML-001 - programa Funding Carry Inteligente: infra de meta-labeling construida; CV de dev cautelar)
+
+```text
+- Aberto ADR-0026 + pre-registro TASK-ML-001 (travados antes de codigo):
+  filtro de meta-labeling sobre o funding carry incremental K=5 (near-miss
+  PF 1,0904, INALTERADO). Gate BLOQUEADO ate OOS novo (>=500 rebalances
+  apos 2026-05-31), consistente com ADR-0023/0024.
+- Construido e testado (468 testes, ruff limpo): purged_cv.py (harness de
+  CV walk-forward com purga+embargo, 15 testes incl. trava de vazamento),
+  meta_labeling.py (painel causal + runner filtrado com renormalizacao +
+  prova de equivalencia ao canonico), refactor leg_pnl_fracs em
+  funding_carry.py (behavior-preserving, 18 testes), meta_model_selection.py
+  + run_ml_meta_labeling_cv.py (selecao XGBoost via CV).
+- Achado: unidade Opcao 1 (gatear so entradas) => ~38 exemplos (a
+  incremental quase nao troca de perna). Trocada para Opcao 2 (perna-
+  intervalo, ~30.140 linhas); pre-registro/ADR re-travados.
+- CV de DESENVOLVIMENTO (sem veredito): "melhor" PF filtrado medio 4,99 =
+  MIRAGEM (folds 3/5 PF 11-12 com PnL +169/+7 bps; folds 1/2/4 o filtro
+  PIORA, net -160/-920/-7). Filtro NAO mostra melhora estavel; parece
+  ajuste a ruido. Sinal cautelar/negativo. Gate segue bloqueado.
+- Commit da infra Opcao 1 feito a pedido (95643ae); Opcao 2 + CV ainda
+  nao commitados nesta anotacao.
+```
+
 ## 2026-07-07 (TASK-ALT-004 - regime-conditioning TSREV fechado NAO_PASSA)
 
 Depois da Family J mostrar informacao robusta de volatilidade/regime, abri

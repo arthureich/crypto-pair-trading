@@ -22,8 +22,10 @@ from src.research.meta_labeling import (
     MetaLabelingError,
     _build_feature_frames,
     _reconstruct_entries,
+    build_leg_interval_panel,
     build_meta_label_panel,
     run_filtered_incremental_backtest,
+    run_leg_interval_filtered_backtest,
 )
 
 
@@ -206,6 +208,78 @@ def test_veto_gate_keeps_a_symbol_out_of_every_held_set() -> None:
 
     filtered = run_filtered_incremental_backtest(bars, config, veto_zzz)
     assert all("ZZZ" not in r.held_long and "ZZZ" not in r.held_short for r in filtered)
+
+
+def test_leg_interval_filtered_runner_with_allow_all_matches_canonical() -> None:
+    # Option-2 overlay must reproduce the canonical incremental backtest when
+    # nothing is vetoed: kept == held, weight 0.5/K == 1/(2K), entries ==
+    # swap_count. Guards the renormalization + entry-cost accounting.
+    bars = _swap_fixture()
+    config = FundingCarryConfig(k=1)
+
+    canonical = run_incremental_funding_carry_backtest(bars, config)
+    filtered = run_leg_interval_filtered_backtest(bars, config)  # allow-all
+
+    assert len(filtered) == len(canonical)
+    for got, expected in zip(filtered, canonical, strict=True):
+        assert got.status == expected.status
+        assert got.held_long == expected.held_long
+        assert got.held_short == expected.held_short
+        assert got.swap_count == expected.swap_count
+        assert got.net_pnl_bps == pytest.approx(expected.net_pnl_bps)
+        assert got.gross_pnl_bps == pytest.approx(expected.gross_pnl_bps)
+        assert got.cost_bps == pytest.approx(expected.cost_bps)
+
+
+def test_leg_interval_veto_removes_a_symbol_and_keeps_book_dollar_neutral() -> None:
+    bars = _swap_fixture()
+    config = FundingCarryConfig(k=1)
+
+    def veto_zzz(symbol: str, side: str, decision_time_ms: int) -> bool:  # noqa: ARG001
+        return symbol != "ZZZ"
+
+    filtered = run_leg_interval_filtered_backtest(bars, config, veto_zzz)
+    # The veto acts on resolved intervals (where PnL is computed); non-resolved
+    # results carry canonical held sets as-is but contribute no PnL.
+    resolved = [r for r in filtered if r.status.value == "RESOLVED"]
+    assert resolved  # the fixture has resolved rebalances
+    assert all("ZZZ" not in r.held_long and "ZZZ" not in r.held_short for r in resolved)
+
+
+def test_leg_interval_panel_has_far_more_rows_than_the_entry_only_panel(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # Option 2: one row per held leg-interval, not per entry. On the same
+    # data it must yield many more rows than the entry-only panel -- the whole
+    # reason for the switch. Windows shrunk so rows survive warm-up.
+    monkeypatch.setattr(meta_labeling, "FORWARD_HORIZON_HOURS", 3)
+    monkeypatch.setattr(meta_labeling, "WEEK_HOURS", 4)
+    monkeypatch.setattr(meta_labeling, "ROLLING_WINDOW_HOURS", 6)
+
+    rows = []
+    for i in range(32):
+        t = i * STEP_MS
+        wiggle = 0.0005 * ((i % 3) - 1)
+        rows.append((t, "XXX", 0.02 * (i % 4), 1000.0 + 50 * (i % 4), -0.01 + wiggle))
+        rows.append((t, "YYY", 0.02 * ((i + 1) % 4), 1000.0 + 50 * ((i + 1) % 4), 0.01 + wiggle))
+        rows.append((t, "ZZZ", 0.02 * ((i + 2) % 4), 1000.0 + 50 * ((i + 2) % 4), 0.0 + wiggle))
+    bars = _bars(rows)
+    config = FundingCarryConfig(k=1)
+
+    leg_panel = build_leg_interval_panel(bars, config)
+    entry_panel = build_meta_label_panel(bars, config)
+
+    assert list(leg_panel.columns) == list(PANEL_COLUMNS)
+    assert len(leg_panel) > len(entry_panel)
+    # Label is exactly the sign of the interval net PnL; holds resolve later.
+    assert ((leg_panel["net_pnl_bps"] > 0.0).astype(int) == leg_panel["label"]).all()
+    assert (leg_panel["label_end_time_ms"] > leg_panel["decision_time_ms"]).all()
+    for name in FEATURE_NAMES:
+        assert leg_panel[name].notna().all()
+    # At most 2K legs per rebalance (K=1 => 2), and the two sides are distinct.
+    for _, group in leg_panel.groupby("decision_time_ms"):
+        assert len(group) <= 2
+        assert group["side"].is_unique
 
 
 def test_fails_closed_on_missing_column() -> None:

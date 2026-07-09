@@ -2029,3 +2029,33 @@ causal leg-level feature/label builder reusing the Family J feature code
 and `funding_carry.py` PnL, and run CV model/threshold selection on the
 existing window. Hold the promotion gate until the new-OOS trigger is
 met.
+
+## Addendum (2026-07-09) - Meta-Label Unit Revised From "Gate Entries/Swaps" To "Gate Every Held Leg-Interval" After An Empirical Data-Volume Finding
+
+During the development phase, building the leg-level panel revealed that
+the incremental K=5 policy makes only ~66 entries/swaps across the full
+3-year window (~38 after the 90-day feature warm-up). That is a direct
+consequence of the strategy's own design -- incremental rebalancing
+holds legs and only swaps when a yield gain clears the 6bps threshold,
+which is exactly why its total cost is only 33.6bps (0.6bps/leg x ~56
+swaps). The originally-locked meta-label unit ("gate entries/swaps",
+Option 1) therefore yields ~38 training rows -- statistically infeasible
+for a 9-feature XGBoost, and low-leverage anyway since the near-miss edge
+comes from HOLDING, not from the rare entry decisions.
+
+The unit is revised to **gate every held leg-interval** (Option 2): one
+observation per (leg, rebalance) the unfiltered policy holds, labelled by
+that interval's net PnL. This yields tens of thousands of observations
+(~3,287 rebalances x up to 2K legs) while still targeting the incremental
+K=5 near-miss. A vetoed slot goes to cash for that interval; the kept
+legs are renormalized so each side splits 50% notional equally
+(dollar-neutral preserved). The training label uses the fixed 1/(2K)
+weight convention and `leg_pnl_fracs` (unchanged PnL); renormalization
+enters only in the filtered-strategy evaluation. All other locked
+decisions (9 features, model class, 24-cell grid, purged-CV harness,
+four-condition gate, promotion blocked until >=500 new-OOS rebalances)
+are unchanged. `docs/pre_registers/TASK-ML-001.md` updated accordingly
+(Status + Fluxo + Unidade de rotulo sections). The Option-1 code paths
+(`build_meta_label_panel` entry reconstruction and the entry-only veto in
+`run_filtered_incremental_backtest`) remain as tested building blocks but
+are superseded for the panel/label by the leg-interval builder.

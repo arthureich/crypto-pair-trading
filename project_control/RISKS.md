@@ -4,6 +4,8 @@
 
 | Risk | Severity | Owner | Mitigation | Status |
 |---|---|---|---|---|
+| ML meta-labeling (TASK-ML-001) overfits the thin 0,0096 edge and manufactures an illusory in-sample "pass" | High | Quant Research Agent | Small fixed 9-feature set + 24-cell grid frozen pre-fit; purged+embargoed CV (leakage-tested); promotion gate BLOCKED until untouched new-OOS holdout; dev-CV mean PF 4,99 already flagged as a ratio-inflation mirage, not evidence | Open (gate blocked; dev signal cautionary) |
+| Mean-PF CV selection objective rewards ratio inflation over real net PnL (TASK-ML-001) | Medium | Quant Research Agent | Per-fold net PnL + baseline comparison reported alongside; report warns to read per-fold not headline; any objective fix must be pre-registered, not post-hoc | Open |
 | Signal sends or implies direct order action | Critical | Architect Agent | Explicit SignalIntent-only interface | Open |
 | Order sent without persisted event | Critical | Ledger Agent | Event-first execution contract | Open |
 | ACK_UNKNOWN retried blindly | Critical | Execution / Risk Agent | Force reconciliation before retry | Open |
