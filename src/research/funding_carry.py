@@ -230,6 +230,36 @@ def _eligible_symbols(snapshot: pd.DataFrame, forward: pd.DataFrame) -> set[str]
     }
 
 
+def leg_pnl_fracs(
+    snapshot: pd.DataFrame,
+    forward: pd.DataFrame,
+    symbol: str,
+    *,
+    is_long: bool,
+    weight: float,
+) -> tuple[float, float]:
+    """Signed funding and price PnL fractions for ONE leg (before *10_000).
+
+    Single source of truth for the per-leg PnL sign convention. Binance
+    mechanics: fundingRate > 0 means longs pay shorts. A LONG leg's funding
+    fraction is therefore -funding_rate (pays when positive, receives when
+    negative); its price fraction is the raw price_return (gains when price
+    rises). A SHORT leg is the mirror image of both: +funding_rate,
+    -price_return. Independently verified by adversarial review (see
+    HANDOFFS.md).
+
+    Reused by the book-level sum below and by the TASK-ML-001 meta-labeling
+    leg-level accounting, so both share exactly one implementation of the
+    formula rather than reimplementing it.
+    """
+
+    funding_rate = float(snapshot.loc[symbol, "funding_rate_asof"])
+    price_return = _price_return(snapshot, forward, symbol)
+    if is_long:
+        return weight * (-funding_rate), weight * price_return
+    return weight * funding_rate, weight * (-price_return)
+
+
 def _book_funding_and_price_pnl_bps(
     snapshot: pd.DataFrame,
     forward: pd.DataFrame,
@@ -237,28 +267,26 @@ def _book_funding_and_price_pnl_bps(
     short_symbols: tuple[str, ...],
     weight: float,
 ) -> tuple[float, float]:
-    """Shared PnL formula for both the fase-1 and incremental backtests.
+    """Shared book-level PnL for both the fase-1 and incremental backtests.
 
-    Binance mechanics: fundingRate > 0 means longs pay shorts. A LONG
-    position's funding PnL fraction is therefore -funding_rate (pays when
-    positive, receives when negative); its price PnL fraction is the raw
-    price_return (gains when price rises). A SHORT position is the mirror
-    image of both: +funding_rate, -price_return. Independently verified by
-    adversarial review (see HANDOFFS.md).
+    Sums the per-leg fractions from ``leg_pnl_fracs`` (the single source of
+    the sign convention) and scales to bps once at the end.
     """
 
     funding_frac = 0.0
     price_frac = 0.0
     for symbol in long_symbols:
-        funding_rate = float(snapshot.loc[symbol, "funding_rate_asof"])
-        price_return = _price_return(snapshot, forward, symbol)
-        funding_frac += weight * (-funding_rate)
-        price_frac += weight * price_return
+        leg_funding, leg_price = leg_pnl_fracs(
+            snapshot, forward, symbol, is_long=True, weight=weight
+        )
+        funding_frac += leg_funding
+        price_frac += leg_price
     for symbol in short_symbols:
-        funding_rate = float(snapshot.loc[symbol, "funding_rate_asof"])
-        price_return = _price_return(snapshot, forward, symbol)
-        funding_frac += weight * funding_rate
-        price_frac += weight * (-price_return)
+        leg_funding, leg_price = leg_pnl_fracs(
+            snapshot, forward, symbol, is_long=False, weight=weight
+        )
+        funding_frac += leg_funding
+        price_frac += leg_price
     return funding_frac * 10_000.0, price_frac * 10_000.0
 
 

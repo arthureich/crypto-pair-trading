@@ -1916,3 +1916,116 @@ Implement a new daily `bookDepth` downloader/normalizer, run the real
 download (checksum verified, ~10.2GB estimated), compute the 5
 features, run the same `src/research/info_content.py` diagnostic,
 write `reports/alt_info_order_flow_diagnostic.md`.
+
+## ADR-0026 - Open A "Funding Carry Inteligente" ML Program; First And Only Bet Is Regime-Conditioned Meta-Labeling As A FILTER, Development Now But Promotion Gate BLOCKED Until Genuine New OOS
+
+## Status
+
+Accepted (locked by user 2026-07-09: gate blocked until >=500 new
+rebalances ~mid-Nov 2026; development phase authorized to begin now)
+
+## Context
+
+Thirteen distinct research lines have now reached a real backtest; none
+passed its own pre-registered gate under realistic cost. The two closest
+near-misses are documented and instructive: (1) **funding carry
+incremental K=5** -- net profit factor 1.0904 vs a 1.10 gate (0.0096
+short), net PnL already positive (+5,620.99 bps) over 3,287 rebalances,
+with a real, persistent gross edge (+8,992.18 bps) that the incremental
+rebalancing already stripped 99.83% of cost from; (2) **TSREV Family A
+24h OOS**, a genuine directional edge that failed decisively on
+drawdown. The classical factor search (Kalman/OU, funding carry, TSMOM,
+TSREV, cross-sectional) is exhausted, and Research Phase II's
+information-content diagnostics (Families F/G/H) closed without
+information -- with the sole exception of **Family J (Regime
+Detection)**, which produced the strongest signal in the whole project
+(`realized_vol_168h` rho=0.30) and which ADR-0021 explicitly reserved as
+a risk/context conditioning layer for a future pre-registered task, not
+directional alpha.
+
+The user proposed a broad ML program (meta-labeling, learning-to-rank,
+RL, regime detection, dynamic sizing/K, survival analysis, GNN, deep
+sequence models). The correct and disciplined reading is: ML cannot
+create edge, only concentrate an existing one; with only 0.0096 of
+headroom on the base gate, an over-parameterized model would manufacture
+an illusory in-sample "pass" -- which is precisely the p-hacking this
+project exists to avoid. The high-prior, defensible bet is the narrow
+one that both near-miss facts point to jointly: filter the funding-carry
+legs by regime state.
+
+## Decision
+
+1. Open a new research program, "Funding Carry Inteligente." Its FIRST
+   AND ONLY pre-registered bet now is `TASK-ML-001`
+   (`docs/pre_registers/TASK-ML-001.md`): a **meta-labeling filter**
+   (Lopez de Prado) on top of the UNCHANGED, already-pre-registered
+   funding carry incremental K=5 (ADR-0013/TASK-FUND-003). An XGBoost
+   binary classifier (already a project dependency) predicts, per
+   candidate leg, P(net-profitable); only legs above a CV-selected
+   probability threshold are kept. The primary signal, K=5, cost model,
+   and PnL convention are not altered. The ML never generates a signal,
+   predicts price, or picks a side.
+2. Feature set is LOCKED at 9, deliberately small: the 6 causal Family J
+   regime features (reused verbatim) plus 3 causal funding-native
+   features (`funding_rate_asof`, causal `funding_zscore`,
+   `cross_sectional_rank`). Model class, a fixed 24-cell hyperparameter
+   grid, the selection metric, and the threshold rule are all frozen in
+   the pre-registration before any fit.
+3. The validation harness is built and unit-tested BEFORE any model:
+   purged + embargoed walk-forward cross-validation (purge/embargo = the
+   8h hold horizon, removing overlapping-label leakage), model and
+   threshold selected only on CV folds, a single final holdout touched
+   exactly once.
+4. DATA-MINING DISCIPLINE (consistent with ADR-0023/0024): the K=5
+   result was already seen on 2023-06/2026-05, so a hypothesis built to
+   improve it may NOT be adjudicated on that same window. Development
+   (features, harness, CV model/threshold selection) may proceed now;
+   the PROMOTE/NAO_PROMOVE gate is BLOCKED until a genuinely new OOS
+   holdout of >= 500 resolved rebalances (post-2026-05-31, ~5.5 months,
+   ~mid-November 2026) exists -- the same trigger family as PAYOFF-002
+   and ALT-006, reusing the June-2026 month already downloaded.
+5. Success requires ALL of, on the untouched new OOS: filtered net PF
+   >= 1.10; filtered net PnL > 0; filtered strategy still acts on >= 500
+   rebalances (no winning by trading almost nothing); and filtered PF
+   EXCEEDS the unfiltered K=5 baseline PF on the same holdout by
+   >= +0.02 absolute (the filter must demonstrably add value beyond
+   noise, not merely clear an absolute number).
+
+## Consequences
+
+Improves: converts the project's closest near-miss into a testable,
+pre-registered ML hypothesis with an anti-overfit gate, while preserving
+every discipline (causal features, single-touch holdout, frozen model
+space, blocked-until-new-OOS). Reuses existing assets (Family J
+features, the incremental carry engine, an existing dependency).
+
+Worsens / costs: introduces ML machinery (a purged-CV harness) that must
+itself be tested. The final verdict cannot be produced until new data
+accrues (~mid-November 2026), same as the other near-miss tasks -- so
+this fills the wait productively but does not shortcut it.
+
+Explicitly deferred: learning-to-rank, RL, deep learning, GNN, dynamic
+sizing, dynamic K, survival analysis, and dynamic swap-threshold are ALL
+out of scope and each requires its own separate future pre-registration,
+only after `TASK-ML-001` clears or informs its gate. Deep-sequence/GNN
+models are additionally flagged as likely never justified by the data
+volume (~3,300 settlements/symbol).
+
+## Agent Impact
+
+- PM Agent
+- Quant Research Agent
+- Backtest Agent
+
+## Migration
+
+On explicit lock (this ADR and `TASK-ML-001.md` marked Accepted): add
+`TASK-ML-001` to `TASK_BOARD.md`; update `CURRENT_SPRINT.md`,
+`PROJECT_STATE.md`, `HANDOFFS.md`, `RISKS.md`, `DAILY_LOG.md`,
+`TEST_MATRIX.md`. Then, development-phase only (no verdict): implement
+the purged/embargoed CV harness in `src/research/` with unit tests
+(including a leakage-would-occur-without-purge test), implement the
+causal leg-level feature/label builder reusing the Family J feature code
+and `funding_carry.py` PnL, and run CV model/threshold selection on the
+existing window. Hold the promotion gate until the new-OOS trigger is
+met.
