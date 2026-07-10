@@ -2059,3 +2059,118 @@ are unchanged. `docs/pre_registers/TASK-ML-001.md` updated accordingly
 (`build_meta_label_panel` entry reconstruction and the entry-only veto in
 `run_filtered_incremental_backtest`) remain as tested building blocks but
 are superseded for the panel/label by the leg-interval builder.
+
+## ADR-0027 - Open "Funding Iteration 2": A Bounded Development Phase (Develop Now, Promote Only On Untouched OOS), Plus A Forward Paper-Validation Recorder; First Improvement Is Risk-Management Position Sizing
+
+## Status
+
+Accepted
+
+## Context
+
+The user pushed, correctly, on the distinction between DEVELOPING a
+strategy and VALIDATING it: development can proceed now on the existing
+window; only the "we found a real edge" claim needs genuinely unseen
+data. That is standard quant flow and matches ADR-0026 (dev phase now,
+gate blocked). The user proposed a "Funding Iteration 2" with an explicit
+target of raising PF 1.0904 -> >1.20 via eight techniques (meta-labeling
+v2, regime detection, position sizing, ML ranking score, online learning,
+RL execution, Bayesian optimization, ensemble).
+
+The disciplined reading, and the reason this ADR narrows that proposal:
+the binding constraint is not the calendar, it is the ASYMMETRY between
+an already-mined finite development set and scarce, non-renewable OOS
+windows. Every technique developed adds degrees of freedom searched on
+the same fixed data; calling it "development" does not remove the
+selection bias, it renames it. A heavily-developed 8-family model
+validated on one future window is weak validation -- the search done in
+development is not absorbed by a single OOS test. Our own evidence:
+TASK-ML-001, ONE carefully-built family, already produced an in-sample
+mirage (mean fold PF 4.99 that was pure ratio inflation). Adding seven
+more families amplifies that, it does not fix it. Separately, several
+proposed sources are already known to carry NO information in this
+universe (Open Interest / Family F, funding structure / Family G) or have
+already FAILED operationally (regime conditioning / TASK-ALT-004), so
+scoring/ensembling with them adds noise, and "PF >= 1.20 on the dev set"
+as a target is itself a curve-fitting objective.
+
+## Decision
+
+Open a research phase "Funding Iteration 2" (FC-II) governed by three
+rules, not a technique checklist:
+
+1. DEVELOP vs VALIDATE are separated. Development (feature/model work,
+   online updating, hyperparameter search) may run now on the existing
+   window. No result on the development window is ever a promotion.
+2. BOUNDED SEARCH + PRE-COMMITTED VALIDATION. The number of distinct
+   variants that will ever be validated on OOS is bounded and pre-declared
+   per task; the winner is NOT chosen by development-set performance and
+   then promoted. If N variants are validated, OOS uses multiple-testing
+   correction. This is the rule that keeps "develop freely" from
+   recreating the selection bias.
+3. PROMOTE ONLY ON UNTOUCHED OOS, and prefer an ACCUMULATING forward
+   record over any single window (a single window is itself noisy; a
+   sequence of independent forward periods compounds the evidence).
+
+Concrete first steps (this ADR authorizes, in priority order by LOW
+overfit risk, deliberately NOT the user's ordering):
+
+A. A forward paper-validation recorder for the funding-carry K=5 signal:
+   from the dev cutoff (2026-05-31) onward, record the policy's decisions
+   and mark-to-market PnL as data accrues, producing a growing GENUINE-OOS
+   track. This operationalizes "don't wait idly" without relaxing rigor.
+   It is development/monitoring infrastructure, not a gated hypothesis.
+
+B. `TASK-FC-II-001` -- Dynamic position sizing as the FIRST pre-registered
+   improvement, because it is the lowest-overfit one: it is risk
+   management, not a new alpha claim. It replaces equal 1/(2K) weights
+   with causal inverse-volatility weighting within each side (dollar-
+   neutral preserved) plus whole-book volatility targeting to the
+   strategy's own historical vol (no leverage knob). It deliberately does
+   NOT size by funding magnitude (that would be an alpha bet). Honest
+   scope note recorded in the pre-registration: uniform vol-targeting is
+   PF-invariant, so this improvement targets risk-adjusted metrics
+   (Sharpe, max drawdown), NOT PF -- the "PF -> 1.20" framing does not
+   apply to sizing.
+
+Explicitly deferred / demoted with rationale: ML ranking score and
+ensemble (add Family F/G/momentum sources already shown to be
+no-information -> noise); regime conditioning (already failed in
+TASK-ALT-004); meta-labeling v2 (reasonable reframe but still fits the
+dev set and still needs OOS -- pursue only after v1's OOS verdict); RL
+execution and online-learning-as-promotion (high complexity / data
+demands). Any of these, if pursued, is a separate pre-registered FC-II
+task under the three rules above.
+
+## Consequences
+
+Improves: lets the project keep moving (develop + accrue forward OOS)
+without the calendar wait becoming idleness, while the bounded-search +
+pre-committed-validation rule prevents "development" from laundering
+selection bias. Starts with the one improvement whose overfit risk is
+lowest and whose motivation (risk management) is soundest.
+
+Worsens / costs: adds a paper-forward recorder to maintain; position
+sizing on a thin/uncertain edge still cannot manufacture edge and can
+amplify ruin risk if the edge is illusory -- so it is validated on
+risk-adjusted terms and its promotion stays blocked until OOS.
+
+Explicitly unchanged: the funding-carry K=5 primary signal, its leg
+selection, and its cost model. Sizing is a separate execution overlay,
+like the meta-labeling filter.
+
+## Agent Impact
+
+- PM Agent
+- Quant Research Agent
+- Backtest Agent
+
+## Migration
+
+Add `docs/pre_registers/TASK-FC-II-001.md` and a `TASK-FC-II-001` board
+row. Build (development-phase): a `src/research/` position-sizing overlay
+(causal inverse-vol weights + vol targeting) with unit tests, and a
+forward paper-recorder script that consumes accruing post-2026-05-31 data.
+Report risk-adjusted development metrics with the same "no verdict; gate
+blocked until OOS" framing as TASK-ML-001. Update `PROJECT_STATE.md`,
+`CURRENT_SPRINT.md`, `TASK_BOARD.md`, `TEST_MATRIX.md`.

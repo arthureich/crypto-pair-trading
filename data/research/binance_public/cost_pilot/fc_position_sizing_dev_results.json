@@ -1,0 +1,15 @@
+{
+  "generated_at_utc": "2026-07-10T04:38:51.968937+00:00",
+  "phase": "DEVELOPMENT: risk-adjusted metrics only; NO verdict (gate blocked until OOS)",
+  "primary_k": 5,
+  "summary": {
+    "baseline_max_drawdown_bps": 1582.2838837658978,
+    "baseline_net_pnl_bps": 5482.097624741028,
+    "baseline_sharpe": 0.9925370241026071,
+    "n_rebalances": 3287,
+    "sized_max_drawdown_bps": 1724.5310489201934,
+    "sized_net_pnl_bps": 5776.247089400122,
+    "sized_sharpe": 1.0422255450737465
+  },
+  "task": "TASK-FC-II-001"
+}

@@ -1,6 +1,33 @@
 # PROJECT_STATE
 
-Last updated: 2026-07-09
+Last updated: 2026-07-10
+
+## Atualizacao 2026-07-10: Funding Iteration 2 (ADR-0027) aberta; TASK-FC-II-001 (position sizing por risco) construida; sinal de dev tambem CAUTELAR; gate BLOQUEADO ate OOS novo
+
+Aberta a fase "Funding Iteration 2" (ADR-0027) para SEPARAR desenvolvimento
+de validacao: desenvolver melhorias agora no dev set, promover so em OOS
+intocado, com **busca limitada + validacao pre-comprometida** (a regra que
+impede "desenvolvimento" de virar vies de selecao disfarcado). A proposta
+externa de 8 familias mirando "PF 1,20" foi estreitada: o alvo nao e um
+numero no dev set (isso e curve-fitting); familias que ja mostraram
+SEM_INFORMACAO (OI/Familia F, funding-structure/G) ou que ja falharam
+(regime/TASK-ALT-004) foram demovidas.
+
+Primeira melhoria: **TASK-FC-II-001 -- position sizing por risco** (a de
+menor overfit: gestao de risco, nao nova alegacao de alpha). Overlay sobre
+o K=5 INALTERADO: inverse-vol weighting por lado (neutralidade dolar
+preservada) + vol-targeting do livro a propria vol historica (sem knob de
+alavancagem). Kelly deliberadamente FORA (exige edge estimado que nao
+temos). `src/research/position_sizing.py` + testes (11), script de dev,
+479 testes na suite, ruff limpo.
+
+Nota honesta de escopo: vol-targeting uniforme e invariante em PF -> a task
+mira Sharpe/drawdown, nao PF. Resultado da dev run (SEM veredito): Sharpe
+0,993 -> 1,042 (so +0,049, abaixo da margem de +0,15 do gate) e max
+drawdown PIOROU (1582 -> 1725 bps, violando "drawdown nao pior"). Ou seja,
+o overlay **nao bate o proprio gate nem no dev set** -- sinal cautelar/
+negativo, mesmo padrao do meta-labeling. Nao decide nada (so OOS decide),
+mas baixa o prior. Ver `reports/fc_position_sizing_dev.md`.
 
 ## Atualizacao 2026-07-09: TASK-ML-001 (programa "Funding Carry Inteligente", ADR-0026) -- infraestrutura de meta-labeling construida; CV de desenvolvimento com sinal CAUTELAR/negativo; gate BLOQUEADO ate OOS novo
 
