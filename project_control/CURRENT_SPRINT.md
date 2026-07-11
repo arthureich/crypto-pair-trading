@@ -1,8 +1,29 @@
 # CURRENT_SPRINT
 
-Last updated: 2026-07-09
+Last updated: 2026-07-11
 
-## Workstream atual: TASK-ML-001 (programa "Funding Carry Inteligente", ADR-0026) -- infra de meta-labeling construida e testada; fase de DESENVOLVIMENTO; gate BLOQUEADO ate OOS novo
+## Workstream atual: Funding Iteration 2 (ADR-0027) + varredura de familias de informacao -- familias de dado publico ESGOTADAS; fronteira e dado externo
+
+Adotado o esquema de "familias de informacao" (marcar CONCLUIDA quando
+esgotada). Esta rodada (autonoma, so pesquisa/paper, nada real):
+- TASK-FC-II-001 (position sizing por risco): dev run nao bate o proprio
+  gate (Sharpe +0,049 vs +0,15; drawdown pior). Cautelar.
+- TASK-FC-II-002 (basis spot-futures): SEM_INFORMACAO, padrao e incremental
+  sobre funding (premium index ja nos bars, sem download).
+- TASK-FC-II-003 (microestrutura horizonte curto 1h/4h): HIT real
+  (imbalance_price_divergence rho~0,035) mas economicamente negligenciavel
+  (spread ~1-2 bps vs custo 6-12) -> ABORT.
+- TASK-FC-II-004 (Familia E, fluxo: taker agressor + razoes long/short, ja
+  em disco): 10 celulas SEM_INFORMACAO.
+- Trilha A: paper-forward do K=5 acumulando OOS; 1o mes (jun/2026) NEGATIVO
+  (PF 0,78).
+
+Status das familias: A/preco, D/derivativos, E/fluxo, I/microestrutura-em-
+barras, J/regime -- todas CONCLUIDAS (dado publico). ABERTAS: F/opcoes,
+G/on-chain, H/sentimento, I/ticks alta-res -- TODAS exigem dado externo
+(decisao de aquisicao do usuario). 488 testes, ruff limpo.
+
+## Workstream anterior: TASK-ML-001 (programa "Funding Carry Inteligente", ADR-0026) -- infra de meta-labeling construida e testada; fase de DESENVOLVIMENTO; gate BLOQUEADO ate OOS novo
 
 Primeiro programa de ML: filtro de meta-labeling (perna-intervalo, Opcao
 2) sobre o funding carry incremental K=5 INALTERADO. Entregue e testado

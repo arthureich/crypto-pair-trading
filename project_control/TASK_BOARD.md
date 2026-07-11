@@ -117,6 +117,9 @@ ARCHIVED
 | TASK-ALT-007 | ALT-II-H | Diagnostico de conteudo informacional, Familia H (Order Flow via bookDepth) | Backtest Agent | DONE | - | Quant Research Agent + PM Agent | nenhum |
 | TASK-ML-001 | ML-1 | Meta-labeling regime-condicionado como FILTRO sobre funding carry incremental K=5 (fase de dev autorizada; gate BLOQUEADO ate OOS novo) | Quant Research Agent | IN_PROGRESS | - | Backtest Agent + PM Agent | gate de promocao aguarda holdout de OOS novo (>=500 rebalances resolvidos apos 2026-05-31, ~meados nov/2026); desenvolvimento (harness+features+CV) liberado |
 | TASK-FC-II-001 | FC-II | Position sizing por risco (inverse-vol + vol-targeting) como OVERLAY sobre o K=5; fase de dev autorizada; gate BLOQUEADO ate OOS novo | Quant Research Agent | READY | - | Backtest Agent + PM Agent | gate aguarda OOS novo (>=500 rebalances apos 2026-05-31); desenvolvimento liberado (ADR-0027) |
+| TASK-FC-II-002 | FC-II | Diagnostico de basis spot-futures (padrao + incremental sobre funding) | Quant Research Agent | DONE | - | Backtest Agent + PM Agent | nenhum -- SEM_INFORMACAO (basis nao adiciona nada alem do funding) |
+| TASK-FC-II-003 | FC-II | Microestrutura horizonte curto (book imbalance da Familia H vs retorno 1h/4h) | Quant Research Agent | DONE | - | Backtest Agent + PM Agent | nenhum -- info real (imbalance_price_divergence, rho ~0,035) mas economicamente negligenciavel -> ABORT |
+| TASK-FC-II-004 | FC-II | Familia E (Fluxo): taker agressor + razoes long/short (ja em disco) vs retorno 24h/4h | Quant Research Agent | DONE | - | Backtest Agent + PM Agent | nenhum -- todas as 10 celulas SEM_INFORMACAO; Familia E fecha |
 
 ## Progresso
 

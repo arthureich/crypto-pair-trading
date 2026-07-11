@@ -1,0 +1,82 @@
+{
+  "bars_csv": "C:\\Users\\arthu\\Desktop\\Aula\\Projects\\Crypto-Pair-Trading\\data\\research\\binance_public\\normalized\\sprint7_binance_usdm_202306_202605_bars.csv.gz",
+  "control_for_incremental": "funding_rate_asof",
+  "generated_at_utc": "2026-07-11T01:59:18.718108+00:00",
+  "magnitude_threshold": 0.03,
+  "period_labels": [
+    "2023-06_2024-05",
+    "2024-06_2025-05",
+    "2025-06_2026-05"
+  ],
+  "results": {
+    "basis_change_24h": {
+      "has_incremental_information": false,
+      "incremental_full_partial_rho": -0.012071399223493076,
+      "incremental_sign_consistent": true,
+      "incremental_sub_partial_rho": [
+        -0.031220067851507126,
+        -0.0007001498842677113,
+        -0.003484344381100214
+      ],
+      "standard_full_rho": -0.012756578180806393,
+      "standard_has_information": false,
+      "standard_sub_rho": [
+        -0.031754442132463846,
+        -0.0017861837585066882,
+        -0.005751873093518766
+      ]
+    },
+    "basis_excess_funding": {
+      "has_incremental_information": false,
+      "incremental_full_partial_rho": 0.009124499547723933,
+      "incremental_sign_consistent": false,
+      "incremental_sub_partial_rho": [
+        -0.004223492065244729,
+        0.015873565571744366,
+        -0.005274534493090431
+      ],
+      "standard_full_rho": 0.0024909493800880766,
+      "standard_has_information": false,
+      "standard_sub_rho": [
+        -0.01418240584467447,
+        0.007708374556630539,
+        -0.006374965535845124
+      ]
+    },
+    "basis_level": {
+      "has_incremental_information": false,
+      "incremental_full_partial_rho": 0.008217525527693935,
+      "incremental_sign_consistent": false,
+      "incremental_sub_partial_rho": [
+        -0.0021383182197984496,
+        0.012547200663914728,
+        -0.004098976904700078
+      ],
+      "standard_full_rho": -0.0023178151235780245,
+      "standard_has_information": false,
+      "standard_sub_rho": [
+        -0.014814882049031896,
+        -0.0016727892409399694,
+        -0.015405239687617651
+      ]
+    },
+    "basis_zscore": {
+      "has_incremental_information": false,
+      "incremental_full_partial_rho": 0.010953413665600643,
+      "incremental_sign_consistent": false,
+      "incremental_sub_partial_rho": [
+        0.022081908972036424,
+        0.03564664540008893,
+        -0.01214357954893336
+      ],
+      "standard_full_rho": 0.006011756822311275,
+      "standard_has_information": false,
+      "standard_sub_rho": [
+        0.006658061645560909,
+        0.023923423880641462,
+        -0.020911483093896514
+      ]
+    }
+  },
+  "target": "forward_return_24h = log_price[t+24h] - log_price[t]"
+}

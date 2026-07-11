@@ -19,6 +19,9 @@ import pandas as pd
 
 DEFAULT_MAGNITUDE_THRESHOLD = 0.03
 _MIN_OBSERVATIONS_FOR_CORRELATION = 2
+# Below this, the control is (rank-)collinear with feature/target and the
+# partial correlation is undefined (absorbs the floating-point residual).
+_COLLINEAR_RESIDUAL_EPS = 1e-12
 
 __all__ = [
     "DEFAULT_MAGNITUDE_THRESHOLD",
@@ -26,6 +29,7 @@ __all__ = [
     "InformationContentResult",
     "SubPeriodCorrelation",
     "evaluate_information_content",
+    "partial_spearman_rho",
     "spearman_rho",
 ]
 
@@ -63,6 +67,48 @@ def spearman_rho(feature: pd.Series, target: pd.Series) -> tuple[float, int]:
         return float("nan"), n
     rho = paired["feature"].corr(paired["target"], method="spearman")
     return float(rho) if rho is not None else float("nan"), n
+
+
+def partial_spearman_rho(
+    feature: pd.Series, target: pd.Series, control: pd.Series
+) -> tuple[float, int]:
+    """First-order partial Spearman correlation of feature vs target, netting out control.
+
+    Answers "does the feature relate to the target BEYOND what the control
+    already explains?" via the standard partial-correlation formula on
+    Spearman coefficients:
+
+        rho(f,t|c) = (r_ft - r_fc * r_tc) / sqrt((1 - r_fc^2)(1 - r_tc^2))
+
+    All three series are aligned and NaN-dropped jointly. Returns NaN when
+    there are too few joint observations, or when the control is (rank-)
+    perfectly collinear with the feature or target (denominator zero) --
+    i.e. no independent variation is measurable.
+    """
+
+    joint = pd.DataFrame(
+        {
+            "feature": feature.to_numpy(),
+            "target": target.to_numpy(),
+            "control": control.to_numpy(),
+        }
+    ).dropna()
+    n = len(joint)
+    if n < _MIN_OBSERVATIONS_FOR_CORRELATION:
+        return float("nan"), n
+    ranks = joint.rank()
+    r_ft = ranks["feature"].corr(ranks["target"])
+    r_fc = ranks["feature"].corr(ranks["control"])
+    r_tc = ranks["target"].corr(ranks["control"])
+    if any(value is None or not math.isfinite(value) for value in (r_ft, r_fc, r_tc)):
+        return float("nan"), n
+    # Near-collinear control (rank corr with feature or target ~= +/-1) leaves
+    # no independent variation -> partial is undefined. Tolerance absorbs the
+    # floating-point residual on exactly-collinear ranks.
+    residual = (1.0 - r_fc**2) * (1.0 - r_tc**2)
+    if residual <= _COLLINEAR_RESIDUAL_EPS:
+        return float("nan"), n
+    return float((r_ft - r_fc * r_tc) / math.sqrt(residual)), n
 
 
 def evaluate_information_content(

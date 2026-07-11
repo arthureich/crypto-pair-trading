@@ -1,5 +1,27 @@
 # Daily Log
 
+## 2026-07-11 (Funding Iteration 2: varredura de familias -- dado publico esgotado; fronteira e dado externo)
+
+```text
+- Adotado esquema de "familias de informacao" (marcar CONCLUIDA quando
+  esgotada). Rodada autonoma, so pesquisa/paper, nada real.
+- TASK-FC-II-001 position sizing (inverse-vol + vol-target, overlay no K=5):
+  dev run nao bate o proprio gate (Sharpe +0,049 vs +0,15; drawdown pior).
+- TASK-FC-II-002 basis: SEM_INFORMACAO (padrao E incremental sobre funding).
+  Adicionado partial_spearman_rho ao info_content (+testes). Premium index
+  ja nos bars -> sem download.
+- TASK-FC-II-003 microestrutura curto (1h/4h): imbalance_price_divergence
+  cruza o limiar (rho ~0,035, 1o hit direcional do projeto) MAS spread bruto
+  ~1-2 bps vs custo 6-12 -> economicamente morto -> ABORT.
+- TASK-FC-II-004 Familia E (fluxo): taker agressor + razoes long/short (ja
+  em disco, do download de OI) -> 10 celulas SEM_INFORMACAO. Corrigiu
+  afirmacao previa de "esgotado" testando o dado de fluxo que faltava.
+- Trilha A: paper-forward do K=5; 1o mes OOS (jun/2026) NEGATIVO (PF 0,78).
+- Status: familias A/D/E/I-barras/J CONCLUIDAS (dado publico). Abertas
+  F/opcoes, G/on-chain, H/sentimento, I/ticks -- exigem dado EXTERNO
+  (decisao de aquisicao do usuario). 488 testes, ruff limpo.
+```
+
 ## 2026-07-09 (TASK-ML-001 - programa Funding Carry Inteligente: infra de meta-labeling construida; CV de dev cautelar)
 
 ```text

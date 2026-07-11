@@ -1,6 +1,51 @@
 # Handoffs
 
-Last updated: 2026-07-09
+Last updated: 2026-07-11
+
+## HANDOFF - Funding Iteration 2 (ADR-0027): Information-Family Sweep -- Public-Data Families Exhausted; Frontier Is External Data
+
+Adopted a "families of information" scheme (mark a family CONCLUIDA when no
+economically-viable hypothesis is found). This autonomous round (research/
+paper only, nothing real; documented, not committed until now):
+
+- TASK-FC-II-001 -- position sizing overlay (inverse-vol + vol-targeting)
+  on the unchanged K=5. Dev run does not meet its own gate (Sharpe +0.049
+  vs the +0.15 margin; drawdown worse). Cautionary. `position_sizing.py`
+  (+11 tests), `run_fc_position_sizing_dev.py`.
+- TASK-FC-II-002 -- spot-futures basis. `partial_spearman_rho` added to the
+  info_content engine (+4 tests) to test information INCREMENTAL to funding.
+  All 4 basis features SEM_INFORMACAO on both the standard and incremental
+  tests; premium index already in the bars (no download). `diagnostic_fc_basis.py`.
+- TASK-FC-II-003 -- short-horizon microstructure (Family H features verbatim
+  vs 1h/4h). imbalance_price_divergence clears the threshold (rho ~0.035,
+  sign-consistent) -- the project's first directional info hit in a new
+  test -- but the gross decile spread (~1-2 bps, negative mean) is dwarfed
+  by 1-4h turnover cost -> economically negligible -> ABORT (like the
+  z-score micro-reversion). `diagnostic_fc_short_horizon.py`.
+- TASK-FC-II-004 -- Family E (Flow): aggressor taker fraction + long/short
+  ratios (metrics archives already on disk, previously unused). All 10
+  cells SEM_INFORMACAO. Corrected an earlier premature "data exhausted"
+  claim by actually running the on-disk flow data. `diagnostic_fc_flow.py`.
+- Trail A -- `paper_forward.py` (+5 tests) + `run_funding_carry_paper_forward.py`:
+  the fixed K=5 on genuine post-cutoff OOS, accruing toward a 500-rebalance
+  trigger. First month (June 2026, 89 rebalances): PF 0.78, net -300 bps --
+  the in-sample near-miss did not persist. Not a verdict; cautionary.
+
+### Family status
+CONCLUIDA (public data): A/price, D/derivatives (funding, OI, basis),
+E/flow, I/microstructure-in-bars, ~B/volatility, ~C/liquidity, ~J/regime.
+OPEN: F/options, G/on-chain, H/sentiment, I/high-res ticks -- ALL require
+external data acquisition (a user investment decision; not fetchable in
+this offline environment).
+
+### Bottom line / next
+Every public-data family is closed; the single real directional signal
+found (imbalance_price_divergence, short horizon) is economically dead.
+The frontier is no longer ideas or code -- it is external data. Next
+decisions are the user's: (1) commit this batch; (2) whether to invest in
+an external data source (options IV / on-chain / high-res ticks), after
+which I can run a viability/cost reconnaissance. Trail A (paper-forward)
+keeps accruing OOS toward the ~mid-Nov-2026 trigger. 488 tests, ruff clean.
 
 ## HANDOFF - TASK-ML-001: Funding-Carry Meta-Labeling Infrastructure Built; Development CV Is Cautionary; Gate Blocked Until New OOS
 

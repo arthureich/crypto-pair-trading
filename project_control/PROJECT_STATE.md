@@ -29,6 +29,63 @@ o overlay **nao bate o proprio gate nem no dev set** -- sinal cautelar/
 negativo, mesmo padrao do meta-labeling. Nao decide nada (so OOS decide),
 mas baixa o prior. Ver `reports/fc_position_sizing_dev.md`.
 
+**Recorder de paper-forward (ADR-0027) + PRIMEIRA leitura OOS do sinal-base.**
+Construido `src/research/paper_forward.py` (+5 testes; trava fail-closed que
+rejeita qualquer barra <= cutoff 2026-05-31, para nao contaminar o OOS) e
+`scripts/run_funding_carry_paper_forward.py`, que roda o K=5 incremental
+FIXO sobre dado pos-cutoff e acumula o track. Primeira janela OOS genuina
+(junho/2026, 89 rebalances): **PF 0,7830, net -300,4 bps, hit 49,4%** --
+ou seja, o near-miss in-sample (1,0904) NAO se sustentou no primeiro mes
+nunca-visto; veio NEGATIVO. UM mes e ruidoso e NAO e veredito (faltam 411
+rebalances para o gatilho de 500), mas e o oposto de animador, e ecoa o que
+matou `funding_price_divergence` (in-sample bom -> OOS invertido). Somando:
+meta-labeling (miragem), sizing (nao bate o gate no dev) e agora K=5 base
+(1o mes OOS negativo) -- o quadro acumulado e consistentemente cautelar
+sobre a realidade do edge. 484 testes, ruff limpo. Ver
+`reports/funding_carry_paper_forward.md`.
+
+**Trilha B (fontes novas de alpha) -- dois diagnosticos rodados no dado que
+ja temos, antes de precisar de dado externo.** Adicionado
+`partial_spearman_rho` ao motor `info_content.py` (+testes).
+- **TASK-FC-II-002 (basis spot-futures):** reconnaissance mostrou spot
+  disponivel (~24MB), mas o `premium_close` (basis instantanea) ja esta nos
+  bars -- sem download. As 4 features de basis: SEM_INFORMACAO no teste
+  padrao E no INCREMENTAL sobre funding (|rho|<0,013). Basis nao adiciona
+  nada alem do carry. Fecha. Ver `reports/fc_basis_diagnostic.md`.
+- **TASK-FC-II-003 (microestrutura, horizonte curto 1h/4h):** as 5 features
+  da Familia H verbatim, so mudando o horizonte-alvo (ADR-0019 fixava 24h).
+  HIT: `imbalance_price_divergence` cruza o limiar em 1h (rho +0,0350) e 4h
+  (+0,0337), sign-consistente nos 3 subperiodos -- a PRIMEIRA feature
+  direcional a passar num teste novo, coerente com teoria de microestrutura
+  e sendo o proprio near-miss de 24h da Familia H. POReM o probe de economia
+  bruta (spread top-bottom decil por intervalo: mediana ~1-2 bps, media
+  NEGATIVA) mostra que e economicamente negligenciavel a 1-4h de turnover
+  (custo ~6-12 bps) -- mesmo padrao da micro-reversao z-score ja ABORTADA
+  (1,643 vs 10 bps). Informacao real, edge inexistente -> ABORT, sem
+  pre-registrar estrategia nem gastar janela OOS. Ver
+  `reports/fc_short_horizon_diagnostic.md`.
+
+- **TASK-FC-II-004 (Familia E, Fluxo):** corrigindo uma afirmacao previa
+  de "esgotado" -- havia dado de fluxo intocado EM DISCO: taker buy/sell
+  dos bars + as 4 razoes long/short do arquivo `metrics` (baixado para OI,
+  mas so as features de OI foram usadas). 5 features causais (fracao
+  agressor-comprador, z-scores das razoes long/short) vs retorno 24h e 4h:
+  todas as 10 celulas SEM_INFORMACAO (|rho|<0,011, levemente contrarian mas
+  ruido). Familia E fecha. Ver `reports/fc_flow_diagnostic.md`.
+
+Adotado o esquema de "familias de informacao" (proposto pelo usuario). Com
+FC-II-004, ESGOTAM-SE as familias testaveis com dado publico que ja temos
+ou obtemos barato: A/preco (pairs/TSREV/TSMOM/CS -- NAO_PASSA), D/deriv
+(funding G, OI F, basis FC-II-002 -- SEM_INFO), E/fluxo (FC-II-004 --
+SEM_INFO), I/microestrutura-em-barras (book H 24h SEM_INFO; curto FC-II-003
+info-mas-economicamente-morta), J/regime (info de risco, uso operacional
+ALT-004 falhou). O unico sinal direcional real do programa inteiro
+(imbalance_price_divergence curto) e economicamente negligenciavel. As
+familias ABERTAS (F/opcoes, G/on-chain, H/sentimento, I/ticks alta-res)
+TODAS exigem DADO EXTERNO -- decisao de aquisicao do usuario, nao testavel
+neste ambiente. Trilha A (paper-forward) segue acumulando OOS. 488 testes,
+ruff limpo.
+
 ## Atualizacao 2026-07-09: TASK-ML-001 (programa "Funding Carry Inteligente", ADR-0026) -- infraestrutura de meta-labeling construida; CV de desenvolvimento com sinal CAUTELAR/negativo; gate BLOQUEADO ate OOS novo
 
 Aberto o primeiro programa de ML do projeto (ADR-0026): um FILTRO de

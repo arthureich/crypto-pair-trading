@@ -10,6 +10,7 @@ import pytest
 from src.research.info_content import (
     InformationContentError,
     evaluate_information_content,
+    partial_spearman_rho,
     spearman_rho,
 )
 
@@ -130,3 +131,40 @@ def test_negative_magnitude_threshold_fail_closed():
     panel = _panel_with_sign((1.0, 1.0, 1.0))
     with pytest.raises(InformationContentError, match="magnitude_threshold"):
         evaluate_information_content(panel, "x", _boundaries(), _labels(), magnitude_threshold=-0.1)
+
+
+def test_partial_spearman_removes_only_the_control_shared_effect() -> None:
+    # feature == target (perfectly related); control has only mild rank
+    # correlation with them -> partial should stay ~1 (control removes little).
+    feature = pd.Series([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
+    target = pd.Series([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
+    control = pd.Series([4.0, 1.0, 5.0, 2.0, 6.0, 3.0])
+    rho, n = partial_spearman_rho(feature, target, control)
+    assert n == 6
+    assert rho == pytest.approx(1.0)
+
+
+def test_partial_spearman_is_nan_when_feature_equals_control() -> None:
+    # Feature perfectly collinear (in rank) with the control -> no independent
+    # variation -> undefined (NaN), i.e. no measurable incremental information.
+    z = pd.Series([1.0, 2.0, 3.0, 4.0, 5.0])
+    target = pd.Series([2.0, 1.0, 4.0, 3.0, 5.0])
+    rho, n = partial_spearman_rho(z, target, z)
+    assert n == 5
+    assert math.isnan(rho)
+
+
+def test_partial_spearman_nan_on_insufficient_observations() -> None:
+    one = pd.Series([1.0])
+    rho, n = partial_spearman_rho(one, one, one)
+    assert n == 1
+    assert math.isnan(rho)
+
+
+def test_partial_spearman_drops_nan_rows_jointly() -> None:
+    feature = pd.Series([1.0, 2.0, 3.0, 4.0, float("nan")])
+    target = pd.Series([1.0, 2.0, 3.0, 4.0, 5.0])
+    control = pd.Series([9.0, 1.0, 8.0, 2.0, 7.0])
+    rho, n = partial_spearman_rho(feature, target, control)
+    assert n == 4  # the NaN row is dropped across all three
+    assert math.isfinite(rho)

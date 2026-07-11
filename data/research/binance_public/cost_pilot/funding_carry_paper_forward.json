@@ -1,0 +1,20 @@
+{
+  "generated_at_utc": "2026-07-11T01:29:54.361479+00:00",
+  "oos_files": [
+    "C:\\Users\\arthu\\Desktop\\Aula\\Projects\\Crypto-Pair-Trading\\data\\research\\binance_public\\normalized\\sprint_alt_funding_divergence_202606_bars.csv.gz"
+  ],
+  "phase": "MONITORING: genuine OOS accruing; verdict only at >= trigger rebalances",
+  "primary_k": 5,
+  "summary": {
+    "hit_rate": 0.4943820224719101,
+    "meets_trigger": false,
+    "net_pnl_bps": -300.37195580721743,
+    "oos_end_ms": 1782860400000,
+    "oos_start_ms": 1780272000000,
+    "profit_factor": 0.7830228216923963,
+    "rebalances_remaining_to_trigger": 411,
+    "resolved_rebalances": 89,
+    "trigger_rebalances": 500
+  },
+  "task": "funding-carry K=5 forward paper track (ADR-0027)"
+}

@@ -1,0 +1,326 @@
+{
+  "generated_at_utc": "2026-07-11T02:02:55.913960+00:00",
+  "horizons_hours": [
+    1,
+    4
+  ],
+  "magnitude_threshold": 0.03,
+  "period_labels": [
+    "2023-06_2024-05",
+    "2024-06_2025-05",
+    "2025-06_2026-05"
+  ],
+  "results": {
+    "book_imbalance_1pct@1h": {
+      "feature_name": "book_imbalance_1pct",
+      "full_sample_n": 524858,
+      "full_sample_rho": 0.012945587367956242,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": true,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 175084,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": 0.019133201081278174,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 174740,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": 0.020254171390786318,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 175034,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.005331201776630359,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "book_imbalance_1pct@4h": {
+      "feature_name": "book_imbalance_1pct",
+      "full_sample_n": 524798,
+      "full_sample_rho": -0.00166377621657957,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": false,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 175084,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": -0.004343261610140321,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 174740,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": 0.0026420203107023203,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 174974,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.0013272993702328944,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "book_imbalance_5pct@1h": {
+      "feature_name": "book_imbalance_5pct",
+      "full_sample_n": 524858,
+      "full_sample_rho": 0.014552243632322846,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": true,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 175084,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": 0.026879737031070133,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 174740,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": 0.011773243887140265,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 175034,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.009187158198065003,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "book_imbalance_5pct@4h": {
+      "feature_name": "book_imbalance_5pct",
+      "full_sample_n": 524798,
+      "full_sample_rho": 0.005792847762742793,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": false,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 175084,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": 0.012436155111473123,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 174740,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": -0.002309940047322011,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 174974,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.010299877672621152,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "depth_change_24h@1h": {
+      "feature_name": "depth_change_24h",
+      "full_sample_n": 523316,
+      "full_sample_rho": -0.002253382361901632,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": false,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 174148,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": -0.014064963064392432,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 174280,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": -0.0036401659120756263,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 174888,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.009080501071113991,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "depth_change_24h@4h": {
+      "feature_name": "depth_change_24h",
+      "full_sample_n": 523256,
+      "full_sample_rho": -0.00968983494000977,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": true,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 174148,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": -0.019583991598322924,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 174280,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": -0.009957668401170757,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 174828,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": -0.0007525223353544778,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "depth_concentration@1h": {
+      "feature_name": "depth_concentration",
+      "full_sample_n": 524858,
+      "full_sample_rho": -0.0022760986030721203,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": false,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 175084,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": -0.009122241630119208,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 174740,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": -0.00453310952229115,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 175034,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.005752541178332198,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "depth_concentration@4h": {
+      "feature_name": "depth_concentration",
+      "full_sample_n": 524798,
+      "full_sample_rho": -0.006759060385364205,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": false,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 175084,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": -0.018030790529259384,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 174740,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": -0.009103189213774034,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 174974,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.005428068916948686,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "imbalance_price_divergence@1h": {
+      "feature_name": "imbalance_price_divergence",
+      "full_sample_n": 393071,
+      "full_sample_rho": 0.03503075618990467,
+      "has_information": true,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": true,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 105072,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": 0.04437873030741044,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 128900,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": 0.03835417152850366,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 159099,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.025271044455528236,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "imbalance_price_divergence@4h": {
+      "feature_name": "imbalance_price_divergence",
+      "full_sample_n": 393011,
+      "full_sample_rho": 0.033725665446541854,
+      "has_information": true,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": true,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 105072,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": 0.03320408125761393,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 128900,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": 0.03745181051366034,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 159039,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.030902168762539425,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    }
+  },
+  "target": "forward_return_h = log_price[t+h] - log_price[t]"
+}
