@@ -1,0 +1,63 @@
+{
+  "baseline_net_pnl": -0.27055906346498704,
+  "baseline_sharpe": -0.14290870990435928,
+  "curve": [
+    {
+      "beats_baseline": true,
+      "cost_bps": 0.0,
+      "net_pnl": 1.4234765813212245,
+      "sharpe": 1.0832899402068634
+    },
+    {
+      "beats_baseline": true,
+      "cost_bps": 3.0,
+      "net_pnl": 1.3934497037351399,
+      "sharpe": 1.0604194591168898
+    },
+    {
+      "beats_baseline": true,
+      "cost_bps": 6.0,
+      "net_pnl": 1.3634228261490555,
+      "sharpe": 1.0375458731784084
+    },
+    {
+      "beats_baseline": true,
+      "cost_bps": 10.0,
+      "net_pnl": 1.3233869893676098,
+      "sharpe": 1.0070433807713064
+    },
+    {
+      "beats_baseline": true,
+      "cost_bps": 15.0,
+      "net_pnl": 1.2733421933908027,
+      "sharpe": 0.9689091013098702
+    },
+    {
+      "beats_baseline": true,
+      "cost_bps": 20.0,
+      "net_pnl": 1.2232973974139956,
+      "sharpe": 0.9307691033847625
+    },
+    {
+      "beats_baseline": true,
+      "cost_bps": 30.0,
+      "net_pnl": 1.1232078054603811,
+      "sharpe": 0.8544767969199146
+    },
+    {
+      "beats_baseline": true,
+      "cost_bps": 50.0,
+      "net_pnl": 0.9230286215531518,
+      "sharpe": 0.7018768398231363
+    }
+  ],
+  "generated_at_utc": "2026-07-11T17:46:26.142352+00:00",
+  "mean_turnover_per_rebalance": 0.4570301002448149,
+  "net_pnl_breakeven_cost_bps": 142.22024024045584,
+  "phase": "DEVELOPMENT sensitivity; NO verdict",
+  "realistic_band_bps": [
+    10.0,
+    15.0
+  ],
+  "task": "TASK-FC-II-007 TSM cost stress"
+}

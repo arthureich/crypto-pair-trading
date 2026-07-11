@@ -40,6 +40,19 @@ resta: ainda e a era 2023-2026 e o nosso universo; a validacao final e OOS
 forward genuino + realismo de custo (6bps/leg e turnover a checar). Ver
 `reports/fc_tsm_robustness.md`. 498 testes, ruff limpo.
 
+**TASK-FC-II-007 (stress de custo -- rodado):** sensibilidade (nao tuning) do
+TSM, varrendo cost_bps_per_leg. SOBREVIVE com folga: Sharpe 15bps=0,969 (net
++1,27), 50bps=0,702 (net +0,92); **breakeven de net PnL = 142 bps/leg**, muito
+acima da banda realista (10-15). Turnover baixo (~0,46/rebalance) porque o
+sinal de 28d e lento -> robusto a custo. O assassino mais provavel (licao #1
+do projeto) nao matou. LACUNA honesta descoberta: o backtest usa SO retorno de
+preco; e um livro de PERPETUOS segurado 5d, que incorre funding P&L (15
+settlements/hold) NAO MODELADO -- pode ate ajudar (shorts coletam funding
+quando funding>0) mas precisa entrar antes de OOS. Status do TSM: sobreviveu a
+TODO stress in-sample (subperiodo/perna/regime/custo) com params da literatura
+(nao tunados) -> o lead de longe mais forte do projeto; faltam OOS genuino +
+modelagem de funding. Ver `reports/fc_tsm_cost_stress.md`.
+
 ## Atualizacao 2026-07-10: Funding Iteration 2 (ADR-0027) aberta; TASK-FC-II-001 (position sizing por risco) construida; sinal de dev tambem CAUTELAR; gate BLOQUEADO ate OOS novo
 
 Aberta a fase "Funding Iteration 2" (ADR-0027) para SEPARAR desenvolvimento
