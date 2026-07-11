@@ -1,0 +1,19 @@
+{
+  "generated_at_utc": "2026-07-11T18:11:44.990992+00:00",
+  "oos_rebalances": 5,
+  "phase": "MONITORING: genuine OOS accruing; verdict only at >= trigger rebalances",
+  "rebalances_remaining_to_trigger": 95,
+  "summary": {
+    "baseline_max_drawdown": 0.09561948519680936,
+    "baseline_net_pnl": -0.1033071793886036,
+    "baseline_sharpe": -4.29914195763947,
+    "mean_turnover": 0.1962491083362729,
+    "n_rebalances": 5,
+    "tsm_long_only_sharpe": -3.8209946349085593,
+    "tsm_max_drawdown": 0.04213018550903707,
+    "tsm_net_pnl": 0.0867737378700727,
+    "tsm_sharpe": 4.192079547278145
+  },
+  "task": "vol-targeted TSM forward paper track (ADR-0027)",
+  "trigger_rebalances": 100
+}

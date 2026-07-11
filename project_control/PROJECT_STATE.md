@@ -63,6 +63,14 @@ literatura-fixos. E o lead mais forte e mais validado (in-sample) do projeto
 inteiro. UNICA lacuna que resta: OOS forward genuino (era 2023-2026 +
 universo; gated em acumulacao de dado). Ver `reports/fc_tsm_funding.md`.
 
+**TSM paper-forward iniciado (ADR-0027):** `scripts/run_tsm_paper_forward.py`
+roda o TSM FIXO (com funding) contando SO rebalances pos-cutoff como OOS
+(pre-cutoff so forma o sinal de 28d -- lookback, nao teste). Junho/2026: 5
+rebalances OOS (Sharpe 4,19 = RUIDO puro em 5 pontos; 95 para o gatilho de
+100). O relogio OOS do TSM comecou; re-rodar a cada mes novo. Proximo:
+explorar as outras familias do relatorio (options/on-chain/flows -- gated em
+dado externo; B/vol e C/liquidez -- baratas mas prior baixo).
+
 ## Atualizacao 2026-07-10: Funding Iteration 2 (ADR-0027) aberta; TASK-FC-II-001 (position sizing por risco) construida; sinal de dev tambem CAUTELAR; gate BLOQUEADO ate OOS novo
 
 Aberta a fase "Funding Iteration 2" (ADR-0027) para SEPARAR desenvolvimento
