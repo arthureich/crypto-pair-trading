@@ -120,6 +120,8 @@ ARCHIVED
 | TASK-FC-II-002 | FC-II | Diagnostico de basis spot-futures (padrao + incremental sobre funding) | Quant Research Agent | DONE | - | Backtest Agent + PM Agent | nenhum -- SEM_INFORMACAO (basis nao adiciona nada alem do funding) |
 | TASK-FC-II-003 | FC-II | Microestrutura horizonte curto (book imbalance da Familia H vs retorno 1h/4h) | Quant Research Agent | DONE | - | Backtest Agent + PM Agent | nenhum -- info real (imbalance_price_divergence, rho ~0,035) mas economicamente negligenciavel -> ABORT |
 | TASK-FC-II-004 | FC-II | Familia E (Fluxo): taker agressor + razoes long/short (ja em disco) vs retorno 24h/4h | Quant Research Agent | DONE | - | Backtest Agent + PM Agent | nenhum -- todas as 10 celulas SEM_INFORMACAO; Familia E fecha |
+| TASK-FC-II-005 | FC-II | TSM classico vol-targeted (sign retorno 28d, tamanho 1/vol, gross unitario) -- distinto do TSMOM Donchian | Quant Research Agent | DONE (dev; OOS pendente) | - | Backtest Agent + PM Agent | 1o lead positivo: Sharpe 1,04 vs buy-hold -0,14, maxDD 0,35 vs 1,38 IN-SAMPLE. REABRE familia Preco. Candidato a OOS |
+| TASK-FC-II-006 | FC-II | Robustez do TSM vol-targeted (decomposicao subperiodo/perna/regime) | Quant Research Agent | DONE | - | Backtest Agent + PM Agent | nenhum -- BROAD: positivo nos 3 subperiodos, ambas as pernas contribuem, funciona em BTC-up E BTC-down. Params vieram da literatura (nao tunados). Lead mais credivel do projeto; proxima etapa e OOS + realismo de custo |
 
 ## Progresso
 

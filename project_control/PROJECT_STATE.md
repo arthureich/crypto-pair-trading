@@ -1,6 +1,44 @@
 # PROJECT_STATE
 
-Last updated: 2026-07-10
+Last updated: 2026-07-11
+
+## Atualizacao 2026-07-11: TASK-FC-II-005 (TSM classico vol-targeted) -- PRIMEIRO lead risco-ajustado positivo; REABRE a familia PRECO (correcao)
+
+Motivado pelo cross-check do survey externo (que atribui o sucesso do TSM
+ao vol-targeting, ingrediente que o nosso TSMOM Donchian nao tinha), testei
+o TSM CLASSICO: posicao = sinal do retorno trailing 28d, tamanho ~ 1/vol,
+gross unitario, rebalance 5d, 6bps/leg. Resultado na janela de dev
+(`reports/fc_tsm_trend_dev.md`): **Sharpe 1,038 vs buy-hold -0,143; maxDD
+0,35 vs 1,38** -- bate a regua da propria literatura (melhor Sharpe E menor
+drawdown). E o PRIMEIRO resultado de desenvolvimento da sessao que passa na
+propria regua e NAO e economicamente morto.
+
+**Correcao:** minha afirmacao anterior de que a familia PRECO estava
+CONCLUIDA/esgotada estava ERRADA -- o TSM clássico vol-targeted era
+genuinamente nao-testado (so o Donchian tinha sido). Familia A/Preco:
+REABERTA.
+
+Ressalvas fortes (por isso NAO e veredito): (1) in-sample, mesma janela;
+(2) a perna SHORT carrega o resultado (long-only Sharpe ~0), entao
+provavelmente e favorecido pelo trecho bear de 2022-2024 -- risco de
+dependencia de regime; (3) o baseline buy-hold e uma regua baixa (alts com
+Sharpe negativo no periodo). E um CANDIDATO legitimo a validacao OOS
+(diferente do hit de microestrutura economicamente morto e da miragem do
+meta-labeling), pendente de um check de robustez a regime.
+
+**TASK-FC-II-006 (check de robustez -- rodado):** decomposicao in-sample do
+TSM em 3 cortes desenhados para QUEBRAR o lead. Resultado ENCORAJADOR (nao
+quebrou): (1) subperiodos -- positivo nos 3 (Sharpe 1,71/0,61/1,02); (2)
+pernas -- long +0,67 E short +0,75, ambas contribuem (nao e short-only; a
+preocupacao do long-only~0 se reconcilia: no livro L/S a perna long rende
+junto das shorts); (3) regime -- BTC-up Sharpe 0,996 E BTC-down 1,126,
+funciona nos dois. Veredito do criterio: **BROAD/amplo**, nao artefato de
+regime. Ponto ADICIONAL a favor: os params (28d/5d) vieram da LITERATURA,
+NAO foram tunados no nosso dado -> menos risco de overfit que uma estrategia
+ajustada. E o lead mais credivel que o projeto ja produziu. Ressalva que
+resta: ainda e a era 2023-2026 e o nosso universo; a validacao final e OOS
+forward genuino + realismo de custo (6bps/leg e turnover a checar). Ver
+`reports/fc_tsm_robustness.md`. 498 testes, ruff limpo.
 
 ## Atualizacao 2026-07-10: Funding Iteration 2 (ADR-0027) aberta; TASK-FC-II-001 (position sizing por risco) construida; sinal de dev tambem CAUTELAR; gate BLOQUEADO ate OOS novo
 

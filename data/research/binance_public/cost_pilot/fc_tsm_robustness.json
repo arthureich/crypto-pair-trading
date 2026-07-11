@@ -1,0 +1,43 @@
+{
+  "generated_at_utc": "2026-07-11T17:34:59.413607+00:00",
+  "leg": {
+    "long_sleeve_net_pnl": 0.6738615044969845,
+    "long_sleeve_sharpe": 0.6350051184980149,
+    "short_sleeve_net_pnl": 0.7496150768242397,
+    "short_sleeve_sharpe": 0.6974705979293162
+  },
+  "phase": "DEVELOPMENT descriptive; NO verdict",
+  "regime": {
+    "btc_down": {
+      "n": 87,
+      "net_pnl": 0.6020875527510827,
+      "sharpe": 1.1264460786317616
+    },
+    "btc_up": {
+      "n": 126,
+      "net_pnl": 0.7613352733979729,
+      "sharpe": 0.9961466762987995
+    }
+  },
+  "sub_period": {
+    "2023-06_2024-05": {
+      "max_drawdown": 0.20143608789332612,
+      "n": 74,
+      "net_pnl": 0.632928972644799,
+      "sharpe": 1.708333319068471
+    },
+    "2024-06_2025-05": {
+      "max_drawdown": 0.3488727368254033,
+      "n": 73,
+      "net_pnl": 0.3270095610361105,
+      "sharpe": 0.6128158746982453
+    },
+    "2025-06_2026-05": {
+      "max_drawdown": 0.2393809793276749,
+      "n": 72,
+      "net_pnl": 0.4034842924681461,
+      "sharpe": 1.0153075069244684
+    }
+  },
+  "task": "TASK-FC-II-006 TSM robustness decomposition"
+}

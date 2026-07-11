@@ -105,7 +105,7 @@ sign-consistent across 3 fixed 12-month sub-periods. Pure diagnostic, no gate.
 
 | Family | Status | Basis |
 |---|---|---|
-| A -- Price | CONCLUIDA | pairs / TSREV / TSMOM / cross-sectional all NAO_PASSA |
+| A -- Price | REOPENED (best lead) | pairs / TSREV / TSMOM(Donchian) / cross-sectional all NAO_PASSA -- BUT classic vol-targeted TSM (FC-II-005) beats buy-hold in-sample on Sharpe (1.04 vs -0.14) AND drawdown, and its robustness decomposition (FC-II-006) is BROAD: positive in all 3 sub-periods, both legs contribute, works in BTC-up AND BTC-down; params literature-fixed (not tuned). The project's most credible lead. OOS + cost realism pending. (Was wrongly marked CONCLUIDA.) |
 | B -- Volatility | ~Concluida | Family J: info but risk/context, not directional |
 | C -- Liquidity | ~Concluida | depth_concentration null; low prior |
 | D -- Derivatives | CONCLUIDA (public) | funding (G), OI (F), basis (FC-II-002) all SEM_INFO |
@@ -143,3 +143,53 @@ sign-consistent across 3 fixed 12-month sub-periods. Pure diagnostic, no gate.
 7. **The frontier is data, not ideas or code.** Everything derivable from
    OHLCV + funding + OI + aggregated L2 has been tested. Further edge, if it
    exists, lives in data others don't cheaply have.
+
+---
+
+## External literature cross-check (2026-07-11)
+
+Cross-checked against an external survey of the 2020-2026 crypto factor
+literature (industry + academic). Treat its citations skeptically (LLM-
+generated, several likely fabricated); its taxonomy and ranking are
+mainstream and -- importantly -- converge hard with our empirical results
+in BOTH directions. Its rankings are PRIORS to test under our gate, not
+truths (our own history is proof that "documented in the literature" does
+not imply "survives realistic cost in our universe/period").
+
+| Family | External rank / potential | Our empirical evidence | Agreement |
+|---|---|---|---|
+| Cross-exchange arb | #11, Null (MEV/gas/fees) | not tested; reported dead | -- |
+| ML black-box (directional) | #10, Low (spread problem, overfit) | meta-labeling = in-sample mirage | STRONG |
+| Order flow (non-HFT) | #9, Null (eroded by fees) | info real, economically dead (FC-II-003) | STRONG |
+| Cross-sectional | #8, Weak (short-leg small caps) | CS-001/002 NAO_PASSA | STRONG |
+| Liquidity (Amihud) | #7, Medium (risk filter, not signal) | low prior; not a signal | agree |
+| Funding carry / basis | #6, evidence high but monetization MEDIUM, compressing post-ETF | near-miss 1.09; 1st OOS month negative | STRONG (post-ETF compression explains our "near" not "pass") |
+| TSM (trend) | #3, High -- via **vol-targeting**, ~28d lookback | classic vol-targeted TSM (FC-II-005) now tested: Sharpe 1.04 vs buy-hold -0.14, maxDD 0.35 vs 1.38 IN-SAMPLE | RESOLVED in survey's favor (in-sample) -- the survey was right that vol-targeting is the key our Donchian TSMOM missed; OOS + regime check pending |
+| Fiat flows (ETF/stablecoin) | #4, High | OPEN (needs external data) | -- |
+| On-chain | #2, Very High | OPEN (needs external data) | -- |
+| **Options IV / Skew (VRP)** | **#1, Very High ("Santo Graal")** | OPEN (needs external data) | -- |
+
+Conclusions:
+- Everything the survey ranks low/null, we independently killed. Everything
+  it ranks highest is exactly what we marked OPEN (external-data families).
+  Strong external validation that the frontier is data acquisition.
+- The one actionable divergence WAS TSM -- and it resolved in the survey's
+  favor. TASK-FC-II-005 tested classic vol-targeted TSM (sign of trailing
+  ~28d return, size ~ 1/vol, unit gross, 5d rebalance, 6bps/leg): in-sample
+  Sharpe **1.04** vs buy-hold **-0.14** and maxDD **0.35 vs 1.38**. So the
+  survey was right that vol-targeting is the ingredient our Donchian TSMOM
+  lacked, and my earlier "price family exhausted" claim was wrong. STRONG
+  CAVEATS: in-sample dev window; the short leg carries it (long-only Sharpe
+  ~0), so it is likely flattered by the bear-heavy part of 2022-2024 and its
+  edge may be regime-dependent; the buy-hold baseline is a low bar (alts were
+  negative-Sharpe over the window). This is the first dev result in the ML/
+  FC-II work that clears its own bar and is NOT economically dead -- so it is
+  a genuine candidate for OOS validation (unlike the microstructure hit or
+  the meta-labeling mirage), pending a regime-robustness check.
+- Why options VRP is the best-justified next bet specifically: it is a
+  DIFFERENT KIND of edge -- selling variance/convexity (a risk premium for
+  bearing variance risk driven by persistent retail call-buying), not a
+  price-prediction signal. Every failed line in this project was a price/
+  carry prediction signal; VRP is orthogonal to all of them, which is the
+  real reason it warrants the data investment rather than being "one more
+  factor."

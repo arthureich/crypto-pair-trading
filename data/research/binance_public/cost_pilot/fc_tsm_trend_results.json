@@ -1,0 +1,22 @@
+{
+  "config": {
+    "cost_bps_per_leg": 6.0,
+    "hold_hours": 120,
+    "lookback_hours": 672,
+    "vol_window_hours": 168
+  },
+  "generated_at_utc": "2026-07-11T17:22:57.973437+00:00",
+  "phase": "DEVELOPMENT: risk-adjusted metrics only; NO verdict",
+  "summary": {
+    "baseline_max_drawdown": 1.383332111262944,
+    "baseline_net_pnl": -0.27055906346498704,
+    "baseline_sharpe": -0.14290870990435928,
+    "mean_turnover": 0.4570301002448149,
+    "n_rebalances": 219,
+    "tsm_long_only_sharpe": -0.010767519244006644,
+    "tsm_max_drawdown": 0.3488727368254033,
+    "tsm_net_pnl": 1.3634228261490555,
+    "tsm_sharpe": 1.0375458731784084
+  },
+  "task": "TASK-FC-II-005 classic vol-targeted TSM"
+}
