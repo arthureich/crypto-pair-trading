@@ -49,9 +49,19 @@ do projeto) nao matou. LACUNA honesta descoberta: o backtest usa SO retorno de
 preco; e um livro de PERPETUOS segurado 5d, que incorre funding P&L (15
 settlements/hold) NAO MODELADO -- pode ate ajudar (shorts coletam funding
 quando funding>0) mas precisa entrar antes de OOS. Status do TSM: sobreviveu a
-TODO stress in-sample (subperiodo/perna/regime/custo) com params da literatura
-(nao tunados) -> o lead de longe mais forte do projeto; faltam OOS genuino +
-modelagem de funding. Ver `reports/fc_tsm_cost_stress.md`.
+stress in-sample (subperiodo/perna/regime/custo) com params da literatura
+(nao tunados). Ver `reports/fc_tsm_cost_stress.md`.
+
+**TASK-FC-II-008 (funding P&L -- rodado):** fechada a lacuna do funding. Com
+o P&L de funding dos perpetuos incluido (long paga quando funding>0, short
+recebe), Sharpe 1,038 -> **0,970** (haircut ~7%), net +1,27, baseline -0,143,
+breakeven de custo **132 bps/leg** (vs 142 sem funding). O long-paga/short-
+recebe quase se compensa (shorts coletam funding no regime tipico). **NAO
+mata o lead.** Resultado: o TSM vol-targeted sobreviveu a TODOS os stresses
+in-sample -- subperiodo, perna, regime, custo E funding -- com params
+literatura-fixos. E o lead mais forte e mais validado (in-sample) do projeto
+inteiro. UNICA lacuna que resta: OOS forward genuino (era 2023-2026 +
+universo; gated em acumulacao de dado). Ver `reports/fc_tsm_funding.md`.
 
 ## Atualizacao 2026-07-10: Funding Iteration 2 (ADR-0027) aberta; TASK-FC-II-001 (position sizing por risco) construida; sinal de dev tambem CAUTELAR; gate BLOQUEADO ate OOS novo
 

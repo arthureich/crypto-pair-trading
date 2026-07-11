@@ -43,6 +43,7 @@ class TsmTrendConfig:
     vol_window_hours: int = 168  # 7d realized-vol window
     hold_hours: int = 120  # 5d rebalance/hold
     cost_bps_per_leg: float = 6.0
+    include_funding: bool = False  # add perp funding P&L over each hold (FC-II-008)
 
     def __post_init__(self) -> None:
         for name in ("lookback_hours", "vol_window_hours", "hold_hours"):
@@ -80,6 +81,8 @@ def run_tsm_trend_backtest(bars: pd.DataFrame, config: TsmTrendConfig) -> TsmTre
     """Vectorized classic vol-targeted TSM on hourly bars."""
 
     required = {"symbol", "open_time", "log_price"}
+    if config.include_funding:
+        required |= {"funding_rate_asof", "funding_interval_hours"}
     missing = sorted(required.difference(bars.columns))
     if missing:
         raise TsmTrendError(f"missing required columns: {missing}")
@@ -96,6 +99,9 @@ def run_tsm_trend_backtest(bars: pd.DataFrame, config: TsmTrendConfig) -> TsmTre
     trailing_r = trailing.loc[rows]
     vol_r = vol.loc[rows]
     forward_r = price_r.shift(-1) - price_r  # interval return per leg
+    # Funding paid/received over each hold (realized, like forward_r): sum of
+    # per-settlement rates, spread hourly then differenced between rebalances.
+    funding_hold = _funding_over_hold(bars, price, rows) if config.include_funding else None
 
     ls_weight = _unit_gross(np.sign(trailing_r) / vol_r)
     lo_weight = _unit_gross(np.maximum(np.sign(trailing_r), 0.0) / vol_r)
@@ -106,6 +112,18 @@ def run_tsm_trend_backtest(bars: pd.DataFrame, config: TsmTrendConfig) -> TsmTre
     short_sleeve = (ls_weight.clip(upper=0.0) * forward_r).sum(axis=1, skipna=True)
     lo_gross = (lo_weight * forward_r).sum(axis=1, skipna=True)
     baseline = (base_weight * forward_r).sum(axis=1, skipna=True)
+
+    if funding_hold is not None:
+        # Funding P&L of a signed-weight position per settlement is -w * rate
+        # (long pays when rate>0; short receives). Reused from leg_pnl_fracs.
+        tsm_gross = tsm_gross - (ls_weight * funding_hold).sum(axis=1, skipna=True)
+        long_sleeve = long_sleeve - (ls_weight.clip(lower=0.0) * funding_hold).sum(
+            axis=1, skipna=True
+        )
+        short_sleeve = short_sleeve - (ls_weight.clip(upper=0.0) * funding_hold).sum(
+            axis=1, skipna=True
+        )
+        lo_gross = lo_gross - (lo_weight * funding_hold).sum(axis=1, skipna=True)
 
     ls_turnover = ls_weight.diff().abs().sum(axis=1, skipna=True)
     lo_turnover = lo_weight.diff().abs().sum(axis=1, skipna=True)
@@ -133,6 +151,25 @@ def _unit_gross(raw: pd.DataFrame) -> pd.DataFrame:
     gross = clean.abs().sum(axis=1)
     normalized = clean.div(gross, axis=0)
     return normalized.fillna(0.0)
+
+
+def _funding_over_hold(bars: pd.DataFrame, price: pd.DataFrame, rows: pd.Index) -> pd.DataFrame:
+    """Sum of per-settlement funding rates over each hold, per symbol.
+
+    Spreads each settled rate hourly (rate / funding_interval_hours) then sums
+    between consecutive rebalances via a differenced cumulative -- same shape as
+    the forward return, so it aligns element-wise with the rebalance weights.
+    """
+
+    funding = bars.pivot(index="open_time", columns="symbol", values="funding_rate_asof")
+    interval = bars.pivot(index="open_time", columns="symbol", values="funding_interval_hours")
+    hourly = (
+        (funding / interval.replace(0.0, np.nan))
+        .reindex(index=price.index, columns=price.columns)
+        .fillna(0.0)
+    )
+    cum = hourly.cumsum().reindex(rows)
+    return cum.shift(-1) - cum
 
 
 def summarize_tsm_trend(result: TsmTrendResult, config: TsmTrendConfig) -> TsmTrendSummary:

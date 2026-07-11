@@ -1,0 +1,32 @@
+{
+  "funding_off": {
+    "baseline_max_drawdown": 1.383332111262944,
+    "baseline_net_pnl": -0.27055906346498704,
+    "baseline_sharpe": -0.14290870990435928,
+    "mean_turnover": 0.4570301002448149,
+    "n_rebalances": 219,
+    "tsm_long_only_sharpe": -0.010767519244006644,
+    "tsm_max_drawdown": 0.3488727368254033,
+    "tsm_net_pnl": 1.3634228261490555,
+    "tsm_sharpe": 1.0375458731784084
+  },
+  "funding_on": {
+    "baseline_max_drawdown": 1.383332111262944,
+    "baseline_net_pnl": -0.27055906346498704,
+    "baseline_sharpe": -0.14290870990435928,
+    "mean_turnover": 0.4570301002448149,
+    "n_rebalances": 219,
+    "tsm_long_only_sharpe": -0.08009443829717738,
+    "tsm_max_drawdown": 0.34698069756361516,
+    "tsm_net_pnl": 1.2672020782884936,
+    "tsm_sharpe": 0.9697595937420403
+  },
+  "funding_on_net_pnl_breakeven_cost_bps": 132.6067783427238,
+  "generated_at_utc": "2026-07-11T18:02:37.056097+00:00",
+  "phase": "DEVELOPMENT descriptive; NO verdict",
+  "realistic_band_bps": [
+    10.0,
+    15.0
+  ],
+  "task": "TASK-FC-II-008 TSM with funding P&L"
+}

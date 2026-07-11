@@ -120,6 +120,43 @@ def test_config_rejects_invalid_fields() -> None:
         TsmTrendConfig(cost_bps_per_leg=-1.0)
 
 
+def _trending_bars_with_funding(n: int, funding_rate: float) -> pd.DataFrame:
+    base = _trending_bars(n)
+    base["funding_rate_asof"] = funding_rate
+    base["funding_interval_hours"] = 8.0
+    return base
+
+
+def test_zero_funding_matches_the_no_funding_run() -> None:
+    bars = _trending_bars_with_funding(60, funding_rate=0.0)
+    cfg_off = TsmTrendConfig(lookback_hours=5, vol_window_hours=3, hold_hours=4)
+    cfg_on = TsmTrendConfig(
+        lookback_hours=5, vol_window_hours=3, hold_hours=4, include_funding=True
+    )
+    off = run_tsm_trend_backtest(bars, cfg_off)
+    on = run_tsm_trend_backtest(bars, cfg_on)
+    for a, b in zip(off.tsm_net, on.tsm_net, strict=True):
+        assert a == pytest.approx(b)  # zero funding -> identical
+
+
+def test_positive_funding_costs_longs_and_pays_shorts() -> None:
+    bars = _trending_bars_with_funding(60, funding_rate=0.01)  # longs pay, shorts receive
+    cfg = TsmTrendConfig(lookback_hours=5, vol_window_hours=3, hold_hours=4, include_funding=True)
+    base = TsmTrendConfig(lookback_hours=5, vol_window_hours=3, hold_hours=4)
+    on = run_tsm_trend_backtest(bars, cfg)
+    off = run_tsm_trend_backtest(bars, base)
+    # Long sleeve worse with funding (pays), short sleeve better (receives).
+    assert sum(on.tsm_long_sleeve) < sum(off.tsm_long_sleeve) + 1e-9
+    assert sum(on.tsm_short_sleeve) > sum(off.tsm_short_sleeve) - 1e-9
+
+
+def test_include_funding_requires_funding_columns() -> None:
+    bars = _trending_bars(30)  # no funding columns
+    cfg = TsmTrendConfig(lookback_hours=5, vol_window_hours=3, hold_hours=4, include_funding=True)
+    with pytest.raises(TsmTrendError, match="funding"):
+        run_tsm_trend_backtest(bars, cfg)
+
+
 def test_long_and_short_sleeves_sum_to_the_gross_book() -> None:
     bars = _trending_bars(60)
     config = TsmTrendConfig(

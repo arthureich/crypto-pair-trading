@@ -122,7 +122,8 @@ ARCHIVED
 | TASK-FC-II-004 | FC-II | Familia E (Fluxo): taker agressor + razoes long/short (ja em disco) vs retorno 24h/4h | Quant Research Agent | DONE | - | Backtest Agent + PM Agent | nenhum -- todas as 10 celulas SEM_INFORMACAO; Familia E fecha |
 | TASK-FC-II-005 | FC-II | TSM classico vol-targeted (sign retorno 28d, tamanho 1/vol, gross unitario) -- distinto do TSMOM Donchian | Quant Research Agent | DONE (dev; OOS pendente) | - | Backtest Agent + PM Agent | 1o lead positivo: Sharpe 1,04 vs buy-hold -0,14, maxDD 0,35 vs 1,38 IN-SAMPLE. REABRE familia Preco. Candidato a OOS |
 | TASK-FC-II-006 | FC-II | Robustez do TSM vol-targeted (decomposicao subperiodo/perna/regime) | Quant Research Agent | DONE | - | Backtest Agent + PM Agent | nenhum -- BROAD: positivo nos 3 subperiodos, ambas as pernas contribuem, funciona em BTC-up E BTC-down. Params vieram da literatura (nao tunados). Lead mais credivel do projeto; proxima etapa e OOS + realismo de custo |
-| TASK-FC-II-007 | FC-II | Stress de custo do TSM vol-targeted (varredura de cost_bps, breakeven) | Quant Research Agent | DONE | - | Backtest Agent + PM Agent | nenhum -- SOBREVIVE: breakeven 142 bps/leg (vs banda realista 10-15); Sharpe 0,97 a 15bps. Turnover baixo (~0,46). LACUNA: funding P&L dos perps segurados 5d nao modelado (entra antes de OOS) |
+| TASK-FC-II-007 | FC-II | Stress de custo do TSM vol-targeted (varredura de cost_bps, breakeven) | Quant Research Agent | DONE | - | Backtest Agent + PM Agent | nenhum -- SOBREVIVE: breakeven 142 bps/leg (vs banda realista 10-15); Sharpe 0,97 a 15bps. Turnover baixo (~0,46) |
+| TASK-FC-II-008 | FC-II | TSM vol-targeted COM funding P&L dos perpetuos (fecha a lacuna do FC-II-007) | Quant Research Agent | DONE | - | Backtest Agent + PM Agent | nenhum -- SOBREVIVE ao funding: Sharpe 1,04->0,97 (haircut ~7%), net +1,27, breakeven 132 bps. long-paga/short-recebe quase compensa. TSM passou em TODO stress in-sample; so falta OOS |
 
 ## Progresso
 

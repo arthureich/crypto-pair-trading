@@ -105,7 +105,7 @@ sign-consistent across 3 fixed 12-month sub-periods. Pure diagnostic, no gate.
 
 | Family | Status | Basis |
 |---|---|---|
-| A -- Price | REOPENED (best lead) | pairs / TSREV / TSMOM(Donchian) / cross-sectional all NAO_PASSA -- BUT classic vol-targeted TSM (FC-II-005) beats buy-hold in-sample on Sharpe (1.04 vs -0.14) AND drawdown, and its robustness decomposition (FC-II-006) is BROAD: positive in all 3 sub-periods, both legs contribute, works in BTC-up AND BTC-down; params literature-fixed (not tuned). The project's most credible lead. OOS + cost realism pending. (Was wrongly marked CONCLUIDA.) |
+| A -- Price | REOPENED (best lead) | pairs / TSREV / TSMOM(Donchian) / cross-sectional all NAO_PASSA -- BUT classic vol-targeted TSM (FC-II-005) beats buy-hold in-sample (Sharpe 1.04 vs -0.14, maxDD 0.35 vs 1.38) and has now survived EVERY in-sample stress: robust across the 3 sub-periods, both legs, and both BTC regimes (FC-II-006); cost breakeven 142 bps/leg (FC-II-007); and funding P&L only a ~7% haircut (Sharpe -> 0.97, FC-II-008). Params literature-fixed (not tuned). The project's strongest, most-validated lead. ONLY genuinely-new OOS remains. (Was wrongly marked CONCLUIDA.) |
 | B -- Volatility | ~Concluida | Family J: info but risk/context, not directional |
 | C -- Liquidity | ~Concluida | depth_concentration null; low prior |
 | D -- Derivatives | CONCLUIDA (public) | funding (G), OI (F), basis (FC-II-002) all SEM_INFO |
