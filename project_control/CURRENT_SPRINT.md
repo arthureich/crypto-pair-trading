@@ -2,6 +2,9 @@
 
 Last updated: 2026-07-11
 
+> **Livro-razao consolidado de TODAS as estrategias/hipoteses testadas
+> (resultados + feedback, agrupados):** `reports/strategy_results_and_feedback.md`.
+
 ## Workstream atual: Funding Iteration 2 (ADR-0027) + varredura de familias de informacao -- familias de dado publico ESGOTADAS; fronteira e dado externo
 
 Adotado o esquema de "familias de informacao" (marcar CONCLUIDA quando

@@ -1,5 +1,11 @@
 # Research Program Retrospective (2026-07)
 
+> SUPERSEDED (2026-07-11) by `reports/strategy_results_and_feedback.md`, which
+> is the current consolidated ledger of all strategies/hypotheses (results +
+> feedback, grouped) and covers work done after this retrospective (funding
+> carry incremental, ML meta-labeling, position sizing, basis, short-horizon,
+> flow, and the forward paper track). Kept for history.
+
 Consolida, num unico documento, todas as linhas de pesquisa fechadas
 nesta sessao -- da Sprint 10 ate a Research Phase II. Escrito durante
 um periodo de espera genuina (duas linhas promissoras, `TASK-PAYOFF-002`
