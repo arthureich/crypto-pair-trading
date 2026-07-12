@@ -67,9 +67,25 @@ universo; gated em acumulacao de dado). Ver `reports/fc_tsm_funding.md`.
 roda o TSM FIXO (com funding) contando SO rebalances pos-cutoff como OOS
 (pre-cutoff so forma o sinal de 28d -- lookback, nao teste). Junho/2026: 5
 rebalances OOS (Sharpe 4,19 = RUIDO puro em 5 pontos; 95 para o gatilho de
-100). O relogio OOS do TSM comecou; re-rodar a cada mes novo. Proximo:
-explorar as outras familias do relatorio (options/on-chain/flows -- gated em
-dado externo; B/vol e C/liquidez -- baratas mas prior baixo).
+100). O relogio OOS do TSM comecou; re-rodar a cada mes novo.
+
+**TASK-ALT-008 (ADR-0028) -- varredura em dado publico FECHADA:** rodados os
+ultimos diagnosticos DIRECIONAIS que faltavam em dado gratis -- Familia B
+(forma da volatilidade: Parkinson/Rogers-Satchell/close-location intrabar) e
+Familia C (iliquidez de Amihud/turnover/tamanho-de-trade), so barra, causais,
+24h e 4h. B e C so estavam "~Concluida" por terem sido testadas por UMA lente
+(B como risco/regime; C via depth_concentration do livro), nunca a direcional.
+Resultado: 12 celulas SEM_INFORMACAO (max abs rho 0,027 < 0,03 = clustering de
+vol conhecido, sub-limiar e nao direcional; Amihud ~0,00). **B e C -> CONCLUIDA
+(dado publico).** Ver `reports/alt_range_liquidity_diagnostic.md`.
+
+**Estado da fronteira:** familias A(lead, OOS-gated)/B/C/D/E/I-barras/J todas
+CONCLUIDAS em dado publico -- a varredura em dado que ja temos esta COMPLETA.
+So restam as familias do relatorio que exigem dado EXTERNO: F/opcoes (VRP,
+#1 no relatorio), G/on-chain (#2), fluxo cross-venue (#4), I/ticks. A
+aquisicao desses dados e decisao de investimento do usuario. Proximo passo
+recomendado: um brief de viabilidade (fontes, custo, licenca -- SEM baixar
+nada), e entao PARAR para a decisao do usuario.
 
 ## Atualizacao 2026-07-10: Funding Iteration 2 (ADR-0027) aberta; TASK-FC-II-001 (position sizing por risco) construida; sinal de dev tambem CAUTELAR; gate BLOQUEADO ate OOS novo
 

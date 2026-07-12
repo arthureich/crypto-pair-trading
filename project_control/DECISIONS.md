@@ -2174,3 +2174,78 @@ forward paper-recorder script that consumes accruing post-2026-05-31 data.
 Report risk-adjusted development metrics with the same "no verdict; gate
 blocked until OOS" framing as TASK-ML-001. Update `PROJECT_STATE.md`,
 `CURRENT_SPRINT.md`, `TASK_BOARD.md`, `TEST_MATRIX.md`.
+
+## ADR-0028 - Close The Public-Data Family Sweep: Bar-Derived Directional Diagnostics For Family B (Range-Volatility Shape) And Family C (Amihud Illiquidity)
+
+## Status
+
+Accepted
+
+## Context
+
+With the strongest lead (vol-targeted TSM, Family A) now data-gated on
+OOS and every derivatives/flow/microstructure family closed on public
+data, the user asked to "explore the report's other families well, in
+search of the best and alternatives." Two families in the ledger are
+marked only "~Concluida", and the reason is specific and honest: they
+were each closed via ONE lens, not the directional one.
+
+- Family B (Volatility) was assessed as a RISK signal (realized vol
+  predicts future vol / regime, i.e. Family J), never as a
+  DIRECTIONAL-return signal via clean range estimators. The bar OHLC on
+  disk supports Parkinson / Rogers-Satchell range vol and the intrabar
+  close-location (where in its high-low range the bar closed) -- a
+  candlestick-style pressure proxy that has never been tested here.
+- Family C (Liquidity) was closed via order-book `depth_concentration`
+  (Family H book data), never via the canonical bar-derived Amihud
+  illiquidity (|return| / dollar-volume), turnover, or average trade
+  size -- the liquidity-premium constructs the external report cites.
+
+These are the last genuinely un-run directional diagnostics available on
+FREE data. Running them turns "~Concluida" into a definitive verdict and
+is squarely within the "explore other families" grant. Prior is LOW
+(consistent with everything else on public data), which is exactly why
+this is a bounded diagnostic, not a strategy build.
+
+## Decision
+
+Pre-register `TASK-ALT-008`: a single information-content diagnostic
+(ADR-0019 methodology -- Spearman rho + sign-consistency across the three
+fixed sub-periods, |rho| >= 0.03) over a SMALL, pre-declared feature set,
+bar-only, causal (shift(1) before any rolling; forward return is the sole
+forward-looking term), at the 24h and 4h horizons (matching FC-II-004).
+
+Pre-declared features (frozen before code -- no post-hoc additions):
+
+- Family B: `parkinson_range_z` (range magnitude), `rogers_satchell_z`
+  (drift-robust range magnitude), `close_location_in_range` (intrabar
+  directional pressure, the only directional B feature).
+- Family C: `amihud_illiq_z` (|return_1h| / quote_volume),
+  `turnover_z` (quote_volume vs its trailing mean), `trade_size_z`
+  (quote_volume / number_of_trades).
+
+Six features x two horizons = a 12-cell grid; the three-sub-period
+sign-consistency requirement is the pre-committed multiple-testing
+defense (same bar as every prior family diagnostic). Pure diagnostic: NO
+economic gate is run and NO strategy is pre-registered here. A hit only
+earns a follow-up descriptive economic check (gross decile spread vs
+cost); information is not a tradeable edge (the FC-II-003 lesson).
+
+## Consequences
+
+If nothing passes, Families B and C move from "~Concluida" to CONCLUIDA
+(public data), and the public-data family sweep is definitively complete
+-- leaving only the external-data families (options VRP, on-chain,
+cross-venue flows) from the report, whose acquisition is the user's
+investment decision and an explicit STOP point (a separate feasibility
+brief will lay out sources/cost without downloading anything). If a
+feature passes, it earns only the economic check above, still no strategy
+build without a further pre-registration.
+
+## Migration
+
+Add `docs/pre_registers/TASK-ALT-008.md` and a `TASK-ALT-008` board row.
+Build `scripts/diagnostic_alt_range_liquidity.py` following the
+`diagnostic_fc_flow.py` template; write `reports/alt_range_liquidity_diagnostic.md`
+and a results JSON. Update the ledger family matrix, `PROJECT_STATE.md`,
+`TASK_BOARD.md`, `TEST_MATRIX.md`, `DAILY_LOG.md`.

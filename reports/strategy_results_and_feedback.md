@@ -61,6 +61,7 @@ sign-consistent across 3 fixed 12-month sub-periods. Pure diagnostic, no gate.
 | D -- Basis spot-futures (FC-II-002) | 4 basis features (premium index) | all SEM_INFO, standard AND incremental-over-funding (abs(rho)<0.013) | SEM_INFO | Basis adds nothing beyond the funding carry; premium index already in the bars (no download) |
 | I -- Microstructure short-horizon (FC-II-003) | Family H features vs 1h/4h return | `imbalance_price_divergence` **TEM** (rho +0.035 @1h/4h, sign-consistent) | **ABORT** | First directional info hit in a new test, theory-coherent -- BUT gross decile spread ~1-2 bps vs 6-12 bps cost -> economically dead (like the z-score micro-reversion) |
 | E -- Flow (FC-II-004) | taker aggressor + long/short ratios | all 10 cells SEM_INFO (abs(rho)<0.011) | SEM_INFO | Aggressor flow and positioning ratios carry no directional info |
+| B+C -- Range-vol shape + Amihud (ALT-008) | Parkinson/Rogers-Satchell/close-location + Amihud/turnover/trade-size, 24h & 4h | all 12 cells SEM_INFO (max abs(rho) 0.027 < 0.03); range-vol magnitude highest but sub-threshold (vol-clustering, not directional); Amihud rho ~0.00 | SEM_INFO | Closes the DIRECTIONAL test of the two families the report cites (range vol, illiquidity premium). Public-data family sweep now complete: only external-data families remain |
 
 ---
 
@@ -106,8 +107,8 @@ sign-consistent across 3 fixed 12-month sub-periods. Pure diagnostic, no gate.
 | Family | Status | Basis |
 |---|---|---|
 | A -- Price | REOPENED (best lead) | pairs / TSREV / TSMOM(Donchian) / cross-sectional all NAO_PASSA -- BUT classic vol-targeted TSM (FC-II-005) beats buy-hold in-sample (Sharpe 1.04 vs -0.14, maxDD 0.35 vs 1.38) and has now survived EVERY in-sample stress: robust across the 3 sub-periods, both legs, and both BTC regimes (FC-II-006); cost breakeven 142 bps/leg (FC-II-007); and funding P&L only a ~7% haircut (Sharpe -> 0.97, FC-II-008). Params literature-fixed (not tuned). The project's strongest, most-validated lead. ONLY genuinely-new OOS remains. (Was wrongly marked CONCLUIDA.) |
-| B -- Volatility | ~Concluida | Family J: info but risk/context, not directional |
-| C -- Liquidity | ~Concluida | depth_concentration null; low prior |
+| B -- Volatility | CONCLUIDA (public) | Family J: info but risk/context, not directional; ALT-008 directional test of range-shape (Parkinson/Rogers-Satchell/close-location) all SEM_INFO (max abs rho 0.027 < 0.03, the vol-clustering effect, not directional) |
+| C -- Liquidity | CONCLUIDA (public) | depth_concentration null; ALT-008 bar-derived Amihud illiquidity / turnover / trade-size all SEM_INFO (Amihud rho ~0.00) |
 | D -- Derivatives | CONCLUIDA (public) | funding (G), OI (F), basis (FC-II-002) all SEM_INFO |
 | E -- Flow | CONCLUIDA | FC-II-004 all SEM_INFO |
 | I -- Microstructure (bars) | CONCLUIDA | book (H) null 24h; short-horizon (FC-II-003) info-but-ABORT |

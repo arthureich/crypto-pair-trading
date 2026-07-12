@@ -17,9 +17,21 @@
   em disco, do download de OI) -> 10 celulas SEM_INFORMACAO. Corrigiu
   afirmacao previa de "esgotado" testando o dado de fluxo que faltava.
 - Trilha A: paper-forward do K=5; 1o mes OOS (jun/2026) NEGATIVO (PF 0,78).
-- Status: familias A/D/E/I-barras/J CONCLUIDAS (dado publico). Abertas
-  F/opcoes, G/on-chain, H/sentimento, I/ticks -- exigem dado EXTERNO
-  (decisao de aquisicao do usuario). 488 testes, ruff limpo.
+- TASK-TSM-paper-forward (ADR-0027): recorder do TSM vol-targeted fixo (com
+  funding); jun/2026 = 5 rebalances OOS (Sharpe 4,19 = RUIDO puro; 95 para o
+  gatilho de 100). Inicia o relogio OOS; re-rodar mensalmente. Monitoramento,
+  nao veredito.
+- TASK-ALT-008 (ADR-0028): fecha a varredura em dado publico com os ultimos
+  diagnosticos DIRECIONAIS nao rodados -- Familia B (range-vol: Parkinson/
+  Rogers-Satchell/close-location) + Familia C (Amihud/turnover/trade-size),
+  so barra, causais, 24h e 4h. 12 celulas SEM_INFORMACAO (max abs rho 0,027 <
+  0,03 = clustering de vol, nao direcional; Amihud ~0,00). B e C passam de
+  ~Concluida para CONCLUIDA (dado publico).
+- Status: familias A(lead, OOS-gated)/B/C/D/E/I-barras/J CONCLUIDAS (dado
+  publico). VARREDURA EM DADO PUBLICO COMPLETA. So restam F/opcoes-VRP,
+  G/on-chain, H/sentimento, I/ticks -- exigem dado EXTERNO (decisao de
+  aquisicao do usuario -- proximo passo = brief de viabilidade, sem baixar).
+  501 testes, ruff limpo.
 ```
 
 ## 2026-07-09 (TASK-ML-001 - programa Funding Carry Inteligente: infra de meta-labeling construida; CV de dev cautelar)
