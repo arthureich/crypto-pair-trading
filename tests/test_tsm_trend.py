@@ -11,6 +11,7 @@ from src.research.tsm_trend import (
     TsmTrendError,
     TsmTrendResult,
     _max_drawdown,
+    _trend_strength_regime,
     _unit_gross,
     run_tsm_trend_backtest,
     summarize_tsm_trend,
@@ -172,3 +173,61 @@ def test_summarize_fails_closed_on_empty() -> None:
     empty = TsmTrendResult((), (), (), (), (), (), ())
     with pytest.raises(TsmTrendError, match="no rebalances"):
         summarize_tsm_trend(empty, TsmTrendConfig())
+
+
+# --- TASK-TSM-001 regime filter -------------------------------------------------
+
+
+def test_trend_strength_regime_is_binary_causal_and_off_during_warmup() -> None:
+    # Single symbol, vol=1, so aggregate strength == |trailing|. Warm-up of the
+    # rolling median (first `window` rows) must be OFF; a late spike must not
+    # change an earlier regime value (causality).
+    n = 20
+    trailing = pd.DataFrame({"A": [1.0] * n})
+    vol = pd.DataFrame({"A": [1.0] * n})
+    window = 5
+    regime = _trend_strength_regime(trailing, vol, window=window)
+
+    assert set(regime.unique()).issubset({0.0, 1.0})  # binary
+    assert (regime.iloc[:window] == 0.0).all()  # warm-up (median NaN) -> OFF
+
+    mutated = trailing.copy()
+    mutated.loc[15:, "A"] = 99.0  # clobber the tail
+    regime_after = _trend_strength_regime(mutated, vol, window=window)
+    # values strictly before the mutation index are unchanged
+    for i in range(15):
+        assert regime.iloc[i] == regime_after.iloc[i]
+
+
+def test_trend_strength_regime_flags_high_vs_low_strength() -> None:
+    # Low strength for a stretch (establishes a low median), then a jump high:
+    # once the trailing median is defined, a value above it is ON.
+    vals = [0.1] * 8 + [5.0] * 4
+    trailing = pd.DataFrame({"A": vals})
+    vol = pd.DataFrame({"A": [1.0] * len(vals)})
+    regime = _trend_strength_regime(trailing, vol, window=4)
+    # The high-strength tail (well above the trailing median of ~0.1) is ON.
+    assert regime.iloc[-1] == 1.0
+    assert regime.iloc[-2] == 1.0
+
+
+def test_regime_filter_is_flat_when_median_undefined_short_sample() -> None:
+    # The production 90d window (2160h) exceeds this 60-row fixture, so the
+    # median is never defined -> the book is always flat -> zero PnL/turnover.
+    bars = _trending_bars(60)
+    cfg = TsmTrendConfig(lookback_hours=5, vol_window_hours=3, hold_hours=4, regime_filter=True)
+    result = run_tsm_trend_backtest(bars, cfg)
+    assert all(x == pytest.approx(0.0) for x in result.tsm_net)
+    assert all(x == pytest.approx(0.0) for x in result.tsm_turnover)
+
+
+def test_regime_filter_default_off_leaves_base_unchanged() -> None:
+    bars = _trending_bars(60)
+    base = TsmTrendConfig(lookback_hours=5, vol_window_hours=3, hold_hours=4)
+    filtered_off = TsmTrendConfig(
+        lookback_hours=5, vol_window_hours=3, hold_hours=4, regime_filter=False
+    )
+    r0 = run_tsm_trend_backtest(bars, base)
+    r1 = run_tsm_trend_backtest(bars, filtered_off)
+    for a, b in zip(r0.tsm_net, r1.tsm_net, strict=True):
+        assert a == pytest.approx(b)  # default OFF == base behavior

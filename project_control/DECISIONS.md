@@ -2407,3 +2407,103 @@ touches the network) and `scripts/diagnostic_alt_xvenue_funding.py` (reuses
 `info_content.py`). Write `reports/alt_xvenue_funding_diagnostic.md` +
 results JSON. Update the ledger family matrix, `PROJECT_STATE.md`,
 `TASK_BOARD.md`, `TEST_MATRIX.md`, `DAILY_LOG.md`.
+
+## ADR-0031 - Open The TSM Improvement Program: Develop-Now / Promote-Only-On-OOS, Bounded Search By Priority Line, With A Mandatory Robustness Battery
+
+## Status
+
+Accepted
+
+## Context
+
+The vol-targeted TSM (Family A, FC-II-005..008) is the project's strongest
+and only credible lead: in-sample it beats buy-hold (Sharpe 1.04 vs -0.14,
+maxDD 0.35 vs 1.38) and survived every in-sample stress with
+literature-FIXED (not tuned) params; its only gap is genuinely-new OOS. The
+free-data frontier is otherwise exhausted (every public family + both free
+external families null). The user set the absolute priority: research REAL,
+ROBUST improvements to the TSM -- not artificial metric inflation -- under
+the same rigor used throughout the project.
+
+The binding risk is the one ADR-0027 named: every improvement developed on
+the SAME fixed dev window adds a searched degree of freedom. Calling it
+"development" does not remove selection bias. The base TSM's credibility
+rests precisely on NOT having been tuned; a program of improvements must not
+quietly destroy that.
+
+## Decision
+
+Open the "TSM Improvement Program" governed by these rules (not a
+technique checklist):
+
+1. FULL FLOW PER HYPOTHESIS, always: (a) literature review for grounding,
+   (b) clear economic hypothesis, (c) PRE-REGISTER before any code,
+   (d) implement, (e) validate, (f) report, (g) update all project docs.
+2. PARAMS FIXED A PRIORI from literature/first-principles. NEVER change a
+   parameter after seeing results. NEVER promote an ex-post secondary cell.
+   Prefer knob-free / canonical choices (e.g. a trailing MEDIAN split, not a
+   tuned percentile).
+3. DEVELOP vs VALIDATE separated (inherits ADR-0027). Any result on the dev
+   window (2023-06..2026-05) is DEVELOPMENT, never a promotion. Promotion is
+   gated on untouched OOS (post-2026-05-31) + the accumulating forward track.
+   Bounded search: each line pre-declares the variant(s) that may ever reach
+   OOS; the winner is not chosen by dev performance and then promoted.
+4. THE BASE TSM STAYS PRISTINE. Improvements are opt-in flags/overlays that
+   default OFF; the validated base behavior and its tests are never altered.
+5. MANDATORY ROBUSTNESS BATTERY for any candidate improvement, ALL of:
+   sub-period stability; cost sensitivity; funding sensitivity; market
+   regimes (BTC up/down); drawdown; SIMPLICITY vs gain; economic
+   justification; and an explicit false-positive check. An improvement that
+   only raises Sharpe/PF/PnL but fails the battery is REJECTED and the
+   hypothesis is closed with its negative result documented.
+6. PREFER small robust gains over large gains bought with complexity.
+
+Priority order of lines (test roughly in this sequence; when a line is
+reasonably exhausted, document the justification and move automatically to
+the next):
+
+1. Regime filters (when to operate / when not).
+2. Position sizing.
+3. Portfolio construction (risk parity / ERC / HRP).
+4. Meta-labeling / ML as an operation FILTER only.
+5. Ensemble with existing factors.
+6. Execution improvements.
+
+When the TSM is reasonably exhausted, continue by family priority, each
+preceded by a deep recent-literature review (papers, SSRN, arXiv, quant-fund
+notes) to confirm a consistent edge is plausible before investing time:
+Options (IV/VRP/skew/smile/term-structure/DVOL) -- FREE alternatives first,
+paid only if justified; then premium microstructure (if data obtained);
+then premium on-chain (Glassnode/CryptoQuant/Nansen/Arkham); then
+alternative data (ETF flows, stablecoins, macro, sentiment, dev activity).
+
+## Concrete first step (this ADR authorizes)
+
+`TASK-TSM-001` -- Line 1, regime filter. Literature-grounded hypothesis
+(Moreira-Muir volatility-managed portfolios + the crypto "trend rewards
+time-series more than cross-sectional / frequent regime shifts / TREND rule
+scales by trend strength" evidence): the TSM's edge is concentrated when a
+strong trend exists to follow; in low-conviction (choppy) regimes it
+whipsaws and pays cost for noise. ONE primary, knob-free variant: gate the
+whole book ON (base unit-gross) when an aggregate causal trend-strength
+measure -- cross-sectional mean of |trailing_return|/realized_vol, reusing
+the TSM's own signal components -- is at or above its trailing 90d causal
+MEDIAN, else FLAT. Binary median split = no tunable threshold. Development
+result only; robustness battery mandatory; OOS-gated for any promotion.
+
+## Consequences
+
+A disciplined, literature-grounded improvement search that cannot silently
+p-hack the base lead. Most hypotheses are expected to FAIL the robustness
+battery (the project base rate) and will be closed with documented negative
+results -- that is a success of the process, not a waste. Task prefix
+`TASK-TSM-NNN`; each line's exhaustion is recorded before advancing.
+
+## Migration
+
+Add `docs/pre_registers/TASK-TSM-001.md` and a `TASK-TSM-001` board row.
+Extend `src/research/tsm_trend.py` with a default-OFF regime-filter flag
+(base behavior/tests unchanged) + unit tests; add
+`scripts/run_tsm_regime_filter_dev.py`; write
+`reports/tsm_regime_filter_dev.md`. Update `PROJECT_STATE.md`,
+`TASK_BOARD.md`, `TEST_MATRIX.md`, `DAILY_LOG.md`.

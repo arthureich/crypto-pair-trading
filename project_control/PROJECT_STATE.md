@@ -105,6 +105,18 @@ negativo -> sign-consistency falha); @1d sign-consistent mas sub-limiar. Media
 cross-venue ~0 (carry agregado nao acrescenta, como o single-venue). Decaimento
 de eficiencia, como OI/order-flow. Ver `reports/alt_xvenue_funding_diagnostic.md`.
 
+**Programa de Melhoria do TSM (ADR-0031) -- prioridade absoluta agora.** Fluxo
+completo por hipotese, params fixos a priori, dev != promocao (OOS-gated), base
+intacta, bateria de robustez obrigatoria, busca limitada. Ordem das linhas:
+regime -> sizing -> portfolio -> meta-labeling -> ensemble -> execucao; depois
+familias novas (Options primeiro, gratis antes de pago).
+- **Linha 1 (filtro de regime), TASK-TSM-001: REJEITADA.** Filtro binario sem
+  knob (FLAT quando forca de trend agregada < mediana causal 90d). Dev: Sharpe
+  0,970->0,949 (pior), maxDD melhora um pouco, livro ativo 42%. O agregado
+  neutro esconde efeitos opostos por subperiodo e por regime de BTC
+  (falso-positivo); unico efeito real e menos turnover. Encerrada; proxima e a
+  Linha 2 (position sizing). Ver `reports/tsm_regime_filter_dev.md`.
+
 **AVENIDA DE DADO EXTERNO GRATIS ESGOTADA:** on-chain (ALT-009) + cross-venue
 (ALT-010) ambos nulos. O que resta exige decisao de GASTO ou de INSTRUMENTO do
 usuario: F/opcoes-VRP (#1 no relatorio, mas PIVO de instrumento -- livro de

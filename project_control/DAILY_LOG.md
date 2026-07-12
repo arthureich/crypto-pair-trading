@@ -1,5 +1,26 @@
 # Daily Log
 
+## 2026-07-12c (Programa de Melhoria do TSM aberto; Linha 1 filtro de regime -- 1a hipotese REJEITADA)
+
+```text
+- ADR-0031 abriu o Programa de Melhoria do TSM: fluxo completo por hipotese
+  (literatura -> hipotese -> pre-registro -> implementar -> validar ->
+  relatorio -> docs), params fixos a priori, dev != promocao (OOS-gated),
+  base intacta, bateria de robustez obrigatoria, busca limitada por linha.
+  Ordem: regime -> sizing -> portfolio -> meta-labeling -> ensemble -> exec.
+- TASK-TSM-001 (Linha 1, regime). Literatura: Moreira-Muir (vol-managed) +
+  cripto (trend recompensa serie-temporal; regra TREND por forca). Hipotese:
+  TSM concentra edge quando ha trend forte; choppy = whipsaw. Filtro binario
+  sem knob: FLAT quando forca agregada (media |trailing|/vol) < mediana
+  causal 90d. Flag regime_filter default OFF (base intacta), 4 testes.
+- Resultado (DEV, sem veredito): Sharpe 0,970 -> 0,949 (PIOR), maxDD 0,347
+  -> 0,321 (melhor), livro ativo 42%. REJEITADO: agregado neutro esconde
+  efeitos OPOSTOS por subperiodo (ajuda so 2024-06/2025-05) e por regime BTC
+  (ajuda down, piora up) = assinatura de falso-positivo; unico efeito real e
+  menos turnover (so ganha a custo irreal 30-60 bps). Hipotese encerrada;
+  seguir para Linha 2 (position sizing). 513 testes, ruff limpo.
+```
+
 ## 2026-07-12b (fluxo cross-venue via Coinalyze free tier -- 2a metade da trilha gratuita; nula; avenida gratis esgotada)
 
 ```text

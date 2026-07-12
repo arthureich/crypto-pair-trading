@@ -23,6 +23,7 @@ import pandas as pd
 
 _HOURS_PER_YEAR = 24 * 365
 _MIN_OBS_FOR_SHARPE = 2
+_REGIME_MEDIAN_WINDOW_HOURS = 2160  # 90d causal window for the trend-strength regime split
 
 __all__ = [
     "TsmTrendConfig",
@@ -44,6 +45,7 @@ class TsmTrendConfig:
     hold_hours: int = 120  # 5d rebalance/hold
     cost_bps_per_leg: float = 6.0
     include_funding: bool = False  # add perp funding P&L over each hold (FC-II-008)
+    regime_filter: bool = False  # TASK-TSM-001: flat the book in low-trend-strength regime
 
     def __post_init__(self) -> None:
         for name in ("lookback_hours", "vol_window_hours", "hold_hours"):
@@ -107,6 +109,12 @@ def run_tsm_trend_backtest(bars: pd.DataFrame, config: TsmTrendConfig) -> TsmTre
     lo_weight = _unit_gross(np.maximum(np.sign(trailing_r), 0.0) / vol_r)
     base_weight = _unit_gross(price_r.notna().astype(float))  # equal-weight long
 
+    if config.regime_filter:
+        # TASK-TSM-001: flat the long/short book when aggregate trend strength
+        # is below its trailing 90d causal median (low-conviction / choppy).
+        regime_on = _trend_strength_regime(trailing, vol).loc[rows]
+        ls_weight = ls_weight.mul(regime_on, axis=0)
+
     tsm_gross = (ls_weight * forward_r).sum(axis=1, skipna=True)
     long_sleeve = (ls_weight.clip(lower=0.0) * forward_r).sum(axis=1, skipna=True)
     short_sleeve = (ls_weight.clip(upper=0.0) * forward_r).sum(axis=1, skipna=True)
@@ -142,6 +150,25 @@ def run_tsm_trend_backtest(bars: pd.DataFrame, config: TsmTrendConfig) -> TsmTre
         tsm_long_sleeve=tuple(float(x) for x in long_sleeve[valid]),
         tsm_short_sleeve=tuple(float(x) for x in short_sleeve[valid]),
     )
+
+
+def _trend_strength_regime(
+    trailing: pd.DataFrame, vol: pd.DataFrame, window: int = _REGIME_MEDIAN_WINDOW_HOURS
+) -> pd.Series:
+    """Causal 1/0 regime: 1 when aggregate trend strength >= its 90d median.
+
+    Strength_i[t] = |trailing_return_i| / realized_vol_i (the TSM's own signal
+    components); aggregate = cross-sectional mean; regime is ON when aggregate
+    is at/above its trailing 90d causal median (shift(1) before rolling). The
+    warm-up (median NaN) and any NaN aggregate resolve to OFF (flat) -- a
+    conservative default that never trades on undefined state. `window` defaults
+    to the fixed 90d constant; it is a parameter only so tests can use a short
+    window on small fixtures (the production call always uses the default).
+    """
+
+    aggregate = (trailing / vol).abs().mean(axis=1, skipna=True)
+    median = aggregate.shift(1).rolling(window).median()
+    return (aggregate >= median).astype(float)
 
 
 def _unit_gross(raw: pd.DataFrame) -> pd.DataFrame:
