@@ -11,6 +11,7 @@ from src.research.tsm_trend import (
     TsmTrendError,
     TsmTrendResult,
     _max_drawdown,
+    _signal_raw_weights,
     _trend_strength_regime,
     _unit_gross,
     run_tsm_trend_backtest,
@@ -231,3 +232,61 @@ def test_regime_filter_default_off_leaves_base_unchanged() -> None:
     r1 = run_tsm_trend_backtest(bars, filtered_off)
     for a, b in zip(r0.tsm_net, r1.tsm_net, strict=True):
         assert a == pytest.approx(b)  # default OFF == base behavior
+
+
+# --- TASK-TSM-002 conviction sizing --------------------------------------------
+
+
+def test_signal_raw_weights_base_is_direction_only() -> None:
+    # Same vol, different trend magnitudes: base gives EQUAL |weight| (sign/vol),
+    # conviction gives the STRONGER trend a larger |weight| (trailing/vol).
+    trailing = pd.DataFrame({"A": [0.5], "B": [0.1]})  # A trends 5x stronger
+    vol = pd.DataFrame({"A": [1.0], "B": [1.0]})  # equal vol
+    base_ls, _ = _signal_raw_weights(trailing, vol, conviction=False)
+    conv_ls, _ = _signal_raw_weights(trailing, vol, conviction=True)
+    assert abs(base_ls["A"].iloc[0]) == pytest.approx(abs(base_ls["B"].iloc[0]))
+    assert abs(conv_ls["A"].iloc[0]) > abs(conv_ls["B"].iloc[0])
+    # direction preserved (both long here)
+    assert conv_ls["A"].iloc[0] > 0 and conv_ls["B"].iloc[0] > 0
+
+
+def test_signal_raw_weights_conviction_preserves_sign() -> None:
+    trailing = pd.DataFrame({"A": [0.3], "B": [-0.2]})
+    vol = pd.DataFrame({"A": [1.0], "B": [1.0]})
+    base_ls, _ = _signal_raw_weights(trailing, vol, conviction=False)
+    conv_ls, _ = _signal_raw_weights(trailing, vol, conviction=True)
+    # same signs as the base (long A, short B)
+    assert (conv_ls.iloc[0] > 0).equals(base_ls.iloc[0] > 0)
+
+
+def test_conviction_sizing_default_off_matches_base() -> None:
+    bars = _trending_bars(60)
+    base = TsmTrendConfig(lookback_hours=5, vol_window_hours=3, hold_hours=4)
+    off = TsmTrendConfig(
+        lookback_hours=5, vol_window_hours=3, hold_hours=4, conviction_sizing=False
+    )
+    r0 = run_tsm_trend_backtest(bars, base)
+    r1 = run_tsm_trend_backtest(bars, off)
+    for a, b in zip(r0.tsm_net, r1.tsm_net, strict=True):
+        assert a == pytest.approx(b)
+
+
+def test_conviction_sizing_changes_book_but_keeps_unit_gross_invariant() -> None:
+    bars = _trending_bars(60)
+    base = TsmTrendConfig(lookback_hours=5, vol_window_hours=3, hold_hours=4, cost_bps_per_leg=0.0)
+    conv = TsmTrendConfig(
+        lookback_hours=5,
+        vol_window_hours=3,
+        hold_hours=4,
+        cost_bps_per_leg=0.0,
+        conviction_sizing=True,
+    )
+    r0 = run_tsm_trend_backtest(bars, base)
+    r1 = run_tsm_trend_backtest(bars, conv)
+    # The book is re-weighted (some rebalance differs), yet the sleeves still
+    # reconstruct net at zero cost (unit-gross invariant holds under conviction).
+    assert any(a != pytest.approx(b) for a, b in zip(r0.tsm_net, r1.tsm_net, strict=True))
+    for net, long_s, short_s in zip(
+        r1.tsm_net, r1.tsm_long_sleeve, r1.tsm_short_sleeve, strict=True
+    ):
+        assert long_s + short_s == pytest.approx(net)

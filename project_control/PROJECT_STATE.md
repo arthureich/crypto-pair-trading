@@ -114,8 +114,15 @@ familias novas (Options primeiro, gratis antes de pago).
   knob (FLAT quando forca de trend agregada < mediana causal 90d). Dev: Sharpe
   0,970->0,949 (pior), maxDD melhora um pouco, livro ativo 42%. O agregado
   neutro esconde efeitos opostos por subperiodo e por regime de BTC
-  (falso-positivo); unico efeito real e menos turnover. Encerrada; proxima e a
-  Linha 2 (position sizing). Ver `reports/tsm_regime_filter_dev.md`.
+  (falso-positivo); unico efeito real e menos turnover. Ver
+  `reports/tsm_regime_filter_dev.md`.
+- **Linha 2 (position sizing), TASK-TSM-002: REJEITADA.** Sizing por conviccao
+  (peso ~ trailing/vol, knob-free). Dev: Sharpe 0,970->0,888 (pior), maxDD
+  0,347->0,390 (pior), turnover 0,457->0,566 (maior) -- pior em todas as
+  headline. A reducao de turnover da literatura exige funcao saturante (com
+  constantes tunaveis, excluida); a linear churna mais. Proxima e a Linha 3
+  (portfolio construction: risk parity/ERC/HRP). Ver
+  `reports/tsm_conviction_sizing_dev.md`.
 
 **AVENIDA DE DADO EXTERNO GRATIS ESGOTADA:** on-chain (ALT-009) + cross-venue
 (ALT-010) ambos nulos. O que resta exige decisao de GASTO ou de INSTRUMENTO do

@@ -1,5 +1,25 @@
 # Daily Log
 
+## 2026-07-12d (TSM Linha 2 position sizing -- sizing por conviccao REJEITADO)
+
+```text
+- TASK-TSM-002 (ADR-0031, Linha 2). Literatura: regra TREND (Baz et al.;
+  Hamill-Rattray-Van Hemert; Rohrbach) -- dimensionar pela forca do trend
+  em vez do sign binario reduz turnover ~24% sem perder desempenho e domina
+  o sign() fora de amostra.
+- Hipotese: ponderar pernas por conviccao (trailing/vol) aposta mais nas
+  fortes. Celula primaria sem knob: peso = trailing/vol, unit-gross (mesma
+  exposicao; so muda reparticao). Flag conviction_sizing default OFF + 4
+  testes.
+- Resultado (DEV, sem veredito): Sharpe 0,970 -> 0,888 (PIOR), maxDD 0,347
+  -> 0,390 (PIOR), turnover 0,457 -> 0,566 (MAIOR). REJEITADO decisivamente
+  -- pior em todas as headline, no subperiodo recente, em BTC-up e em todo
+  custo. A reducao de turnover da literatura vem da funcao SATURANTE
+  (constantes tunaveis, excluidas); a linear knob-free churna mais.
+- Linha 2 encerrada; seguir para Linha 3 (portfolio construction: risk
+  parity/ERC/HRP). 517 testes, ruff limpo.
+```
+
 ## 2026-07-12c (Programa de Melhoria do TSM aberto; Linha 1 filtro de regime -- 1a hipotese REJEITADA)
 
 ```text

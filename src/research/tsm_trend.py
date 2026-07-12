@@ -46,6 +46,7 @@ class TsmTrendConfig:
     cost_bps_per_leg: float = 6.0
     include_funding: bool = False  # add perp funding P&L over each hold (FC-II-008)
     regime_filter: bool = False  # TASK-TSM-001: flat the book in low-trend-strength regime
+    conviction_sizing: bool = False  # TASK-TSM-002: weight ~ trailing/vol (strength), not sign/vol
 
     def __post_init__(self) -> None:
         for name in ("lookback_hours", "vol_window_hours", "hold_hours"):
@@ -105,8 +106,9 @@ def run_tsm_trend_backtest(bars: pd.DataFrame, config: TsmTrendConfig) -> TsmTre
     # per-settlement rates, spread hourly then differenced between rebalances.
     funding_hold = _funding_over_hold(bars, price, rows) if config.include_funding else None
 
-    ls_weight = _unit_gross(np.sign(trailing_r) / vol_r)
-    lo_weight = _unit_gross(np.maximum(np.sign(trailing_r), 0.0) / vol_r)
+    ls_raw, lo_raw = _signal_raw_weights(trailing_r, vol_r, config.conviction_sizing)
+    ls_weight = _unit_gross(ls_raw)
+    lo_weight = _unit_gross(lo_raw)
     base_weight = _unit_gross(price_r.notna().astype(float))  # equal-weight long
 
     if config.regime_filter:
@@ -150,6 +152,23 @@ def run_tsm_trend_backtest(bars: pd.DataFrame, config: TsmTrendConfig) -> TsmTre
         tsm_long_sleeve=tuple(float(x) for x in long_sleeve[valid]),
         tsm_short_sleeve=tuple(float(x) for x in short_sleeve[valid]),
     )
+
+
+def _signal_raw_weights(
+    trailing_r: pd.DataFrame, vol_r: pd.DataFrame, conviction: bool
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Raw (pre-normalization) long/short and long-only weights.
+
+    Base: sign(trailing)/vol -- direction only, inverse-vol magnitude.
+    Conviction (TASK-TSM-002): trailing/vol -- same direction, but magnitude
+    scaled by risk-adjusted trend strength, so strong trends carry more than
+    weak ones. Both are unit-gross-normalized downstream, so total gross
+    exposure is identical; only the split across legs differs.
+    """
+
+    if conviction:
+        return trailing_r / vol_r, trailing_r.clip(lower=0.0) / vol_r
+    return np.sign(trailing_r) / vol_r, np.maximum(np.sign(trailing_r), 0.0) / vol_r
 
 
 def _trend_strength_regime(
