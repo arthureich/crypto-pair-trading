@@ -1,5 +1,29 @@
 # Daily Log
 
+## 2026-07-12b (fluxo cross-venue via Coinalyze free tier -- 2a metade da trilha gratuita; nula; avenida gratis esgotada)
+
+```text
+- Usuario forneceu chave Coinalyze (em .env gitignored, .env.example so
+  placeholder). TASK-ALT-010 (ADR-0030): fluxo cross-venue.
+- download_alt_xvenue_funding.py: funding diario dos 20 assets em 4-5 venues
+  majors {Binance,Bybit,OKX,Huobi,BitMEX}, perpetuos USDT. Parse puro
+  testado com fixture; 429 tratado com backoff+Retry-After. 95 mercados ->
+  103.325 linhas (asset,dia,venue).
+- diagnostic_alt_xvenue_funding.py (reusa info_content): 3 features
+  (disp/range/mean cross-venue, >=3 venues/dia) vs retorno 1d/3d. Prior
+  divulgado: single-venue funding/OI/fluxo agregado ja nulos -> aposta so
+  na DISCORDANCIA.
+- Resultado: 6 celulas SEM_INFORMACAO. Near-miss mais estruturado da busca
+  externa (NAO hit): disp/range@3d cruzam magnitude (+0,040) mas sao mirage
+  de UM regime (2024-06/2025-05 rho ~+0,10; recente levemente negativo ->
+  sign-consistency falha); @1d sign-consistent mas sub-limiar. Media ~0.
+  Padrao de eficiencia crescente (decaimento), como OI/order-flow.
+- Esgota a avenida de dado externo GRATIS (on-chain + cross-venue nulos).
+  Resta so dado PAGO (on-chain premium, superficie de opcoes) e o pivo de
+  instrumento (livro de opcoes) -- decisoes de gasto/instrumento do usuario.
+  4 testes novos, 509 na suite, ruff limpo.
+```
+
 ## 2026-07-12 (1a familia de DADO EXTERNO testada -- Familia G on-chain na camada gratuita; custo ZERO; nula)
 
 ```text

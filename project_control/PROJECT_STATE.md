@@ -94,13 +94,24 @@ so BTC/ETH. Leitura: proxies gratis nulos -> pagar por on-chain premium
 (Glassnode/CryptoQuant) exige prior mais forte que "o gratis foi nulo". Ver
 `reports/alt_onchain_diagnostic.md`.
 
-**Fronteira restante:** F/opcoes-VRP (#1 no relatorio, mas e um PIVO de
-instrumento -- livro de opcoes, nao pair-trade de perp), G-premium/on-chain
-pago (#2), fluxo cross-venue (#4, key-gated -> TASK-ALT-010), I/ticks. Tudo
-exige decisao de gasto/instrumento do usuario. A metade gratis da trilha
-escolhida (on-chain) esgotou-se nula; a outra metade (cross-venue) espera uma
-chave gratuita Coinalyze/Coinglass. Nada mais a fazer em dado gratis sem uma
-decisao do usuario.
+**TASK-ALT-010 (ADR-0030) -- fluxo cross-venue, custo ZERO:** usuario forneceu
+chave Coinalyze (em `.env` gitignored). Dispersao de funding cross-venue nas
+venues majors {Binance,Bybit,OKX,Huobi,BitMEX} (>=3 venues/dia), 3 features
+diarias (disp/range/mean) vs retorno 1d/3d. Resultado: 6 celulas
+SEM_INFORMACAO. Near-miss mais estruturado da busca externa (NAO hit):
+disp/range@3d cruzam a magnitude (+0,040) mas sao MIRAGEM de um regime (o
+subperiodo do meio 2024-06/2025-05 tem rho ~+0,10, o recente e levemente
+negativo -> sign-consistency falha); @1d sign-consistent mas sub-limiar. Media
+cross-venue ~0 (carry agregado nao acrescenta, como o single-venue). Decaimento
+de eficiencia, como OI/order-flow. Ver `reports/alt_xvenue_funding_diagnostic.md`.
+
+**AVENIDA DE DADO EXTERNO GRATIS ESGOTADA:** on-chain (ALT-009) + cross-venue
+(ALT-010) ambos nulos. O que resta exige decisao de GASTO ou de INSTRUMENTO do
+usuario: F/opcoes-VRP (#1 no relatorio, mas PIVO de instrumento -- livro de
+opcoes, nao pair-trade de perp), on-chain premium pago (#2, Glassnode/
+CryptoQuant), OI agregado / tick pago, I/ticks. Nada mais a fazer em dado gratis
+sem uma decisao do usuario. O lead do projeto continua sendo o TSM vol-targeted
+(Familia A), gated so em OOS forward (trilha de paper acumulando).
 
 ## Atualizacao 2026-07-10: Funding Iteration 2 (ADR-0027) aberta; TASK-FC-II-001 (position sizing por risco) construida; sinal de dev tambem CAUTELAR; gate BLOQUEADO ate OOS novo
 

@@ -2330,3 +2330,80 @@ normalized daily CSV) with a JSON-parsing fixture test, and
 `reports/alt_onchain_diagnostic.md` + results JSON. Update the ledger
 family matrix, `PROJECT_STATE.md`, `TASK_BOARD.md`, `TEST_MATRIX.md`,
 `DAILY_LOG.md`.
+
+## ADR-0030 - Execute The Cross-Venue Flow Half (TASK-ALT-010): Cross-Exchange Funding Dispersion Via The Coinalyze Free Tier
+
+## Status
+
+Accepted
+
+## Context
+
+ADR-0029 split the user's chosen free-tier path; the on-chain half
+(TASK-ALT-009) closed null. This ADR executes the second half: cross-venue
+flow. The user provided a free Coinalyze API key (stored in the gitignored
+`.env`, never committed; `.env.example` gets a placeholder only). Key
+verified and schema reconnaissance done (no committed analysis):
+
+- `/v1/exchanges`, `/v1/future-markets`, `/v1/funding-rate-history`
+  (returns `[{symbol, history:[{t, o,h,l,c}]}]`; `c` = the interval's
+  funding rate). Venue codes: A=Binance, 6=Bybit, 3=OKX, 4=Huobi,
+  0=BitMEX, ...
+- Coverage for our 20 base assets, USDT-margined perpetuals across the
+  major venues {Binance, Bybit, OKX, Huobi, BitMEX}: every asset has 4-5
+  of those venues -- a solid cross-venue panel.
+
+Disclosed prior: single-venue funding (Family G, TASK-ALT-001), OI
+(Family F, ALT-002), and aggregate flow (Family E, FC-II-004) all came
+back SEM_INFO. So the bet here is specifically that CROSS-VENUE DISAGREEMENT
+(dispersion of funding across exchanges) carries information that no single
+venue did -- a moderate, not high, prior. This is disclosed before running.
+
+## Decision
+
+Pre-register `TASK-ALT-010`: an information-content diagnostic (ADR-0019
+methodology -- Spearman rho + sign-consistency across the three fixed
+sub-periods, |rho| >= 0.03) on cross-venue funding, daily, causal (shift(1)
+before any rolling; forward daily return is the only forward-looking term).
+
+Venue set (frozen): {Binance, Bybit, OKX, Huobi, BitMEX}, USDT-perpetuals.
+A per-(asset, day) cross-venue statistic requires >= 3 venues present that
+day, else it is NaN (dropped). Daily price from resampling the existing
+sprint7 hourly bars. Window 2023-06-01..2026-05-31 (the same three
+sub-periods as every prior diagnostic).
+
+Pre-declared features (frozen before the download is analyzed):
+
+- `xvenue_funding_disp_z` -- z-scored cross-venue standard deviation of
+  daily funding (the core "venues disagree" signal).
+- `xvenue_funding_range_z` -- z-scored (max - min) across venues.
+- `xvenue_funding_mean_z` -- z-scored cross-venue MEAN funding (aggregate
+  carry; disclosed as a near-overlap with the already-null single-venue
+  funding -- included as a reference/control, not a fresh bet).
+
+Horizons: daily forward return h in {1d, 3d} (funding is 8h-settled and
+dispersion decays fast, so SHORT horizons; disclosed reasoning). 3 features
+x 2 horizons = 6-cell grid; three-sub-period sign-consistency is the
+pre-committed multiple-testing defense. Pure diagnostic: NO economic gate,
+NO strategy. A hit earns only the descriptive economic check (gross decile
+spread vs cost) before any strategy pre-registration.
+
+## Consequences
+
+If nothing passes, the cross-venue flow half closes null too, and the
+entire free-tier external-data avenue (on-chain + cross-venue) is exhausted
+-- leaving only paid feeds (premium on-chain, options surface) and the
+options-book instrument pivot, all user spend/instrument decisions. If a
+feature passes, it earns the economic check; a real cross-venue edge would
+also raise the question of execution across venues (a larger build). Either
+way, no strategy without a further pre-registration.
+
+## Migration
+
+Add `docs/pre_registers/TASK-ALT-010.md` and a `TASK-ALT-010` board row.
+Build `scripts/download_alt_xvenue_funding.py` (Coinalyze pull, key from
+`COINALYZE_API_KEY`; pure parse functions fixture-tested, only the fetch
+touches the network) and `scripts/diagnostic_alt_xvenue_funding.py` (reuses
+`info_content.py`). Write `reports/alt_xvenue_funding_diagnostic.md` +
+results JSON. Update the ledger family matrix, `PROJECT_STATE.md`,
+`TASK_BOARD.md`, `TEST_MATRIX.md`, `DAILY_LOG.md`.
