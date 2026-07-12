@@ -120,9 +120,18 @@ familias novas (Options primeiro, gratis antes de pago).
   (peso ~ trailing/vol, knob-free). Dev: Sharpe 0,970->0,888 (pior), maxDD
   0,347->0,390 (pior), turnover 0,457->0,566 (maior) -- pior em todas as
   headline. A reducao de turnover da literatura exige funcao saturante (com
-  constantes tunaveis, excluida); a linear churna mais. Proxima e a Linha 3
-  (portfolio construction: risk parity/ERC/HRP). Ver
+  constantes tunaveis, excluida); a linear churna mais. Ver
   `reports/tsm_conviction_sizing_dev.md`.
+- **Linha 3 (portfolio construction), TASK-TSM-003: BORDERLINE -- 1a melhoria
+  ampla.** ERC (equal risk contribution ciente de correlacao) dentro de cada
+  sleeve. Dev: Sharpe 0,970->1,039 (+0,069), maxDD 0,347->0,326 (melhor),
+  turnover 0,457->0,396 (MENOR). Melhor nos 3 subperiodos, em todo custo,
+  com/sem funding, DD melhor em todo corte. Erra a LETRA estrita do criterio
+  so em BTC-down (Sharpe -0,003, ruido). **Decisao de integridade pendente do
+  usuario**: carregar como candidato OOS lider (apesar do custo de
+  complexidade covariancia+solver e do -0,003) ou fechar pela letra estrita.
+  Criterio NAO relaxado; promocao segue OOS-gated. Ver
+  `reports/tsm_portfolio_erc_dev.md`.
 
 **AVENIDA DE DADO EXTERNO GRATIS ESGOTADA:** on-chain (ALT-009) + cross-venue
 (ALT-010) ambos nulos. O que resta exige decisao de GASTO ou de INSTRUMENTO do

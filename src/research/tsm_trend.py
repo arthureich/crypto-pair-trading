@@ -24,6 +24,10 @@ import pandas as pd
 _HOURS_PER_YEAR = 24 * 365
 _MIN_OBS_FOR_SHARPE = 2
 _REGIME_MEDIAN_WINDOW_HOURS = 2160  # 90d causal window for the trend-strength regime split
+_ERC_COV_WINDOW_HOURS = 2160  # 90d causal window for the ERC covariance (TASK-TSM-003)
+_ERC_MAX_ITER = 200
+_ERC_TOL = 1e-8
+_ERC_MIN_SLEEVE = 2  # need >=2 assets in a sleeve for a covariance/ERC solve
 
 __all__ = [
     "TsmTrendConfig",
@@ -47,6 +51,7 @@ class TsmTrendConfig:
     include_funding: bool = False  # add perp funding P&L over each hold (FC-II-008)
     regime_filter: bool = False  # TASK-TSM-001: flat the book in low-trend-strength regime
     conviction_sizing: bool = False  # TASK-TSM-002: weight ~ trailing/vol (strength), not sign/vol
+    portfolio_erc: bool = False  # TASK-TSM-003: equal-risk-contribution within each sleeve
 
     def __post_init__(self) -> None:
         for name in ("lookback_hours", "vol_window_hours", "hold_hours"):
@@ -111,6 +116,11 @@ def run_tsm_trend_backtest(bars: pd.DataFrame, config: TsmTrendConfig) -> TsmTre
     lo_weight = _unit_gross(lo_raw)
     base_weight = _unit_gross(price_r.notna().astype(float))  # equal-weight long
 
+    if config.portfolio_erc:
+        # TASK-TSM-003: redistribute risk within each sleeve by equal-risk
+        # contribution (correlation-aware), preserving base direction + L/S gross.
+        ls_weight = _erc_reweight(ls_weight, hourly_return, _ERC_COV_WINDOW_HOURS)
+
     if config.regime_filter:
         # TASK-TSM-001: flat the long/short book when aggregate trend strength
         # is below its trailing 90d causal median (low-conviction / choppy).
@@ -152,6 +162,66 @@ def run_tsm_trend_backtest(bars: pd.DataFrame, config: TsmTrendConfig) -> TsmTre
         tsm_long_sleeve=tuple(float(x) for x in long_sleeve[valid]),
         tsm_short_sleeve=tuple(float(x) for x in short_sleeve[valid]),
     )
+
+
+def erc_weights(cov: np.ndarray) -> np.ndarray:
+    """Equal-risk-contribution weights for a same-sign sleeve (positive, sum 1).
+
+    Cyclical coordinate descent (Griveau-Billion, Richard & Roncalli 2013) on
+    the convex problem min 1/2 w'Cov w - (1/n) sum ln(w_i), w>0, then normalize.
+    Each w_i solves cov_ii w_i^2 + (sum_{j!=i} cov_ij w_j) w_i - 1/n = 0. Reduces
+    exactly to inverse-vol when the covariance is diagonal (uncorrelated).
+    """
+
+    n = cov.shape[0]
+    if n == 0:
+        return np.empty(0)
+    if n == 1:
+        return np.ones(1)
+    cov = cov + np.eye(n) * 1e-12  # tiny ridge guards a singular sample covariance
+    diag = np.sqrt(np.diag(cov))
+    w = 1.0 / diag  # inverse-vol warm start
+    budget = 1.0 / n
+    for _ in range(_ERC_MAX_ITER):
+        w_prev = w.copy()
+        for i in range(n):
+            a = cov[i, i]
+            b = cov[i, :] @ w - a * w[i]  # sum_{j!=i} cov_ij w_j
+            w[i] = (-b + math.sqrt(b * b + 4.0 * a * budget)) / (2.0 * a)
+        if np.max(np.abs(w - w_prev)) < _ERC_TOL:
+            break
+    return w / w.sum()
+
+
+def _erc_reweight(
+    ls_weight: pd.DataFrame, hourly_return: pd.DataFrame, window: int
+) -> pd.DataFrame:
+    """Redistribute each rebalance's long/short sleeves by ERC, causally.
+
+    Preserves the base direction and per-sleeve gross exposure; only the split
+    WITHIN each sleeve changes, from inverse-vol to equal-risk-contribution over
+    the trailing `window`-hour sample covariance (shift(1): returns strictly
+    before t). During warm-up or when a sleeve has < 2 full-data assets, the
+    base weights are kept for that sleeve (fail-safe, never lookahead).
+    """
+
+    out = ls_weight.copy()
+    for t in ls_weight.index:
+        w0 = ls_weight.loc[t]
+        hist = hourly_return.loc[:t].iloc[:-1].tail(window)
+        if len(hist) < window:
+            continue  # warm-up -> keep base weights
+        for sign in (1.0, -1.0):
+            side = w0[np.sign(w0) == sign].index
+            side_gross = float(w0[side].abs().sum())
+            if side_gross <= 0.0:
+                continue
+            cols = [c for c in side if bool(hist[c].notna().all())]
+            if len(cols) < _ERC_MIN_SLEEVE:
+                continue  # keep base weights for this sleeve
+            weights = erc_weights(hist[cols].cov().to_numpy())
+            out.loc[t, cols] = sign * side_gross * weights
+    return out
 
 
 def _signal_raw_weights(

@@ -1,5 +1,25 @@
 # Daily Log
 
+## 2026-07-12e (TSM Linha 3 portfolio construction -- ERC = 1a melhoria ampla; BORDERLINE, decisao de integridade)
+
+```text
+- TASK-TSM-003 (ADR-0031, Linha 3). Literatura: Baltas (risk-parity/ERC
+  ciente de correlacao melhora trend-following; cripto tem alts colados em
+  BTC -> inverse-vol naive da base ignora correlacao).
+- Implementado erc_weights (coordinate descent) + _erc_reweight (covariancia
+  causal 90d por rebalance, preserva direcao e split L/S da base) + flag
+  portfolio_erc default OFF + 6 testes.
+- Resultado (DEV, sem veredito): Sharpe 0,970 -> 1,039 (+0,069), maxDD 0,347
+  -> 0,326 (melhor), turnover 0,457 -> 0,396 (MENOR), net maior. PRIMEIRA
+  melhoria ampla: melhor nos 3 subperiodos, em todo custo, com/sem funding,
+  DD melhor em todo corte; turnover cai (mecanismo do ERC -> economicamente
+  explicado). Erra a LETRA estrita em UM corte (BTC-down Sharpe -0,003,
+  ruido; DD ainda melhora la).
+- Criterio NAO relaxado. BORDERLINE: candidato lider a OOS, mas a decisao de
+  carregar (dada a complexidade covariancia+solver e o -0,003) e de
+  integridade -> sinalizada ao usuario. Promocao segue OOS-gated. 523 testes.
+```
+
 ## 2026-07-12d (TSM Linha 2 position sizing -- sizing por conviccao REJEITADO)
 
 ```text

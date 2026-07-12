@@ -10,10 +10,12 @@ from src.research.tsm_trend import (
     TsmTrendConfig,
     TsmTrendError,
     TsmTrendResult,
+    _erc_reweight,
     _max_drawdown,
     _signal_raw_weights,
     _trend_strength_regime,
     _unit_gross,
+    erc_weights,
     run_tsm_trend_backtest,
     summarize_tsm_trend,
 )
@@ -290,3 +292,68 @@ def test_conviction_sizing_changes_book_but_keeps_unit_gross_invariant() -> None
         r1.tsm_net, r1.tsm_long_sleeve, r1.tsm_short_sleeve, strict=True
     ):
         assert long_s + short_s == pytest.approx(net)
+
+
+# --- TASK-TSM-003 ERC portfolio construction -----------------------------------
+
+
+def test_erc_weights_reduce_to_inverse_vol_when_uncorrelated() -> None:
+    # Diagonal covariance -> ERC == inverse-vol (w_i ~ 1/sigma_i).
+    cov = np.diag([0.04, 0.01])  # sigma = 0.2, 0.1
+    w = erc_weights(cov)
+    assert w.sum() == pytest.approx(1.0)
+    assert w[0] == pytest.approx(1.0 / 3.0, abs=1e-4)  # (1/0.2):(1/0.1) = 1:2
+    assert w[1] == pytest.approx(2.0 / 3.0, abs=1e-4)
+
+
+def test_erc_weights_equalize_risk_contributions() -> None:
+    cov = np.array([[0.04, 0.012, 0.0], [0.012, 0.09, 0.006], [0.0, 0.006, 0.0225]])
+    w = erc_weights(cov)
+    assert w.sum() == pytest.approx(1.0)
+    assert (w > 0).all()
+    rc = w * (cov @ w)  # risk contribution per asset
+    assert rc.max() - rc.min() == pytest.approx(0.0, abs=1e-6)  # all equal
+
+
+def test_erc_weights_symmetric_equal_variance_is_equal_weight() -> None:
+    cov = np.array([[0.04, 0.02], [0.02, 0.04]])  # equal var, positive corr
+    w = erc_weights(cov)
+    assert w[0] == pytest.approx(0.5) and w[1] == pytest.approx(0.5)
+
+
+def test_erc_weights_degenerate_sizes() -> None:
+    assert erc_weights(np.empty((0, 0))).shape == (0,)
+    assert erc_weights(np.array([[0.04]]))[0] == pytest.approx(1.0)
+
+
+def test_erc_reweight_preserves_sleeve_gross_and_keeps_base_on_warmup() -> None:
+    # Two long (A, C) and one short (B) at two rebalance rows; window=3.
+    idx = list(range(8))
+    hourly = pd.DataFrame(
+        {
+            "A": [0.01, -0.02, 0.015, -0.01, 0.02, -0.005, 0.01, -0.02],
+            "B": [-0.01, 0.005, -0.02, 0.01, -0.015, 0.02, -0.01, 0.005],
+            "C": [0.02, -0.01, 0.005, -0.02, 0.01, -0.015, 0.02, -0.01],
+        },
+        index=idx,
+    )
+    ls = pd.DataFrame({"A": [0.3, 0.3], "B": [-0.4, -0.4], "C": [0.3, 0.3]}, index=[2, 6])
+    out = _erc_reweight(ls, hourly, window=3)
+    # Row 2 has < 3 prior hours -> warm-up -> base kept unchanged.
+    assert out.loc[2].to_dict() == pytest.approx(ls.loc[2].to_dict())
+    # Row 6 has enough history -> ERC applied; per-sleeve gross + signs preserved.
+    row = out.loc[6]
+    assert row["A"] > 0 and row["C"] > 0 and row["B"] < 0  # signs
+    assert row[["A", "C"]].sum() == pytest.approx(0.6)  # long gross preserved
+    assert -row["B"] == pytest.approx(0.4)  # short sleeve (1 asset) -> base kept
+    assert row.abs().sum() == pytest.approx(1.0)  # unit gross
+
+
+def test_portfolio_erc_default_off_matches_base() -> None:
+    bars = _trending_bars(60)
+    base = TsmTrendConfig(lookback_hours=5, vol_window_hours=3, hold_hours=4)
+    off = TsmTrendConfig(lookback_hours=5, vol_window_hours=3, hold_hours=4, portfolio_erc=False)
+    r0 = run_tsm_trend_backtest(bars, base)
+    r1 = run_tsm_trend_backtest(bars, off)
+    for a, b in zip(r0.tsm_net, r1.tsm_net, strict=True):
+        assert a == pytest.approx(b)
