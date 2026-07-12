@@ -6,19 +6,30 @@ Supersedes `research_program_retrospective_2026-07.md` (which predates the
 funding-carry incremental result, the ML/FC-II work, and the forward paper
 track). Numbers are taken from the per-line reports in `reports/`, the
 pre-registrations in `docs/pre_registers/`, and `project_control/DECISIONS.md`.
-Last updated: 2026-07-11.
+Last updated: 2026-07-12.
 
 ## Bottom line
 
 **No strategy has passed its own pre-registered gate under realistic
 execution cost.** Across ~13 backtested lines, every one closed NAO_PASSA /
-REJECTED. The closest was **funding carry (incremental K=5): profit factor
-1.0904 vs a 1.10 gate**, net PnL positive. Its first genuinely out-of-sample
-month (June 2026) came in **negative (PF 0.78)** -- the in-sample near-miss
-did not persist. Every information-content family testable on public data is
-now closed; the one real directional signal found (`imbalance_price_divergence`
-at short horizon) is economically negligible. The frontier is external data
-(options / on-chain / high-res ticks), not more mining of the data we hold.
+REJECTED. The project's **strongest and only credible lead is the classic
+vol-targeted TSM** (Family A, FC-II-005..008): in-sample it beats buy-hold
+(Sharpe 1.04 vs -0.14, maxDD 0.35 vs 1.38) and survived EVERY in-sample
+stress (sub-period, leg, BTC-regime, cost breakeven 142 bps/leg, funding a
+~7% haircut) with literature-fixed (not tuned) params. Its only remaining
+gap is genuinely-new OOS -- a forward paper track is now accruing. The best
+backtested-gate result was **funding carry (incremental K=5): PF 1.0904 vs a
+1.10 gate**, but its first OOS month (June 2026) came in **negative (PF 0.78)**.
+
+**The data frontier is now fully exhausted.** Every information-content
+family on public data is closed, AND both free-tier external families are
+closed: on-chain (ALT-009, Coin Metrics community) and cross-venue funding
+dispersion (ALT-010, Coinalyze) both came back SEM_INFO. The cross-venue
+dispersion was the strongest external near-miss -- a real edge in ONE
+~12-month regime (2024-06/2025-05) that has since decayed. What remains
+requires a user spend/instrument decision: paid feeds (premium on-chain,
+options surface) or the options-book instrument pivot (Options/VRP, #1 in the
+literature). No more edge is extractable from free data.
 
 Verdict legend: **NAO_PASSA** = ran, failed its gate. **SEM_INFO** = no
 information-content. **NEAR-MISS** = closest to passing. **ABORT** =
@@ -142,15 +153,22 @@ sign-consistent across 3 fixed 12-month sub-periods. Pure diagnostic, no gate.
 5. **Drawdown / risk is a separate failure mode from signal.** TSREV and TSMOM
    had real edges that died on drawdown, not on gross PnL.
 6. **The market got more efficient over the sample.** Decaying sub-period
-   trajectories (Families F/H) are direct evidence -- simple public-data factors
-   are largely arbitraged out in this 2023-2026, 20-perp universe.
-7. **The frontier is data, not ideas or code.** Everything derivable from
-   OHLCV + funding + OI + aggregated L2 has been tested. Further edge, if it
-   exists, lives in data others don't cheaply have.
+   trajectories are direct evidence, and they now span FOUR families:
+   OI (F), order-flow (H), and -- freshly -- cross-venue funding dispersion
+   (ALT-010), whose edge was real in 2024-06/2025-05 and gone since. The
+   pattern is consistent: signals that once worked are arbitraged out in this
+   2023-2026, 20-perp universe. A near-miss that lives in one sub-period and
+   dies in the most recent is the rule's target, not a candidate.
+7. **The frontier is data you must pay for, not ideas or code.** Everything
+   derivable from OHLCV + funding + OI + aggregated L2 (public) AND from the
+   FREE tiers of the external families (on-chain via Coin Metrics community,
+   cross-venue funding via Coinalyze) has been tested and is null. Further
+   edge, if it exists, lives in PAID data (premium on-chain, options surface)
+   or a different instrument (options book) -- a spend/instrument decision.
 
 ---
 
-## External literature cross-check (2026-07-11)
+## External literature cross-check (updated 2026-07-12)
 
 Cross-checked against an external survey of the 2020-2026 crypto factor
 literature (industry + academic). Treat its citations skeptically (LLM-
@@ -166,17 +184,20 @@ not imply "survives realistic cost in our universe/period").
 | ML black-box (directional) | #10, Low (spread problem, overfit) | meta-labeling = in-sample mirage | STRONG |
 | Order flow (non-HFT) | #9, Null (eroded by fees) | info real, economically dead (FC-II-003) | STRONG |
 | Cross-sectional | #8, Weak (short-leg small caps) | CS-001/002 NAO_PASSA | STRONG |
-| Liquidity (Amihud) | #7, Medium (risk filter, not signal) | low prior; not a signal | agree |
-| Funding carry / basis | #6, evidence high but monetization MEDIUM, compressing post-ETF | near-miss 1.09; 1st OOS month negative | STRONG (post-ETF compression explains our "near" not "pass") |
+| Liquidity (Amihud) | #7, Medium (risk filter, not signal) | ALT-008 tested Amihud directly: SEM_INFO (rho ~0.00) | STRONG (confirmed not a directional signal) |
+| Funding carry / basis | #6, evidence high but monetization MEDIUM, compressing post-ETF | near-miss 1.09; 1st OOS month negative; ALT-010 cross-venue dispersion also SEM_INFO (one-regime, decayed) | STRONG (post-ETF compression explains our "near" not "pass") |
 | TSM (trend) | #3, High -- via **vol-targeting**, ~28d lookback | classic vol-targeted TSM (FC-II-005) now tested: Sharpe 1.04 vs buy-hold -0.14, maxDD 0.35 vs 1.38 IN-SAMPLE | RESOLVED in survey's favor (in-sample) -- the survey was right that vol-targeting is the key our Donchian TSMOM missed; OOS + regime check pending |
-| Fiat flows (ETF/stablecoin) | #4, High | OPEN (needs external data) | -- |
-| On-chain | #2, Very High | OPEN (needs external data) | -- |
-| **Options IV / Skew (VRP)** | **#1, Very High ("Santo Graal")** | OPEN (needs external data) | -- |
+| Fiat flows (ETF/stablecoin) | #4, High | cross-venue funding flow (ALT-010) SEM_INFO; ETF/stablecoin proper still needs paid data | partial (free proxy null) |
+| On-chain | #2, Very High | ALT-009 free tier (Coin Metrics community) SEM_INFO; near-miss on BTC/ETH exchange net-flow (sign-inconsistent). Premium feed untested (paid) | partial (free tier null) |
+| **Options IV / Skew (VRP)** | **#1, Very High ("Santo Graal")** | OPEN -- needs external data AND an instrument-class pivot (options book) | -- |
 
 Conclusions:
-- Everything the survey ranks low/null, we independently killed. Everything
-  it ranks highest is exactly what we marked OPEN (external-data families).
-  Strong external validation that the frontier is data acquisition.
+- Everything the survey ranks low/null, we independently killed. Of the
+  external-data families it ranks highest, the two testable on FREE tiers
+  (on-chain ALT-009, cross-venue flow ALT-010) came back null -- so the
+  free-data frontier is now exhausted too. Only PAID feeds (premium on-chain,
+  options surface) and the options-book pivot remain untested. External
+  validation that further edge requires spend, not more free mining.
 - The one actionable divergence WAS TSM -- and it resolved in the survey's
   favor. TASK-FC-II-005 tested classic vol-targeted TSM (sign of trailing
   ~28d return, size ~ 1/vol, unit gross, 5d rebalance, 6bps/leg): in-sample
