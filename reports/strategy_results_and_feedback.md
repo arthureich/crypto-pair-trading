@@ -62,6 +62,7 @@ sign-consistent across 3 fixed 12-month sub-periods. Pure diagnostic, no gate.
 | I -- Microstructure short-horizon (FC-II-003) | Family H features vs 1h/4h return | `imbalance_price_divergence` **TEM** (rho +0.035 @1h/4h, sign-consistent) | **ABORT** | First directional info hit in a new test, theory-coherent -- BUT gross decile spread ~1-2 bps vs 6-12 bps cost -> economically dead (like the z-score micro-reversion) |
 | E -- Flow (FC-II-004) | taker aggressor + long/short ratios | all 10 cells SEM_INFO (abs(rho)<0.011) | SEM_INFO | Aggressor flow and positioning ratios carry no directional info |
 | B+C -- Range-vol shape + Amihud (ALT-008) | Parkinson/Rogers-Satchell/close-location + Amihud/turnover/trade-size, 24h & 4h | all 12 cells SEM_INFO (max abs(rho) 0.027 < 0.03); range-vol magnitude highest but sub-threshold (vol-clustering, not directional); Amihud rho ~0.00 | SEM_INFO | Closes the DIRECTIONAL test of the two families the report cites (range vol, illiquidity premium). Public-data family sweep now complete: only external-data families remain |
+| G -- On-chain, free tier (ALT-009) | MVRV / active-addr growth / tx-count growth / BTC-ETH exchange net-flow (Coin Metrics community, ZERO cost), 1d & 7d | all 8 cells SEM_INFO by locked rule. Near-miss `exchange_netflow_z@7d` rho -0.0346 (clears magnitude, theory-coherent, 2 of 3 sub-periods negative) but sign-consistency FAILS (middle period flips) and BTC/ETH-only | SEM_INFO (near-miss noted) | First EXTERNAL family tested, at zero spend. Free proxies null -> paying for premium on-chain needs a stronger prior than "free was null". Cross-venue flow deferred (key-gated) |
 
 ---
 
@@ -113,8 +114,8 @@ sign-consistent across 3 fixed 12-month sub-periods. Pure diagnostic, no gate.
 | E -- Flow | CONCLUIDA | FC-II-004 all SEM_INFO |
 | I -- Microstructure (bars) | CONCLUIDA | book (H) null 24h; short-horizon (FC-II-003) info-but-ABORT |
 | J -- Regime | ~Concluida | info (risk/context); operational use (ALT-004) failed |
-| **F -- Options** | **OPEN** | needs external data (options IV / skew / surface) |
-| **G -- On-chain** | **OPEN** | needs external data |
+| **F -- Options** | **OPEN** | needs external data (options IV / skew / surface); instrument-class pivot (options book) |
+| G -- On-chain | CONCLUIDA (free tier) | ALT-009 on Coin Metrics community (ZERO cost): MVRV / active-addr / tx-count growth / BTC-ETH exchange net-flow, 1d & 7d, all 8 cells SEM_INFO by the locked rule. Near-miss `exchange_netflow_z@7d` (rho -0.0346, theory-coherent) clears magnitude but sign-consistency FAILS (middle sub-period flips) and is BTC/ETH-only. Premium on-chain (Glassnode/CryptoQuant) = user spend decision. Cross-venue flow still OPEN, key-gated (ALT-010) |
 | **H -- Sentiment** | **OPEN** | needs external data |
 | **I -- High-res ticks** | **OPEN** | needs external data (tick / full L2) |
 

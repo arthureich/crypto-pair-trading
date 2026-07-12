@@ -1,0 +1,265 @@
+{
+  "generated_at_utc": "2026-07-12T18:51:58.583296+00:00",
+  "horizons_days": [
+    1,
+    7
+  ],
+  "magnitude_threshold": 0.03,
+  "period_labels": [
+    "2023-06_2024-05",
+    "2024-06_2025-05",
+    "2025-06_2026-05"
+  ],
+  "results": {
+    "active_addr_growth_z@1d": {
+      "feature_name": "active_addr_growth_z",
+      "full_sample_n": 11033,
+      "full_sample_rho": 0.0071898812298811675,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": false,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 3014,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": 0.023528661545539203,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 4015,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": -0.006601639521293986,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 4004,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.012144660956372982,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "active_addr_growth_z@7d": {
+      "feature_name": "active_addr_growth_z",
+      "full_sample_n": 10967,
+      "full_sample_rho": 0.007027320150934033,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": false,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 3014,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": 0.023877935121977042,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 4015,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": -0.011727764254361596,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 3938,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.015308959674039398,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "exchange_netflow_z@1d": {
+      "feature_name": "exchange_netflow_z",
+      "full_sample_n": 2008,
+      "full_sample_rho": -0.016924917261789487,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": false,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 550,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": -0.05151780216253157,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 730,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": -0.02105805497543843,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 728,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.015727956275105898,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "exchange_netflow_z@7d": {
+      "feature_name": "exchange_netflow_z",
+      "full_sample_n": 1996,
+      "full_sample_rho": -0.03459597913150407,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": false,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 550,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": -0.0784052479211802,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 730,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": 0.004171460489300357,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 716,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": -0.040547834858393285,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "mvrv_z@1d": {
+      "feature_name": "mvrv_z",
+      "full_sample_n": 10040,
+      "full_sample_rho": 0.0068685421239058604,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": false,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 2750,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": -0.0038613028456719015,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 3650,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": -0.0019625397382460443,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 3640,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.0020639335808874935,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "mvrv_z@7d": {
+      "feature_name": "mvrv_z",
+      "full_sample_n": 9980,
+      "full_sample_rho": 0.023802965513471986,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": false,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 2750,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": -0.05201909311146536,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 3650,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": 0.018565154854678648,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 3580,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.00471481251759985,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "tx_count_growth_z@1d": {
+      "feature_name": "tx_count_growth_z",
+      "full_sample_n": 11033,
+      "full_sample_rho": 0.004539395688774924,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": false,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 3014,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": -0.008514041695128975,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 4015,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": 0.0010311121548236572,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 4004,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.018353182025106676,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "tx_count_growth_z@7d": {
+      "feature_name": "tx_count_growth_z",
+      "full_sample_n": 10967,
+      "full_sample_rho": 0.0002950861868980281,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": false,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 3014,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": 0.008434451380855653,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 4015,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": -0.006844805244229234,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 3938,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.001706004403771069,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    }
+  },
+  "target": "forward_return_h = daily_log_price[D+h] - daily_log_price[D]",
+  "task": "TASK-ALT-009 (ADR-0029): Family G on-chain, Coin Metrics community"
+}

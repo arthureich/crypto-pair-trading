@@ -1,5 +1,28 @@
 # Daily Log
 
+## 2026-07-12 (1a familia de DADO EXTERNO testada -- Familia G on-chain na camada gratuita; custo ZERO; nula)
+
+```text
+- Usuario escolheu (no brief de viabilidade) a trilha "on-chain + fluxo
+  cross-venue na camada gratuita": provar sinal de graca ANTES de gastar.
+- TASK-ALT-009 (ADR-0029): Familia G (On-Chain) via Coin Metrics community
+  (keyless, custo ZERO). Reconnaissance de catalogo: fluxos de exchange so
+  BTC/ETH (2/20); MVRV/active-addr/tx-count ~12-13/20; tudo 1d.
+- download_alt_onchain.py (parse puro testado com fixture, so fetch toca
+  rede) + diagnostic_alt_onchain.py (reusa info_content). 4 features
+  causais diarias vs retorno 1d/7d. Nota: metrica on-chain finaliza apos o
+  dia fechar -> shift(1) diario EXPLICITO extra (mais estrito que horario).
+- Bug real corrigido no run: open_time saiu em SEGUNDOS (timestamp
+  microssegundo + astype) -> 0 obs/subperiodo; corrigido com conversao ms
+  unit-independent.
+- Resultado: 8 celulas SEM_INFORMACAO pelo criterio travado. Near-miss (NAO
+  hit): exchange_netflow_z@7d rho -0,0346 (coerente: inflow=venda), 2/3
+  subperiodos negativos mas o do meio inverte -> sign-consistency falha; e
+  so BTC/ETH. Proxies gratis nulos -> on-chain premium exige prior mais
+  forte; decisao de gasto do usuario. Cross-venue continua key-gated
+  (ALT-010). 505 testes, ruff limpo.
+```
+
 ## 2026-07-11 (Funding Iteration 2: varredura de familias -- dado publico esgotado; fronteira e dado externo)
 
 ```text

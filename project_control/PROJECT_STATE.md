@@ -81,11 +81,26 @@ vol conhecido, sub-limiar e nao direcional; Amihud ~0,00). **B e C -> CONCLUIDA
 
 **Estado da fronteira:** familias A(lead, OOS-gated)/B/C/D/E/I-barras/J todas
 CONCLUIDAS em dado publico -- a varredura em dado que ja temos esta COMPLETA.
-So restam as familias do relatorio que exigem dado EXTERNO: F/opcoes (VRP,
-#1 no relatorio), G/on-chain (#2), fluxo cross-venue (#4), I/ticks. A
-aquisicao desses dados e decisao de investimento do usuario. Proximo passo
-recomendado: um brief de viabilidade (fontes, custo, licenca -- SEM baixar
-nada), e entao PARAR para a decisao do usuario.
+
+**TASK-ALT-009 (ADR-0029) -- 1a familia de dado EXTERNO, custo ZERO:** o
+usuario escolheu (no brief de viabilidade) a trilha gratuita on-chain +
+cross-venue. Familia G (On-Chain) testada na camada Coin Metrics community
+(keyless): 4 features causais diarias (MVRV, active-addr growth, tx-count
+growth, exchange net-flow BTC/ETH) vs retorno diario 1d/7d. Resultado: 8
+celulas SEM_INFORMACAO pelo criterio travado. Near-miss documentado (NAO hit):
+`exchange_netflow_z@7d` rho -0,0346 coerente com a teoria (entrada em exchange
+= pressao de venda) mas sign-consistency falha (subperiodo do meio inverte) e
+so BTC/ETH. Leitura: proxies gratis nulos -> pagar por on-chain premium
+(Glassnode/CryptoQuant) exige prior mais forte que "o gratis foi nulo". Ver
+`reports/alt_onchain_diagnostic.md`.
+
+**Fronteira restante:** F/opcoes-VRP (#1 no relatorio, mas e um PIVO de
+instrumento -- livro de opcoes, nao pair-trade de perp), G-premium/on-chain
+pago (#2), fluxo cross-venue (#4, key-gated -> TASK-ALT-010), I/ticks. Tudo
+exige decisao de gasto/instrumento do usuario. A metade gratis da trilha
+escolhida (on-chain) esgotou-se nula; a outra metade (cross-venue) espera uma
+chave gratuita Coinalyze/Coinglass. Nada mais a fazer em dado gratis sem uma
+decisao do usuario.
 
 ## Atualizacao 2026-07-10: Funding Iteration 2 (ADR-0027) aberta; TASK-FC-II-001 (position sizing por risco) construida; sinal de dev tambem CAUTELAR; gate BLOQUEADO ate OOS novo
 

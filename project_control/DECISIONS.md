@@ -2249,3 +2249,84 @@ Build `scripts/diagnostic_alt_range_liquidity.py` following the
 `diagnostic_fc_flow.py` template; write `reports/alt_range_liquidity_diagnostic.md`
 and a results JSON. Update the ledger family matrix, `PROJECT_STATE.md`,
 `TASK_BOARD.md`, `TEST_MATRIX.md`, `DAILY_LOG.md`.
+
+## ADR-0029 - Open Family G (On-Chain) On The Zero-Cost Coin Metrics Community Tier; Cross-Venue Flow Deferred To A Key-Gated Follow-Up
+
+## Status
+
+Accepted
+
+## Context
+
+The public-data family sweep is complete (ADR-0028). The user chose, from
+the external-data feasibility brief, the "free-tier on-chain + cross-venue
+flow diagnostic" path -- the disciplined zero-spend move: prove there is
+signal on a free slice BEFORE paying for any fuller feed. Availability
+reconnaissance (catalog probes only, no committed analysis) established
+what the Coin Metrics **community** API exposes, keyless, for our 20 base
+assets at 1d frequency:
+
+- Exchange flows (`FlowInExNtv`/`FlowOutExNtv`) -- the highest-prior
+  on-chain signal in the literature -- exist for BTC and ETH ONLY (2/20).
+- `CapMVRVCur` (MVRV, valuation) 12/20; `AdrActCnt` (active addresses)
+  and `TxCnt` 13/20; `SplyCur` 12/20 -- a real multi-asset daily panel.
+- Several richer metrics (`TxTfrValAdjUSD`, `SplyActEver`, `CapRealUSD`)
+  are premium (HTTP 403 on community) -- out of scope for a zero-spend
+  test.
+
+Cross-venue funding dispersion / aggregated OI (the "flow" half of the
+chosen path) needs Coinalyze/Coinglass, which require a free API key the
+environment does not have. Rather than block the whole path on a missing
+key, this ADR splits it: do the fully-keyless on-chain half now, defer
+cross-venue to a small follow-up once a free key is provided.
+
+## Decision
+
+Pre-register `TASK-ALT-009`: a Family G (On-Chain) information-content
+diagnostic on the Coin Metrics community tier (keyless, zero spend), same
+ADR-0019 methodology (Spearman rho + sign-consistency across the three
+fixed sub-periods, |rho| >= 0.03), adapted to the data's **daily**
+frequency. All features causal (metric of the prior day, shift(1) before
+any rolling; the forward daily return is the sole forward-looking term).
+
+Pre-declared features (frozen before the download is analyzed):
+
+- `mvrv_z` -- z-scored `CapMVRVCur` (valuation extreme; hypothesis: high
+  MVRV -> negative forward return, mean-reversion). ~12-asset panel.
+- `active_addr_growth_z` -- z-scored daily change in `AdrActCnt`
+  (adoption/attention momentum). ~13-asset panel.
+- `tx_count_growth_z` -- z-scored daily change in `TxCnt` (network-usage
+  momentum). ~13-asset panel.
+- `exchange_netflow_z` -- z-scored `(FlowInExNtv - FlowOutExNtv)/SplyCur`
+  (inflow = sell pressure, bearish). BTC/ETH ONLY -- explicitly flagged
+  as low cross-sectional breadth (2 assets); reported as pooled daily obs,
+  NOT read as a cross-sectional result.
+
+Horizons: daily forward return h in {1d, 7d} (on-chain signals are slow;
+1d is the finest daily resolution, 7d a weekly swing). 4 features x 2
+horizons = 8-cell grid; three-sub-period sign-consistency is the
+pre-committed multiple-testing defense. Window 2023-06-01..2026-05-31 (the
+same three sub-periods as every prior diagnostic); daily price from
+resampling the existing sprint7 hourly bars. Pure diagnostic: NO economic
+gate, NO strategy. A hit earns only the descriptive economic check before
+any strategy pre-registration (the FC-II-003 lesson).
+
+## Consequences
+
+Zero spend, zero paid data. If nothing passes, Family G (on-chain) closes
+on the free tier -- and paying for premium on-chain metrics (Glassnode /
+CryptoQuant / CM premium) would need a stronger prior than "the free
+proxies were null". If a feature passes, it earns the economic check and
+possibly justifies a paid richer feed -- a separate user decision. Either
+way the cross-venue flow half remains open, gated on a free API key
+(a separate small pre-registration, `TASK-ALT-010`, when the key exists).
+
+## Migration
+
+Add `docs/pre_registers/TASK-ALT-009.md` and a `TASK-ALT-009` board row.
+Build `scripts/download_alt_onchain.py` (Coin Metrics community pull ->
+normalized daily CSV) with a JSON-parsing fixture test, and
+`scripts/diagnostic_alt_onchain.py` (reuses `info_content.py`). Write
+`reports/alt_onchain_diagnostic.md` + results JSON. Update the ledger
+family matrix, `PROJECT_STATE.md`, `TASK_BOARD.md`, `TEST_MATRIX.md`,
+`DAILY_LOG.md`.
