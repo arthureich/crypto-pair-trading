@@ -85,8 +85,15 @@ class TsmTrendSummary:
     mean_turnover: float
 
 
-def run_tsm_trend_backtest(bars: pd.DataFrame, config: TsmTrendConfig) -> TsmTrendResult:
-    """Vectorized classic vol-targeted TSM on hourly bars."""
+def run_tsm_trend_backtest(
+    bars: pd.DataFrame, config: TsmTrendConfig, keep_mask: pd.DataFrame | None = None
+) -> TsmTrendResult:
+    """Vectorized classic vol-targeted TSM on hourly bars.
+
+    `keep_mask` (TASK-TSM-004): optional per-(rebalance, symbol) 1/0 frame; legs
+    with 0 are dropped and the survivors renormalized to unit gross (isolates
+    leg SELECTION from sizing). Default None leaves the base book untouched.
+    """
 
     required = {"symbol", "open_time", "log_price"}
     if config.include_funding:
@@ -126,6 +133,11 @@ def run_tsm_trend_backtest(bars: pd.DataFrame, config: TsmTrendConfig) -> TsmTre
         # is below its trailing 90d causal median (low-conviction / choppy).
         regime_on = _trend_strength_regime(trailing, vol).loc[rows]
         ls_weight = ls_weight.mul(regime_on, axis=0)
+
+    if keep_mask is not None:
+        # TASK-TSM-004: drop filtered-out legs, renormalize survivors to unit gross.
+        mask = keep_mask.reindex(index=ls_weight.index, columns=ls_weight.columns).fillna(0.0)
+        ls_weight = _unit_gross(ls_weight * mask)
 
     tsm_gross = (ls_weight * forward_r).sum(axis=1, skipna=True)
     long_sleeve = (ls_weight.clip(lower=0.0) * forward_r).sum(axis=1, skipna=True)

@@ -1,5 +1,24 @@
 # Daily Log
 
+## 2026-07-12f (TSM Linha 4 meta-labeling / ML como filtro -- REJEITADO; replay da mirage ML-001)
+
+```text
+- Decisao ERC (Linha 3) resolvida: usuario delegou ("continue") -> ERC
+  CARREGADO como candidato lider a OOS (o -0,003 e ruido; criterio nao
+  relaxado; promocao segue OOS-gated).
+- TASK-TSM-004 (Linha 4). Literatura: Lopez de Prado / Hudson & Thames
+  (secundario filtra falsos positivos do primario). Precedente ML-001
+  (mirage) -> minimal-DoF: 1 modelo FROZEN (GradientBoosting default), 1
+  threshold FROZEN (0,5), 6 features causais, purged+embargoed walk-forward
+  CV. keep_mask novo param em run_tsm_trend_backtest (base intacta).
+- Resultado (DEV, OUT-OF-FOLD): edge por perna raso (label rate ~0,507);
+  Sharpe OOF 0,784 -> 0,412 (PIOR), maxDD 0,347 -> 0,503 (PIOR); filtro
+  ganhou so em 3/5 folds. REJEITADO/CAUTELAR -- replay exato da ML-001: ML
+  concentra/curve-fita edge fino, ganhos por-fold nao sobrevivem OOF purgado.
+- Linha 4 encerrada; seguir para Linha 5 (ensemble). 7 testes novos, 530 na
+  suite, ruff limpo.
+```
+
 ## 2026-07-12e (TSM Linha 3 portfolio construction -- ERC = 1a melhoria ampla; BORDERLINE, decisao de integridade)
 
 ```text

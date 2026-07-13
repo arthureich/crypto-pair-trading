@@ -127,11 +127,15 @@ familias novas (Options primeiro, gratis antes de pago).
   sleeve. Dev: Sharpe 0,970->1,039 (+0,069), maxDD 0,347->0,326 (melhor),
   turnover 0,457->0,396 (MENOR). Melhor nos 3 subperiodos, em todo custo,
   com/sem funding, DD melhor em todo corte. Erra a LETRA estrita do criterio
-  so em BTC-down (Sharpe -0,003, ruido). **Decisao de integridade pendente do
-  usuario**: carregar como candidato OOS lider (apesar do custo de
-  complexidade covariancia+solver e do -0,003) ou fechar pela letra estrita.
-  Criterio NAO relaxado; promocao segue OOS-gated. Ver
-  `reports/tsm_portfolio_erc_dev.md`.
+  so em BTC-down (Sharpe -0,003, ruido). **Decisao resolvida (usuario delegou):
+  ERC CARREGADO como candidato lider a OOS** -- o -0,003 e ruido, criterio NAO
+  relaxado, promocao segue OOS-gated. Ver `reports/tsm_portfolio_erc_dev.md`.
+- **Linha 4 (meta-labeling / ML como filtro), TASK-TSM-004: REJEITADA.**
+  GradientBoosting (frozen) preve P(perna lucrativa); dropa low-prob via purged
+  walk-forward CV. Dev OUT-OF-FOLD: Sharpe 0,784 -> 0,412 (pior), maxDD 0,347 ->
+  0,503 (pior); ganhou so 3/5 folds. Edge por perna raso (~0,50) -> ML fabrica
+  ganhos por-fold que nao sobrevivem OOF purgado (replay da mirage ML-001).
+  Proxima: Linha 5 (ensemble). Ver `reports/tsm_meta_labeling_dev.md`.
 
 **AVENIDA DE DADO EXTERNO GRATIS ESGOTADA:** on-chain (ALT-009) + cross-venue
 (ALT-010) ambos nulos. O que resta exige decisao de GASTO ou de INSTRUMENTO do
