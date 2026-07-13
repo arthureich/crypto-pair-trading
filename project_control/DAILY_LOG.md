@@ -1,5 +1,22 @@
 # Daily Log
 
+## 2026-07-12i (VRP-timing como estrategia -- NAO_PASSA standalone; sinal real mas melhor como feature)
+
+```text
+- Usuario escolheu pre-registrar um backtest de timing VRP. TASK-ALT-012:
+  src/research/vrp_timing.py (compute_vrp_z identico a ALT-011 + backtest
+  long/short sign(vrp_z) semanal BTC/ETH; 8 testes) + dev script c/ bateria.
+- Resultado (DEV): primaria long/short Sharpe 0,493 vs buy-hold 0,349
+  (melhor), net melhor, MAS maxDD 0,787 vs 0,774 (pior) e INCONSISTENTE
+  (subperiodo 2024-25 negativo; so ganha em 2025-26). NAO_PASSA o criterio.
+- Corrige o vies do teste de decil: o spread de 197 bps era inflado por
+  amostragem sobreposta; a estrategia semanal real e modesta/drawdown-heavy.
+- Secundaria long-only melhor (Sharpe 0,601, maxDD 0,500) MAS descritiva-only
+  (nao promove ex-post; precisaria de pre-registro proprio).
+- Conclusao honesta: VRP e sinal REAL (info+economia), mas melhor como
+  FEATURE/overlay, nao trade standalone. Sem promocao; OOS-gated. 546 testes.
+```
+
 ## 2026-07-12h (Familia F Options aberta -- 1o HIT em dado externo: VRP preve retorno 7d de BTC/ETH)
 
 ```text

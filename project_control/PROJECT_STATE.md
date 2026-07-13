@@ -167,11 +167,16 @@ top-vs-bottom-decil **196,8 bps/7d vs ~12 bps de custo** (net +184,8, monotonic.
 +0,67) -> **1o sinal do projeto a passar AMBAS as barras (informacao E economia
 bruta)**, muito diferente do FC-II-003. RESSALVAS: tail-driven (nao monotono
 limpo), holds sobrepostos amostrados diariamente (superestima estrategia real),
-in-sample, BTC/ETH-only -> e um **LEAD, nao edge validado**. Proximo passo (task
-separada, pre-registrada): backtest proprio de timing VRP BTC/ETH semanal com
-custo + gate OOS; ou usar vrp_z como feature no book de perp. VRP-harvesting
-(Angle A, livro de opcoes) e o skew/superficie seguem decisoes do usuario. Ver
-`reports/alt_vrp_economic_check.md`.
+in-sample, BTC/ETH-only -> e um **LEAD, nao edge validado**. Backtest de estrategia FEITO (TASK-ALT-012):
+a primaria long/short sign(vrp_z) semanal deu Sharpe 0,493 vs buy-hold 0,349
+(melhor) mas maxDD pior (0,787 vs 0,774) e inconsistente entre subperiodos ->
+**NAO_PASSA** o criterio. O spread de 197 bps do teste de decil era inflado por
+amostragem sobreposta; a estrategia semanal real e modesta/drawdown-heavy. A
+secundaria long-only parece melhor (Sharpe 0,601, maxDD 0,500) mas e
+descritiva-only (nao promovida ex-post -- precisaria de pre-registro proprio).
+**Conclusao: VRP e sinal REAL, mas melhor como FEATURE/overlay, nao trade
+standalone.** Skew/superficie e VRP-harvesting (Angle A, livro de opcoes) seguem
+intocados (decisoes do usuario). Ver `reports/alt_vrp_timing_dev.md`.
 
 **Avenida de dado externo GRATIS:** on-chain (ALT-009) e cross-venue funding
 (ALT-010) nulos; MAS options/VRP (ALT-011) deu hit em dado gratis (Deribit
