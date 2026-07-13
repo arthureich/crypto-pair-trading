@@ -34,14 +34,15 @@ on-chain) are user spend/instrument decisions.
 **TSM Improvement Program (ADR-0031), 6 lines complete:** regime filter,
 conviction sizing, and meta-labeling all REJECTED (each failed the robustness
 battery -- reinforcing that the un-tuned base is hard to beat); execution
-closed as unjustified (cost-insensitive strategy). THREE improvements were
-carried forward as pre-registered OOS candidates: **volatility targeting**
-(TSM-007, the CLEANEST -- Sharpe 0.97->1.11, better DD, better in every cut),
-**ERC portfolio construction** (pure-TSM, +0.069 dev Sharpe, lower turnover), and
-the **trend+carry ensemble** (largest dev gain, blend Sharpe 1.51, but
-carry-OOS-fragile). All are DEVELOPMENT results; only untouched OOS promotes.
-The un-tuned base survived regime/conviction/meta-labeling/execution attempts;
-vol-targeting + ERC are the robust, literature-grounded wins.
+closed as unjustified (cost-insensitive strategy). the **combined ERC + vol-targeting TSM** (TSM-008) is the LEAD pre-registered
+OOS candidate: dev Sharpe **0.97 -> 1.18**, maxDD **0.347 -> 0.309**, best in
+every sub-period / BTC regime / cost level. It composes two independently-
+validated, orthogonal wins -- ERC (cross-sectional risk allocation) and
+volatility targeting (time-series exposure) -- which stack complementarily.
+The trend+carry ensemble (Sharpe 1.51 blend) is a secondary candidate but
+carry-OOS-fragile. All DEVELOPMENT results; only untouched OOS promotes. The
+un-tuned base survived every rejected attempt (regime/conviction/meta-labeling/
+execution/VRP); the robust, literature-grounded wins are ERC + vol-targeting.
 
 Verdict legend: **NAO_PASSA** = ran, failed its gate. **SEM_INFO** = no
 information-content. **NEAR-MISS** = closest to passing. **ABORT** =
@@ -105,7 +106,8 @@ sign-consistent across 3 fixed 12-month sub-periods. Pure diagnostic, no gate.
 | TSM-004 -- meta-labeling filter (TSM Line 4) | GradientBoosting secondary model (6 causal features, threshold 0.5) predicts P(leg profitable); drop low-prob legs; purged+embargoed walk-forward CV | OOF Sharpe **0.784 -> 0.412** (worse); maxDD 0.347 -> **0.503 (worse)**; helped only 3/5 folds | **REJECTED (cautionary)** | Base leg-level precision ~0.50 (razor-thin edge). The filter manufactures fold-specific gains (3/5 folds) that do NOT survive purged out-of-fold evaluation -- OOF Sharpe nearly halves. Textbook replay of the ML-001 mirage: ML concentrates/curve-fits a thin edge, it doesn't create one. Minimal-DoF design (1 frozen model, 1 threshold) still fails. Line 4 closed negative |
 | TSM-005 -- trend+carry ensemble (TSM Line 5) | equal-risk 50/50 blend of TSM (trend) + funding-carry K=5 (carry) weekly return streams | **Blend Sharpe 0.987 -> 1.510** (+0.523); corr **-0.037**; blend maxDD 4.90 < TSM 5.88; beats TSM in ALL 3 sub-periods | **CARRIED FORWARD (candidate; carry-OOS-fragile)** | Strongest dev result in the project + cleanest criterion pass. Genuine trend/carry diversification: carry covers the TSM's weak 2024-25 (TSM 0.65 / carry 1.65), TSM covers carry's weak 2025-26 (carry 0.47 / TSM 0.96), near-zero corr throughout. **BUT the carry leg's own K=5 already posted a NEGATIVE first OOS month (PF 0.78)** -> the blend inherits that OOS fragility; equal-risk uses in-sample vol. Carried forward OOS-gated, explicitly weaker than ERC (which is pure-TSM, no fragile-carry dependency) |
 | TSM-006 -- execution (TSM Line 6) | (reasoned closure -- no build) | -- | **CLOSED (not justified)** | TSM is highly cost-INSENSITIVE (FC-II-007 breakeven 142 bps/leg; Sharpe moves ~0.01-0.02 between 6 and 15 bps), so execution optimization's max theoretical gain is negligible; Sprint 10 already showed passive/maker execution doesn't rescue edge and adds fill risk. Per ADR-0031 (prefer simple robust gains) the line isn't justified for a slow strategy. Completes the 6-line program |
-| TSM-007 -- volatility targeting (managed-vol overlay) | scale each rebalance's return inversely to the strategy's own trailing realized vol (target ~const vol, avg leverage ~1), Moreira-Muir | Sharpe **0.970 -> 1.107 (+0.137)**; maxDD 0.347 -> **0.329 (better)** | **CARRIED FORWARD (cleanest OOS candidate)** | Better in ALL 3 sub-periods, BOTH BTC regimes, and EVERY cost level (by more at higher cost) -- passes the criterion more cleanly than ERC (no borderline miss). Despite the literature caveat that managed-vol is "muted for pure trend," the TSM's own return vol is exploitably time-varying. Third TSM OOS candidate (with ERC + ensemble); pure-TSM, no fragile dependency |
+| TSM-007 -- volatility targeting (managed-vol overlay) | scale each rebalance's return inversely to the strategy's own trailing realized vol (target ~const vol, avg leverage ~1), Moreira-Muir | Sharpe **0.970 -> 1.107 (+0.137)**; maxDD 0.347 -> **0.329 (better)** | **CARRIED FORWARD** | Better in ALL 3 sub-periods, BOTH BTC regimes, and EVERY cost level (by more at higher cost) -- passes cleanly. Despite the "muted for pure trend" caveat, the TSM's own return vol is exploitably time-varying. Pure-TSM. (Now subsumed by the combined TSM-008.) |
+| TSM-008 -- **combined ERC + vol-targeting** | compose the two clean independent wins (cross-sectional ERC risk allocation + time-series vol-targeting) | Sharpe **0.970 -> 1.183** (best); maxDD 0.347 -> **0.309 (lowest)**; net highest | **LEAD OOS CANDIDATE** | The two overlays are COMPLEMENTARY (orthogonal risk dimensions): combined beats the best single component (vol-target 1.107) by +0.076, with the lowest drawdown, best in ALL 3 sub-periods, BOTH BTC regimes, and EVERY cost level. Best TSM config found (Sharpe 1.18, maxDD 0.31); the single preferred OOS candidate, superseding the standalone ERC/vol-target. Principled synthesis (both validated independently first), not data-snooping. Pure-TSM. OOS-gated |
 
 ---
 

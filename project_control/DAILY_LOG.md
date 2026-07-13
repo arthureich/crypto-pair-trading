@@ -1,5 +1,20 @@
 # Daily Log
 
+## 2026-07-13b (TSM combinado ERC + vol-targeting -- MELHOR config; candidato OOS lider)
+
+```text
+- Usuario escolheu testar a sintese das duas melhorias limpas (ERC + vol-tgt).
+  TASK-TSM-008: principled (cada uma validada sozinha antes; mecanismos
+  ortogonais -- cross-sectional vs serie temporal), 1 variante combinada.
+- scripts/run_tsm_combined_dev.py compoe modulos ja testados (portfolio_erc +
+  apply_vol_target), sem codigo de alfa novo; compara 4 variantes.
+- Resultado (DEV): Sharpe base 0,970 -> ERC 1,039 -> vol 1,107 -> COMBINADO
+  1,183 (+0,076 sobre o melhor isolado), maxDD 0,309 (o menor), net o maior.
+  COMPLEMENTARES: combinado melhor em TODOS os subperiodos, ambos regimes BTC
+  e todo custo. PASSA -> CANDIDATO LIDER a OOS. Melhor config do TSM (1,18 /
+  0,31), supersede os isolados. Puro-TSM. Sem promocao; OOS-gated. 552 testes.
+```
+
 ## 2026-07-13 (Options-skew PAID-GATED; volatility-targeting do TSM PASSA limpo -- 3o candidato OOS)
 
 ```text
