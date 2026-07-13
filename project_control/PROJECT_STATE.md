@@ -135,7 +135,24 @@ familias novas (Options primeiro, gratis antes de pago).
   walk-forward CV. Dev OUT-OF-FOLD: Sharpe 0,784 -> 0,412 (pior), maxDD 0,347 ->
   0,503 (pior); ganhou so 3/5 folds. Edge por perna raso (~0,50) -> ML fabrica
   ganhos por-fold que nao sobrevivem OOF purgado (replay da mirage ML-001).
-  Proxima: Linha 5 (ensemble). Ver `reports/tsm_meta_labeling_dev.md`.
+  Ver `reports/tsm_meta_labeling_dev.md`.
+- **Linha 5 (ensemble), TASK-TSM-005: CARREGADA p/ OOS (carry-fragil).** Blend
+  equal-risk TSM + funding-carry K=5 (streams semanais). Dev: TSM 0,987 / carry
+  1,109 / BLEND 1,510, corr -0,037, maxDD melhor; bate o TSM nos 3 subperiodos
+  (diversificacao real trend/carry). Passa o criterio limpo -> candidato OOS,
+  MAS o carry ja deu 1o mes OOS negativo -> herda fragilidade; mais fraco que o
+  ERC (puro-TSM). Ver `reports/tsm_ensemble_dev.md`.
+- **Linha 6 (execucao), TASK-TSM-006: ENCERRADA (nao-justificada).** TSM
+  cost-insensitive (FC-II-007 breakeven 142 bps) + Sprint 10 maker null ->
+  otimizar execucao nao se justifica (ADR-0031 regra 6).
+
+**PROGRAMA DE MELHORIA DO TSM (ADR-0031) COMPLETO -- 6 linhas.** Regime/sizing/
+meta-labeling REJEITADOS (reforcam que a base nao-tunada e dificil de bater);
+execucao encerrada. Candidatos vivos, ambos OOS-gated: **ERC** (o mais limpo --
+puro-TSM, +0,069 Sharpe, menos turnover) e **ensemble trend+carry** (maior
+ganho dev, Sharpe 1,51, mas carry-fragil OOS). Proximo passo do plano: familia
+**Options/VRP** (#1 do relatorio) -- exige revisao de literatura profunda e,
+provavelmente, dado externo (gratis primeiro).
 
 **AVENIDA DE DADO EXTERNO GRATIS ESGOTADA:** on-chain (ALT-009) + cross-venue
 (ALT-010) ambos nulos. O que resta exige decisao de GASTO ou de INSTRUMENTO do

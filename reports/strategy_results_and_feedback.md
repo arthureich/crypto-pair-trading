@@ -31,6 +31,15 @@ requires a user spend/instrument decision: paid feeds (premium on-chain,
 options surface) or the options-book instrument pivot (Options/VRP, #1 in the
 literature). No more edge is extractable from free data.
 
+**TSM Improvement Program (ADR-0031), 6 lines complete:** regime filter,
+conviction sizing, and meta-labeling all REJECTED (each failed the robustness
+battery -- reinforcing that the un-tuned base is hard to beat); execution
+closed as unjustified (cost-insensitive strategy). TWO improvements were
+carried forward as pre-registered OOS candidates: **ERC portfolio construction**
+(the cleanest -- pure-TSM, +0.069 dev Sharpe, lower turnover) and the
+**trend+carry ensemble** (largest dev gain, blend Sharpe 1.51 vs 0.99, but
+carry-OOS-fragile). Both are DEVELOPMENT results; only untouched OOS promotes.
+
 Verdict legend: **NAO_PASSA** = ran, failed its gate. **SEM_INFO** = no
 information-content. **NEAR-MISS** = closest to passing. **ABORT** =
 real information but economically negligible. **BLOCKED** = pre-registered,
@@ -88,6 +97,8 @@ sign-consistent across 3 fixed 12-month sub-periods. Pure diagnostic, no gate.
 | TSM-002 -- conviction sizing (TSM Line 2) | weight ~ trailing/vol (risk-adjusted trend strength) vs base sign/vol; same unit-gross exposure (knob-free linear) | Sharpe **0.970 -> 0.888** (worse); maxDD 0.347 -> **0.390 (worse)**; turnover 0.457 -> **0.566 (higher)** | **REJECTED** | Worse on ALL headline metrics + worse in the recent sub-period, BTC-up, and every cost level. The literature's turnover reduction comes from a SATURATING response function (tuning constants, deliberately excluded); the knob-free LINEAR strength-scaling churns MORE (weights swing with continuous strength). Conviction sizing does not help the TSM. Line 2 closed negative |
 | TSM-003 -- ERC portfolio construction (TSM Line 3) | equal risk contribution within each sleeve (correlation-aware, 90d covariance), preserving base direction + L/S gross | Sharpe **0.970 -> 1.039 (+0.069)**; maxDD 0.347 -> **0.326 (better)**; turnover 0.457 -> **0.396 (LOWER)** | **CARRIED FORWARD (first broad improvement; OOS candidate)** | The FIRST hypothesis to improve the TSM broadly: better in ALL 3 sub-periods, at EVERY cost level, with/without funding, and drawdown better in every cut; turnover DROPS (the exact ERC mechanism -> economically explained, not curve-fit). Misses the strict pre-registered letter on ONE cut only (BTC-down Sharpe -0.003, noise; DD still better there). Criterion NOT relaxed; **carried forward as the TSM's leading pre-registered OOS candidate** (user-delegated call). Cost = complexity (covariance + solver) for +0.069 dev Sharpe. Promotion still OOS-gated |
 | TSM-004 -- meta-labeling filter (TSM Line 4) | GradientBoosting secondary model (6 causal features, threshold 0.5) predicts P(leg profitable); drop low-prob legs; purged+embargoed walk-forward CV | OOF Sharpe **0.784 -> 0.412** (worse); maxDD 0.347 -> **0.503 (worse)**; helped only 3/5 folds | **REJECTED (cautionary)** | Base leg-level precision ~0.50 (razor-thin edge). The filter manufactures fold-specific gains (3/5 folds) that do NOT survive purged out-of-fold evaluation -- OOF Sharpe nearly halves. Textbook replay of the ML-001 mirage: ML concentrates/curve-fits a thin edge, it doesn't create one. Minimal-DoF design (1 frozen model, 1 threshold) still fails. Line 4 closed negative |
+| TSM-005 -- trend+carry ensemble (TSM Line 5) | equal-risk 50/50 blend of TSM (trend) + funding-carry K=5 (carry) weekly return streams | **Blend Sharpe 0.987 -> 1.510** (+0.523); corr **-0.037**; blend maxDD 4.90 < TSM 5.88; beats TSM in ALL 3 sub-periods | **CARRIED FORWARD (candidate; carry-OOS-fragile)** | Strongest dev result in the project + cleanest criterion pass. Genuine trend/carry diversification: carry covers the TSM's weak 2024-25 (TSM 0.65 / carry 1.65), TSM covers carry's weak 2025-26 (carry 0.47 / TSM 0.96), near-zero corr throughout. **BUT the carry leg's own K=5 already posted a NEGATIVE first OOS month (PF 0.78)** -> the blend inherits that OOS fragility; equal-risk uses in-sample vol. Carried forward OOS-gated, explicitly weaker than ERC (which is pure-TSM, no fragile-carry dependency) |
+| TSM-006 -- execution (TSM Line 6) | (reasoned closure -- no build) | -- | **CLOSED (not justified)** | TSM is highly cost-INSENSITIVE (FC-II-007 breakeven 142 bps/leg; Sharpe moves ~0.01-0.02 between 6 and 15 bps), so execution optimization's max theoretical gain is negligible; Sprint 10 already showed passive/maker execution doesn't rescue edge and adds fill risk. Per ADR-0031 (prefer simple robust gains) the line isn't justified for a slow strategy. Completes the 6-line program |
 
 ---
 

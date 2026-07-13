@@ -1,0 +1,51 @@
+{
+  "generated_at_utc": "2026-07-13T01:40:21.505905+00:00",
+  "overall": {
+    "blend_max_drawdown": 4.895057032314119,
+    "blend_sharpe": 1.5096738234106652,
+    "carry_sharpe": 1.1085830501952803,
+    "correlation": -0.03672139691432321,
+    "n_weeks": 157,
+    "tsm_max_drawdown": 5.883139965855589,
+    "tsm_sharpe": 0.9868513986068767
+  },
+  "sub_periods": [
+    {
+      "period": "2023-06_2024-05",
+      "summary": {
+        "blend_max_drawdown": 1.7843503687798077,
+        "blend_sharpe": 1.68769815958521,
+        "carry_sharpe": 1.0178977023368123,
+        "correlation": 0.053605185293869775,
+        "n_weeks": 52,
+        "tsm_max_drawdown": 3.770446203364877,
+        "tsm_sharpe": 1.4320043656828694
+      }
+    },
+    {
+      "period": "2024-06_2025-05",
+      "summary": {
+        "blend_max_drawdown": 4.3021572830188655,
+        "blend_sharpe": 1.586805603620048,
+        "carry_sharpe": 1.6501168251218272,
+        "correlation": 0.048508784052938375,
+        "n_weeks": 52,
+        "tsm_max_drawdown": 5.208283510679695,
+        "tsm_sharpe": 0.647749495903979
+      }
+    },
+    {
+      "period": "2025-06_2026-05",
+      "summary": {
+        "blend_max_drawdown": 2.0713239019888556,
+        "blend_sharpe": 1.1895566091778558,
+        "carry_sharpe": 0.4677692026467035,
+        "correlation": -0.28410728623707077,
+        "n_weeks": 52,
+        "tsm_max_drawdown": 4.321995292777141,
+        "tsm_sharpe": 0.9556213639123687
+      }
+    }
+  ],
+  "task": "TASK-TSM-005 trend+carry ensemble dev run (ADR-0031) -- DEVELOPMENT"
+}

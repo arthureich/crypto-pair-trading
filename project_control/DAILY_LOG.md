@@ -1,5 +1,27 @@
 # Daily Log
 
+## 2026-07-12g (TSM Linhas 5-6 -- ensemble trend+carry CARREGADO (carry-fragil); execucao encerrada; PROGRAMA COMPLETO)
+
+```text
+- TASK-TSM-005 (Linha 5, ensemble). Literatura: Koijen et al. "Carry" + CTA
+  (trend+carry diversificam). Blend equal-risk 50/50 dos streams TSM + funding
+  carry K=5 (semanal, padronizado a unit-vol). src/research/tsm_ensemble.py
+  (puro, 6 testes) + dev script.
+- Resultado (DEV): TSM 0,987 / carry 1,109 / BLEND 1,510 (+0,523), corr
+  -0,037, blend maxDD 4,90 < 5,88. Bate o TSM nos 3 subperiodos (carry cobre
+  2024-25 fraco do TSM; TSM cobre 2025-26 fraco do carry). PASSA o criterio
+  limpo -> CARREGADO candidato OOS. RESSALVA: carry ja deu 1o mes OOS
+  NEGATIVO -> blend herda fragilidade OOS; mais fraco que ERC (puro-TSM).
+  Melhor numero dev do projeto, mas OOS-gated.
+- TASK-TSM-006 (Linha 6, execucao): ENCERRAMENTO FUNDAMENTADO sem build --
+  TSM cost-insensitive (FC-II-007 breakeven 142 bps) + Sprint 10 maker null
+  -> otimizar execucao nao se justifica (ADR-0031 regra 6).
+- PROGRAMA TSM (6 linhas) COMPLETO: regime/sizing/meta-labeling REJEITADOS,
+  execucao encerrada; ERC (limpo) e ensemble (carry-fragil) carregados OOS.
+  Proximo: familia Options/VRP (revisao de literatura profunda; free primeiro).
+  536 testes, ruff limpo.
+```
+
 ## 2026-07-12f (TSM Linha 4 meta-labeling / ML como filtro -- REJEITADO; replay da mirage ML-001)
 
 ```text
