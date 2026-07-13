@@ -34,15 +34,19 @@ on-chain) are user spend/instrument decisions.
 **TSM Improvement Program (ADR-0031), 6 lines complete:** regime filter,
 conviction sizing, and meta-labeling all REJECTED (each failed the robustness
 battery -- reinforcing that the un-tuned base is hard to beat); execution
-closed as unjustified (cost-insensitive strategy). the **combined ERC + vol-targeting TSM** (TSM-008) is the LEAD pre-registered
-OOS candidate: dev Sharpe **0.97 -> 1.18**, maxDD **0.347 -> 0.309**, best in
-every sub-period / BTC regime / cost level. It composes two independently-
-validated, orthogonal wins -- ERC (cross-sectional risk allocation) and
-volatility targeting (time-series exposure) -- which stack complementarily.
-The trend+carry ensemble (Sharpe 1.51 blend) is a secondary candidate but
-carry-OOS-fragile. All DEVELOPMENT results; only untouched OOS promotes. The
-un-tuned base survived every rejected attempt (regime/conviction/meta-labeling/
-execution/VRP); the robust, literature-grounded wins are ERC + vol-targeting.
+closed as unjustified (cost-insensitive strategy). the **combined ERC + vol-targeting TSM** (TSM-008) is the best config ON the
+deployment universe (orig 20): dev Sharpe **0.97 -> 1.18**, maxDD **0.31**, best
+in every sub-period / BTC regime / cost level. HOWEVER, an out-of-universe test
+(TSM-009, fixed config on a different 10-alt universe) found the **core trend
+edge generalizes** (base & combined both beat buy-hold on a fresh universe) but
+the **overlays (ERC + vol-target) do NOT generalize** (combined < base there) --
+so the base vol-targeted TSM is the most robust CORE, and the overlays' edge is
+partly universe-specific (mildly overfit). Net: the base TSM is the trustworthy
+lead; the combined is a caveated enhancement on the original 20. The trend+carry
+ensemble (blend Sharpe 1.51) is a secondary candidate but carry-OOS-fragile. All
+DEVELOPMENT; only untouched OOS promotes. The un-tuned base survived every
+rejected attempt (regime/conviction/meta-labeling/execution/VRP) AND generalized
+out-of-universe -- it is the project's one robust edge.
 
 Verdict legend: **NAO_PASSA** = ran, failed its gate. **SEM_INFO** = no
 information-content. **NEAR-MISS** = closest to passing. **ABORT** =
@@ -107,7 +111,8 @@ sign-consistent across 3 fixed 12-month sub-periods. Pure diagnostic, no gate.
 | TSM-005 -- trend+carry ensemble (TSM Line 5) | equal-risk 50/50 blend of TSM (trend) + funding-carry K=5 (carry) weekly return streams | **Blend Sharpe 0.987 -> 1.510** (+0.523); corr **-0.037**; blend maxDD 4.90 < TSM 5.88; beats TSM in ALL 3 sub-periods | **CARRIED FORWARD (candidate; carry-OOS-fragile)** | Strongest dev result in the project + cleanest criterion pass. Genuine trend/carry diversification: carry covers the TSM's weak 2024-25 (TSM 0.65 / carry 1.65), TSM covers carry's weak 2025-26 (carry 0.47 / TSM 0.96), near-zero corr throughout. **BUT the carry leg's own K=5 already posted a NEGATIVE first OOS month (PF 0.78)** -> the blend inherits that OOS fragility; equal-risk uses in-sample vol. Carried forward OOS-gated, explicitly weaker than ERC (which is pure-TSM, no fragile-carry dependency) |
 | TSM-006 -- execution (TSM Line 6) | (reasoned closure -- no build) | -- | **CLOSED (not justified)** | TSM is highly cost-INSENSITIVE (FC-II-007 breakeven 142 bps/leg; Sharpe moves ~0.01-0.02 between 6 and 15 bps), so execution optimization's max theoretical gain is negligible; Sprint 10 already showed passive/maker execution doesn't rescue edge and adds fill risk. Per ADR-0031 (prefer simple robust gains) the line isn't justified for a slow strategy. Completes the 6-line program |
 | TSM-007 -- volatility targeting (managed-vol overlay) | scale each rebalance's return inversely to the strategy's own trailing realized vol (target ~const vol, avg leverage ~1), Moreira-Muir | Sharpe **0.970 -> 1.107 (+0.137)**; maxDD 0.347 -> **0.329 (better)** | **CARRIED FORWARD** | Better in ALL 3 sub-periods, BOTH BTC regimes, and EVERY cost level (by more at higher cost) -- passes cleanly. Despite the "muted for pure trend" caveat, the TSM's own return vol is exploitably time-varying. Pure-TSM. (Now subsumed by the combined TSM-008.) |
-| TSM-008 -- **combined ERC + vol-targeting** | compose the two clean independent wins (cross-sectional ERC risk allocation + time-series vol-targeting) | Sharpe **0.970 -> 1.183** (best); maxDD 0.347 -> **0.309 (lowest)**; net highest | **LEAD OOS CANDIDATE** | The two overlays are COMPLEMENTARY (orthogonal risk dimensions): combined beats the best single component (vol-target 1.107) by +0.076, with the lowest drawdown, best in ALL 3 sub-periods, BOTH BTC regimes, and EVERY cost level. Best TSM config found (Sharpe 1.18, maxDD 0.31); the single preferred OOS candidate, superseding the standalone ERC/vol-target. Principled synthesis (both validated independently first), not data-snooping. Pure-TSM. OOS-gated |
+| TSM-008 -- **combined ERC + vol-targeting** | compose the two clean independent wins (cross-sectional ERC + time-series vol-targeting) | Sharpe **0.970 -> 1.183** on the original 20; maxDD **0.309**; net highest | **LEAD candidate (overlays caveated by TSM-009)** | On the original 20 the overlays are COMPLEMENTARY: combined beats the best single (vol-target 1.107) by +0.076, lowest drawdown, best in every sub-period/BTC-regime/cost level. BUT the out-of-universe test (TSM-009) found the overlays do NOT generalize -> base TSM is the more robust core; overlays partly universe-specific. Combined still best ON the deployment universe (orig 20). Pure-TSM. OOS-gated |
+| TSM-009 -- out-of-universe test | run the FIXED combined config on a DIFFERENT 10-alt universe (NEAR/FIL/AAVE/ALGO/ICP/SAND/MANA/AXS/GRT/CRV), zero re-tune | base 0.577 / combined **0.335** / buy-hold **-0.429** | **CORE generalizes; OVERLAYS don't** | HIGH-VALUE finding the dev-window couldn't surface: the CORE TSM edge GENERALIZES (base & combined both beat buy-hold in every sub-period on a fresh universe -> trend is a general crypto-perp edge, not an artifact of the 20). BUT the overlays FAIL to generalize -- combined 0.335 < base 0.577 (worse DD too), the OPPOSITE of the original 20 -> ERC+vol-target are partly universe-specific / mildly overfit. Tempers confidence in the combined; raises it in the base. (5 of 15 candidates dropped on download-availability, not performance.) |
 
 ---
 

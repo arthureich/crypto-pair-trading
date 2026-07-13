@@ -170,6 +170,19 @@ mensalmente). **Proximo foco: (a) acumular OOS; (b) abrir NOVAS familias
 (publica + DVOL) esta esgotada, entao novas familias provavelmente exigem
 decisao de gasto/mercado do usuario.
 
+**TASK-TSM-009 (teste OUT-OF-UNIVERSE, novo mercado gratis) -- achado importante:**
+a config FIXA do combinado rodada numa universe DIFERENTE de 10 alts (NEAR/FIL/
+AAVE/ALGO/ICP/SAND/MANA/AXS/GRT/CRV; 5 dos 15 candidatos caíram por
+disponibilidade de download, nao performance). Resultado: base 0,577 / combinado
+0,335 / buy-hold -0,429. **O CORE do TSM GENERALIZA** (base e combinado batem o
+buy-hold em todos os subperiodos numa universe fresca -> trend e edge GERAL, nao
+artefato dos 20; SOBE a confianca na base). **MAS os overlays (ERC+vol-target)
+NAO generalizam** (combinado < base, oposto da universe original) -> sao
+parcialmente especificos da universe / levemente overfit -> TEMPERA a confianca
+no combinado. Leitura: a **base vol-targeted e o CORE robusto e o lead confiavel**;
+o combinado e melhor so na universe de deploy (20 orig). O OOS forward
+(acumulando) arbitra no fim. Ver `reports/tsm_out_of_universe.md`.
+
 **Options-skew/surface PAID-GATED (reconnaissance 2026-07-13):** API publica
 Deribit so serve snapshot ATUAL da cadeia + DVOL 30d (ja usado); historico de
 skew/RR/butterfly/term-structure exige dado PAGO (Tardis/Amberdata) -> item de

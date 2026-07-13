@@ -1,5 +1,26 @@
 # Daily Log
 
+## 2026-07-13d (teste out-of-universe do TSM combinado -- CORE generaliza, OVERLAYS nao)
+
+```text
+- Usuario escolheu o teste out-of-universe (novo mercado, gratis). TASK-TSM-009:
+  config FIXA do combinado (TASK-TSM-008) rodada numa universe DIFERENTE de
+  alts. Download da data.binance.vision instavel (WinError 10054 repetido);
+  adicionei resume-retry e restringi a familias klines+fundingRate (unicas que
+  o TSM usa). 10 de 15 candidatos baixaram completos (NEAR/FIL/AAVE/ALGO/ICP/
+  SAND/MANA/AXS/GRT/CRV); 5 descartados por DISPONIBILIDADE (nao performance).
+- Resultado: base 0,577 / combinado 0,335 / buy-hold -0,429. ACHADO importante
+  (dev-window nao pegava): (1) o CORE do TSM GENERALIZA -- base e combinado
+  batem buy-hold em todos os subperiodos numa universe fresca -> trend e edge
+  GERAL, nao artefato dos 20 (sobe confianca na base); (2) MAS os overlays NAO
+  generalizam -- combinado 0,335 < base 0,577 (oposto da universe original) ->
+  ERC+vol-target parcialmente especificos da universe/overfit (tempera o
+  combinado). Base vol-targeted = core robusto; combinado = melhor so na
+  universe de deploy.
+- Corrigi o veredito auto-gerado (que superestimava "GENERALIZES") para a
+  leitura honesta de dois lados. 552 testes, ruff limpo.
+```
+
 ## 2026-07-13c (TSM convergiu -- candidato lider combinado no paper-forward; foco agora e OOS + novas familias)
 
 ```text
