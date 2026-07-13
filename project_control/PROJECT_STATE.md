@@ -159,6 +159,17 @@ OOS preferido, supersede os isolados.** Candidatos OOS: COMBINADO (lider,
 puro-TSM), e o ensemble trend+carry (secundario, carry-fragil). Todos DEV; so OOS
 promove.
 
+**TSM ENCERRADO como linha de refinamento (convergiu).** Motivo (acordado com o
+usuario): cada nova tentativa na mesma janela dev aumenta a chance de
+falso-positivo; o ganho de informacao agora vem do OOS, nao de mais otimizacao.
+Feito: o candidato lider (combinado ERC+vol-target) foi colocado no paper-forward
+(`scripts/run_tsm_paper_forward.py`, PRIMARIO agora = combinado) -> relogio OOS
+iniciado (jun/2026: 5 rebalances = ruido; 95 p/ o gatilho de 100; re-rodar
+mensalmente). **Proximo foco: (a) acumular OOS; (b) abrir NOVAS familias
+(novos dados/hipoteses/mercados) em paralelo** -- a fronteira gratis
+(publica + DVOL) esta esgotada, entao novas familias provavelmente exigem
+decisao de gasto/mercado do usuario.
+
 **Options-skew/surface PAID-GATED (reconnaissance 2026-07-13):** API publica
 Deribit so serve snapshot ATUAL da cadeia + DVOL 30d (ja usado); historico de
 skew/RR/butterfly/term-structure exige dado PAGO (Tardis/Amberdata) -> item de

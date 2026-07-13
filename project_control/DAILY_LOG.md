@@ -1,5 +1,23 @@
 # Daily Log
 
+## 2026-07-13c (TSM convergiu -- candidato lider combinado no paper-forward; foco agora e OOS + novas familias)
+
+```text
+- Usuario: a familia TSM praticamente convergiu; cada nova tentativa na mesma
+  janela aumenta a chance de falso-positivo. Maior ganho agora: (1) por o
+  ERC+Vol-Target no paper-forward JA, (2) acumular OOS, (3) em paralelo abrir
+  NOVAS familias (novos dados/hipoteses/mercados), nao refinar o TSM ao infinito.
+- Feito (1): scripts/run_tsm_paper_forward.py agora tem como PRIMARIO o
+  combinado ERC + vol-target (TASK-TSM-008). Overlay vol-target aplicado ao
+  stream ERC COMPLETO e so entao fatiado pos-cutoff (causal). Jun/2026: 5
+  rebalances OOS (Sharpe 4,04 = ruido; 95 p/ o gatilho). Relogio OOS do lider
+  iniciado; re-rodar mensalmente.
+- Estado: TSM ENCERRADO como linha de refinamento (candidato lider = combinado,
+  Sharpe dev 1,18). Proximo = OOS accrual + decidir nova familia (exige novo
+  dado/mercado; fronteira gratis publica+DVOL esgotada -> provavel decisao de
+  gasto/mercado do usuario). 552 testes, ruff limpo.
+```
+
 ## 2026-07-13b (TSM combinado ERC + vol-targeting -- MELHOR config; candidato OOS lider)
 
 ```text

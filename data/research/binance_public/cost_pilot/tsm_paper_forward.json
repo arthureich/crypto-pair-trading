@@ -1,19 +1,26 @@
 {
-  "generated_at_utc": "2026-07-11T18:11:44.990992+00:00",
+  "base_reference": {
+    "max_dd": 0.04213018550903707,
+    "n": 5,
+    "net": 0.0867737378700727,
+    "sharpe": 4.192079547278145
+  },
+  "buy_hold_baseline": {
+    "max_dd": 0.09561948519680936,
+    "n": 5,
+    "net": -0.1033071793886036,
+    "sharpe": -4.29914195763947
+  },
+  "combined_primary": {
+    "max_dd": 0.04915614442785954,
+    "n": 5,
+    "net": 0.09652537384590362,
+    "sharpe": 4.042663936853983
+  },
+  "generated_at_utc": "2026-07-13T21:39:35.388076+00:00",
   "oos_rebalances": 5,
   "phase": "MONITORING: genuine OOS accruing; verdict only at >= trigger rebalances",
   "rebalances_remaining_to_trigger": 95,
-  "summary": {
-    "baseline_max_drawdown": 0.09561948519680936,
-    "baseline_net_pnl": -0.1033071793886036,
-    "baseline_sharpe": -4.29914195763947,
-    "mean_turnover": 0.1962491083362729,
-    "n_rebalances": 5,
-    "tsm_long_only_sharpe": -3.8209946349085593,
-    "tsm_max_drawdown": 0.04213018550903707,
-    "tsm_net_pnl": 0.0867737378700727,
-    "tsm_sharpe": 4.192079547278145
-  },
-  "task": "vol-targeted TSM forward paper track (ADR-0027)",
+  "task": "TSM forward paper track -- PRIMARY: combined ERC+vol-target (TASK-TSM-008)",
   "trigger_rebalances": 100
 }
