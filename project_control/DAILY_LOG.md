@@ -1,5 +1,20 @@
 # Daily Log
 
+## 2026-07-12j (VRP como overlay no TSM -- NAO_PASSA; exploracao GRATIS do VRP encerrada)
+
+```text
+- Usuario escolheu testar VRP como feature/overlay. TASK-ALT-013: blend
+  equal-risk do stream TSM + VRP-timing(primario), reusa
+  tsm_ensemble.blend_diagnostic (mesmo da Linha 5). Sem modulo/teste novo.
+- Resultado (DEV): TSM 0,991 / VRP 0,493 / blend 0,966 (PIOR), corr +0,180.
+  NAO_PASSA -- perna VRP fraca e positivamente correlacionada puxa o Sharpe
+  para baixo (VRP -0,48 em 2024-25). VRP nao ajuda o book como overlay.
+- ENCERRA a exploracao GRATIS do VRP: sinal real (info+economia) mas sem
+  monetizacao gratis (nem standalone/ALT-012 nem overlay/ALT-013). Restam
+  skew/superficie (dado de opcoes mais pesado) e VRP-harvesting (Angle A,
+  livro de opcoes) -- decisoes de gasto/instrumento do usuario. 546 testes.
+```
+
 ## 2026-07-12i (VRP-timing como estrategia -- NAO_PASSA standalone; sinal real mas melhor como feature)
 
 ```text

@@ -174,9 +174,14 @@ a primaria long/short sign(vrp_z) semanal deu Sharpe 0,493 vs buy-hold 0,349
 amostragem sobreposta; a estrategia semanal real e modesta/drawdown-heavy. A
 secundaria long-only parece melhor (Sharpe 0,601, maxDD 0,500) mas e
 descritiva-only (nao promovida ex-post -- precisaria de pre-registro proprio).
-**Conclusao: VRP e sinal REAL, mas melhor como FEATURE/overlay, nao trade
-standalone.** Skew/superficie e VRP-harvesting (Angle A, livro de opcoes) seguem
-intocados (decisoes do usuario). Ver `reports/alt_vrp_timing_dev.md`.
+**Conclusao ALT-012: VRP melhor como FEATURE/overlay que standalone.** Testado
+em ALT-013 (blend equal-risk VRP+TSM): blend Sharpe 0,966 < TSM 0,991 -> tambem
+**NAO_PASSA** (perna VRP fraca, Sharpe 0,49, e positivamente correlacionada
++0,18 -> puxa para baixo). **EXPLORACAO GRATIS DO VRP ENCERRADA**: sinal REAL
+(info+economia bruta) mas SEM monetizacao gratis (nem standalone nem overlay).
+Restam skew/superficie (dado de opcoes mais pesado) e VRP-harvesting (Angle A,
+livro de opcoes) -- decisoes de gasto/instrumento do usuario. Ver
+`reports/alt_vrp_tsm_overlay_dev.md`.
 
 **Avenida de dado externo GRATIS:** on-chain (ALT-009) e cross-venue funding
 (ALT-010) nulos; MAS options/VRP (ALT-011) deu hit em dado gratis (Deribit

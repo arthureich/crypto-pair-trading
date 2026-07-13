@@ -1,0 +1,51 @@
+{
+  "generated_at_utc": "2026-07-13T02:47:15.093580+00:00",
+  "overall": {
+    "blend_max_drawdown": 5.073467134980378,
+    "blend_sharpe": 0.965931916134066,
+    "carry_sharpe": 0.49277497552132205,
+    "correlation": 0.1799343655640655,
+    "n_weeks": 156,
+    "tsm_max_drawdown": 5.864729947367762,
+    "tsm_sharpe": 0.9910765211325759
+  },
+  "sub_periods": [
+    {
+      "period": "2023-06_2024-05",
+      "summary": {
+        "blend_max_drawdown": 3.4396953501887273,
+        "blend_sharpe": 1.3810695354092677,
+        "carry_sharpe": 0.7941887256340916,
+        "correlation": 0.299165786217265,
+        "n_weeks": 52,
+        "tsm_max_drawdown": 3.770446203364877,
+        "tsm_sharpe": 1.4320043656828694
+      }
+    },
+    {
+      "period": "2024-06_2025-05",
+      "summary": {
+        "blend_max_drawdown": 4.919322023313054,
+        "blend_sharpe": 0.12229530693037788,
+        "carry_sharpe": -0.47965177343685617,
+        "correlation": -0.055343145478246286,
+        "n_weeks": 52,
+        "tsm_max_drawdown": 5.208283510679695,
+        "tsm_sharpe": 0.647749495903979
+      }
+    },
+    {
+      "period": "2025-06_2026-05",
+      "summary": {
+        "blend_max_drawdown": 2.388911819273948,
+        "blend_sharpe": 1.3006530361887065,
+        "carry_sharpe": 1.16831686872448,
+        "correlation": 0.3491626183955055,
+        "n_weeks": 51,
+        "tsm_max_drawdown": 4.280447849195923,
+        "tsm_sharpe": 0.9682112194055768
+      }
+    }
+  ],
+  "task": "TASK-ALT-013 VRP-as-overlay on TSM dev run (ADR-0032) -- DEVELOPMENT"
+}
