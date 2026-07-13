@@ -16,10 +16,15 @@
   sign-consistent nos 3 subperiodos (+0,088/+0,046/+0,110), coerente com a
   teoria e a literatura. 1o HIT em dado externo do projeto. vrp@30d rho maior
   (+0,11) mas inverte no 1o subperiodo -> corretamente SEM.
-- Ressalvas: BTC/ETH-only (2-asset, sinal de timing, nao cross-sectional);
-  info != edge -> proximo passo pre-registrado e o teste economico descritivo
-  (spread por decil vs custo), NAO uma estrategia nem pivo de opcoes. Custo
-  ZERO. 2 testes novos, 538 na suite, ruff limpo.
+- Ressalvas: BTC/ETH-only (2-asset, sinal de timing, nao cross-sectional).
+- Teste economico descritivo (passo pre-registrado, info != edge): spread
+  bruto top-vs-bottom-decil 196,8 bps/7d vs ~12 bps custo (net +184,8,
+  monotonic. +0,67). 1o sinal a passar AMBAS as barras (info E economia). MAS
+  tail-driven (nao monotono limpo), holds sobrepostos amostrados diariamente
+  (superestima), in-sample, BTC/ETH-only -> LEAD, nao edge validado. Proximo:
+  backtest proprio de timing VRP semanal + OOS (task separada), ou vrp_z como
+  feature no perp. Angle A (livro de opcoes) = decisao do usuario. Custo ZERO.
+  2 testes novos, 538 na suite, ruff limpo.
 ```
 
 ## 2026-07-12g (TSM Linhas 5-6 -- ensemble trend+carry CARREGADO (carry-fragil); execucao encerrada; PROGRAMA COMPLETO)

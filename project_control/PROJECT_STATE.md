@@ -162,10 +162,16 @@ Usuario escolheu Angle B (preditor p/ perp, sem pivo de opcoes). TASK-ALT-011
 de variancia (IV^2-RV^2) preve o retorno 7d de BTC/ETH, rho +0,087, positivo e
 sign-consistent nos 3 subperiodos, coerente com a literatura. **Primeiro hit em
 dado externo.** Ressalvas: BTC/ETH-only (2-asset, timing, nao cross-sectional);
-info != edge. **Proximo passo pre-registrado: teste economico descritivo**
-(spread por decil vs custo) antes de qualquer estrategia; skew/superficie e o
-VRP-harvesting (Angle A, livro de opcoes) seguem intocados (decisoes do
-usuario). Ver `reports/alt_options_vrp_diagnostic.md`.
+info != edge. **Teste economico descritivo FEITO** (passo pre-registrado): spread bruto
+top-vs-bottom-decil **196,8 bps/7d vs ~12 bps de custo** (net +184,8, monotonic.
++0,67) -> **1o sinal do projeto a passar AMBAS as barras (informacao E economia
+bruta)**, muito diferente do FC-II-003. RESSALVAS: tail-driven (nao monotono
+limpo), holds sobrepostos amostrados diariamente (superestima estrategia real),
+in-sample, BTC/ETH-only -> e um **LEAD, nao edge validado**. Proximo passo (task
+separada, pre-registrada): backtest proprio de timing VRP BTC/ETH semanal com
+custo + gate OOS; ou usar vrp_z como feature no book de perp. VRP-harvesting
+(Angle A, livro de opcoes) e o skew/superficie seguem decisoes do usuario. Ver
+`reports/alt_vrp_economic_check.md`.
 
 **Avenida de dado externo GRATIS:** on-chain (ALT-009) e cross-venue funding
 (ALT-010) nulos; MAS options/VRP (ALT-011) deu hit em dado gratis (Deribit
