@@ -1,5 +1,26 @@
 # Daily Log
 
+## 2026-07-13 (Options-skew PAID-GATED; volatility-targeting do TSM PASSA limpo -- 3o candidato OOS)
+
+```text
+- Usuario deu ordem de prioridade (Options skew #1, refinar TSM, ensembles,
+  risk overlay, sizing; TSM continua a prioridade ate esgotar).
+- Reconnaissance Options: API publica Deribit so da snapshot ATUAL da cadeia
+  (mark_iv por strike) + trades esparsos + DVOL 30d ATM (ja usado). Historico
+  de skew/25dRR/butterfly/term-structure NAO e reconstruivel de graca ->
+  PAID-GATED (Tardis/Amberdata, item #6, decisao do usuario).
+- Seguindo a enfase em TSM, TASK-TSM-007: volatility targeting (Moreira-Muir;
+  Man Group/Research Affiliates). src/research/vol_target.py (overlay causal
+  knob-free sobre o stream de retorno; alvo=media expanding -> alavancagem
+  media ~1; CAP 3.0; 6 testes).
+- Resultado (DEV): Sharpe 0,970 -> 1,107 (+0,137), maxDD 0,347 -> 0,329
+  (melhor). PASSA LIMPO: melhor nos 3 subperiodos, ambos regimes BTC, e todo
+  nivel de custo. Ao contrario do prior ("mudo p/ trend"), ajudou -- a vol dos
+  retornos do TSM e explotavelmente variavel. 3o candidato OOS do TSM (com ERC
+  + ensemble), puro-TSM. Mais limpo que o ERC. Sem promocao; OOS-gated.
+  552 testes, ruff limpo.
+```
+
 ## 2026-07-12j (VRP como overlay no TSM -- NAO_PASSA; exploracao GRATIS do VRP encerrada)
 
 ```text

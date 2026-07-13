@@ -146,13 +146,21 @@ familias novas (Options primeiro, gratis antes de pago).
   cost-insensitive (FC-II-007 breakeven 142 bps) + Sprint 10 maker null ->
   otimizar execucao nao se justifica (ADR-0031 regra 6).
 
-**PROGRAMA DE MELHORIA DO TSM (ADR-0031) COMPLETO -- 6 linhas.** Regime/sizing/
-meta-labeling REJEITADOS (reforcam que a base nao-tunada e dificil de bater);
-execucao encerrada. Candidatos vivos, ambos OOS-gated: **ERC** (o mais limpo --
-puro-TSM, +0,069 Sharpe, menos turnover) e **ensemble trend+carry** (maior
-ganho dev, Sharpe 1,51, mas carry-fragil OOS). Proximo passo do plano: familia
-**Options/VRP** (#1 do relatorio) -- exige revisao de literatura profunda e,
-provavelmente, dado externo (gratis primeiro).
+**PROGRAMA DE MELHORIA DO TSM (ADR-0031).** Linhas originais: regime/sizing/
+meta-labeling REJEITADOS; ERC CARREGADO; ensemble CARREGADO (carry-fragil);
+execucao encerrada. Refinamento adicional autorizado pelo usuario -> **TASK-TSM-007
+volatility targeting (Moreira-Muir): PASSA LIMPO** -- Sharpe 0,970->1,107, maxDD
+melhor, consistente nos 3 subperiodos, ambos regimes BTC e todo custo. **3
+candidatos OOS do TSM agora: vol-target (o mais limpo, puro-TSM), ERC (puro-TSM),
+ensemble (carry-fragil).** vol-target e ERC sao mecanismos distintos (exposicao
+temporal vs risco cross-sectional) -- poderiam empilhar (task futura,
+pre-registrada). Todos DEV; so OOS promove.
+
+**Options-skew/surface PAID-GATED (reconnaissance 2026-07-13):** API publica
+Deribit so serve snapshot ATUAL da cadeia + DVOL 30d (ja usado); historico de
+skew/RR/butterfly/term-structure exige dado PAGO (Tardis/Amberdata) -> item de
+gasto do usuario. VRP-harvesting (Angle A, livro de opcoes) idem. Proximas
+prioridades gratis do plano: ensembles (trend+vol-target?), mais risk overlays.
 
 **Familia F (Options) ABERTA (ADR-0032) -- 1o HIT em dado externo.** Apos o TSM,
 a familia #1 do relatorio. Revisao de literatura: a evidencia mais forte de
