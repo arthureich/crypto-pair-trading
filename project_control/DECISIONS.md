@@ -2507,3 +2507,68 @@ Extend `src/research/tsm_trend.py` with a default-OFF regime-filter flag
 `scripts/run_tsm_regime_filter_dev.py`; write
 `reports/tsm_regime_filter_dev.md`. Update `PROJECT_STATE.md`,
 `TASK_BOARD.md`, `TEST_MATRIX.md`, `DAILY_LOG.md`.
+
+## ADR-0032 - Open Family F (Options) On Free Deribit DVOL; First Task Is A DVOL/VRP-As-Predictor Info-Content Diagnostic (Angle B -- No Instrument Pivot, Zero Spend)
+
+## Status
+
+Accepted
+
+## Context
+
+The TSM Improvement Program (ADR-0031) is complete (6 lines; ERC and the
+trend+carry ensemble carried forward as OOS candidates). Per the standing
+research plan, the next family by priority is Options (IV/VRP/skew/DVOL),
+ranked #1 in the external report, "starting with FREE alternatives before
+paid data." A deep recent-literature review was done first (plan mandate):
+
+- "Risk Premia in the Bitcoin Market" (arXiv 2410.15195, 2024): from a large
+  Deribit BTC-option cross-section, the variance risk premium is positive and
+  highly persistent, and option-implied factors (esp. vol-of-vol) predict BTC
+  excess returns.
+- Atanasova et al. (SSRN 6771170; "Illiquidity Premium and Crypto Option
+  Returns"): risk premia implied by BTC option prices; delta-hedged returns.
+- Practitioner (Deribit): ~+15 vol-point VRP in contango; 25-delta skew
+  regimes carry signal. Alexander & Imeraj (2021) built BTC IV indices.
+- Evidence is the strongest and most recent of any family -- the #1 rank is
+  justified. FREE data exists: Deribit's public DVOL API (30d IV index, "crypto
+  VIX"), no auth, BTC & ETH back to 2023-06 (reconnaissance confirmed).
+
+Two ways to use options, sharply different in cost, and the user chose:
+- Angle A (VRP harvesting -- SELL variance): the literature's actual edge, but
+  an INSTRUMENT-CLASS PIVOT (an options book: new execution/margin/tail risk).
+- Angle B (option-implied signals as PREDICTORS for the existing perp
+  strategy): FREE, no pivot. **User selected Angle B.**
+
+## Decision
+
+Open Family F (Options) and pre-register `TASK-ALT-011`: an information-content
+diagnostic (ADR-0019 methodology -- Spearman rho + sign-consistency across the
+three fixed sub-periods, |rho| >= 0.03) testing whether free Deribit DVOL and
+DVOL-derived features carry DIRECTIONAL information about forward BTC/ETH
+returns. Zero spend, keyless, no instrument pivot. If a feature carries
+information, it becomes a candidate perp-strategy feature (economic check
+first) and only THEN would the larger Angle-A options-book decision arise.
+
+Coverage caveat frozen a priori: DVOL is BTC/ETH-only (options liquidity is
+concentrated there), so this is a 2-asset pooled panel -- explicitly low
+cross-sectional breadth (like the ALT-009 exchange-netflow feature), reported
+as pooled daily obs, not a cross-sectional result.
+
+## Consequences
+
+If nothing passes, the FREE options-signal angle closes and pursuing options
+further would require either paid surface/skew data or the Angle-A instrument
+pivot -- both user decisions. If a feature passes, it earns the descriptive
+economic check, then potentially a perp-strategy feature pre-registration.
+Skew / 25-delta risk-reversal (needs the option chain, heavier) is deferred to
+a follow-up if DVOL shows promise.
+
+## Migration
+
+Add `docs/pre_registers/TASK-ALT-011.md` and a board row. Build
+`scripts/download_alt_dvol.py` (Deribit public DVOL -> normalized daily CSV,
+pure parse fixture-tested) and `scripts/diagnostic_alt_options_vrp.py` (reuses
+`info_content.py`). Write `reports/alt_options_vrp_diagnostic.md` + results
+JSON. Update the ledger family matrix, `PROJECT_STATE.md`, `TASK_BOARD.md`,
+`TEST_MATRIX.md`, `DAILY_LOG.md`.

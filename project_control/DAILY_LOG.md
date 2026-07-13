@@ -1,5 +1,27 @@
 # Daily Log
 
+## 2026-07-12h (Familia F Options aberta -- 1o HIT em dado externo: VRP preve retorno 7d de BTC/ETH)
+
+```text
+- TSM completo -> proxima familia por prioridade: Options (#1). Revisao de
+  literatura profunda (mandato): evidencia a mais forte de todas -- arXiv
+  2410.15195 (VRP positivo/persistente, option-implied preve retorno BTC);
+  Atanasova et al. Dado FREE: API publica Deribit DVOL.
+- Usuario escolheu Angle B (preditor p/ perp, sem pivo de opcoes). ADR-0032
+  abriu Familia F. TASK-ALT-011: download_alt_dvol.py (DVOL diario BTC+ETH,
+  keyless, 2192 linhas) + diagnostic_alt_options_vrp.py (reusa info_content):
+  4 features (dvol_z, vrp_z=IV^2-RV^2, dvol_change_z, iv_rv_ratio_z) vs
+  retorno 7d/30d.
+- Resultado: **vrp_z@7d TEM_INFORMACAO** -- rho +0,0866, POSITIVO e
+  sign-consistent nos 3 subperiodos (+0,088/+0,046/+0,110), coerente com a
+  teoria e a literatura. 1o HIT em dado externo do projeto. vrp@30d rho maior
+  (+0,11) mas inverte no 1o subperiodo -> corretamente SEM.
+- Ressalvas: BTC/ETH-only (2-asset, sinal de timing, nao cross-sectional);
+  info != edge -> proximo passo pre-registrado e o teste economico descritivo
+  (spread por decil vs custo), NAO uma estrategia nem pivo de opcoes. Custo
+  ZERO. 2 testes novos, 538 na suite, ruff limpo.
+```
+
 ## 2026-07-12g (TSM Linhas 5-6 -- ensemble trend+carry CARREGADO (carry-fragil); execucao encerrada; PROGRAMA COMPLETO)
 
 ```text

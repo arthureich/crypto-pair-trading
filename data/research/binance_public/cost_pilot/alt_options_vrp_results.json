@@ -1,0 +1,265 @@
+{
+  "generated_at_utc": "2026-07-13T02:17:37.560037+00:00",
+  "horizons_days": [
+    7,
+    30
+  ],
+  "magnitude_threshold": 0.03,
+  "period_labels": [
+    "2023-06_2024-05",
+    "2024-06_2025-05",
+    "2025-06_2026-05"
+  ],
+  "results": {
+    "dvol_change_z@30d": {
+      "feature_name": "dvol_change_z",
+      "full_sample_n": 1948,
+      "full_sample_rho": 0.015127227810884495,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": false,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 548,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": 0.046983058060264246,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 730,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": 0.04066915247529364,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 670,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": -0.031062447215380987,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "dvol_change_z@7d": {
+      "feature_name": "dvol_change_z",
+      "full_sample_n": 1994,
+      "full_sample_rho": 0.020547244349726344,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": false,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 548,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": 0.09350256970386918,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 730,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": 0.01356620379913673,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 716,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": -0.03209169223053892,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "dvol_z@30d": {
+      "feature_name": "dvol_z",
+      "full_sample_n": 1950,
+      "full_sample_rho": 0.028027007421253157,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": false,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 550,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": -0.37060691710776505,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 730,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": 0.13259832551476575,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 670,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.10299948800104056,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "dvol_z@7d": {
+      "feature_name": "dvol_z",
+      "full_sample_n": 1996,
+      "full_sample_rho": 0.05415674251956837,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": false,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 550,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": -0.09112734557499665,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 730,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": 0.18770412353190266,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 716,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": -0.02394475163227647,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "iv_rv_ratio_z@30d": {
+      "feature_name": "iv_rv_ratio_z",
+      "full_sample_n": 1890,
+      "full_sample_rho": 0.061447747695469276,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": false,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 490,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": -0.005758185972776026,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 730,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": 0.08936509005137497,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 670,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.048906982466853474,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "iv_rv_ratio_z@7d": {
+      "feature_name": "iv_rv_ratio_z",
+      "full_sample_n": 1936,
+      "full_sample_rho": 0.051815836494525994,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": false,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 490,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": 0.14094864439847138,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 730,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": -0.004148201821995773,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 716,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.0810387854355971,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "vrp_z@30d": {
+      "feature_name": "vrp_z",
+      "full_sample_n": 1890,
+      "full_sample_rho": 0.11086191344605238,
+      "has_information": false,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": false,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 490,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": -0.04972178568177362,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 730,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": 0.1269670134876364,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 670,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.1188623788092079,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    },
+    "vrp_z@7d": {
+      "feature_name": "vrp_z",
+      "full_sample_n": 1936,
+      "full_sample_rho": 0.08660752389486587,
+      "has_information": true,
+      "magnitude_threshold": 0.03,
+      "sign_consistent": true,
+      "sub_periods": [
+        {
+          "end_time_ms": 1717200000000,
+          "n_obs": 490,
+          "period_label": "2023-06_2024-05",
+          "spearman_rho": 0.08794734416950968,
+          "start_time_ms": 1685577600000
+        },
+        {
+          "end_time_ms": 1748736000000,
+          "n_obs": 730,
+          "period_label": "2024-06_2025-05",
+          "spearman_rho": 0.04614447102688019,
+          "start_time_ms": 1717200000000
+        },
+        {
+          "end_time_ms": 1780272000000,
+          "n_obs": 716,
+          "period_label": "2025-06_2026-05",
+          "spearman_rho": 0.10945287619512159,
+          "start_time_ms": 1748736000000
+        }
+      ]
+    }
+  },
+  "target": "forward_return_h = daily_log_price[D+h] - daily_log_price[D]",
+  "task": "TASK-ALT-011 (ADR-0032): Family F options DVOL/VRP-as-predictor"
+}

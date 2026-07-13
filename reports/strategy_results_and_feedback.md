@@ -21,15 +21,15 @@ gap is genuinely-new OOS -- a forward paper track is now accruing. The best
 backtested-gate result was **funding carry (incremental K=5): PF 1.0904 vs a
 1.10 gate**, but its first OOS month (June 2026) came in **negative (PF 0.78)**.
 
-**The data frontier is now fully exhausted.** Every information-content
-family on public data is closed, AND both free-tier external families are
-closed: on-chain (ALT-009, Coin Metrics community) and cross-venue funding
-dispersion (ALT-010, Coinalyze) both came back SEM_INFO. The cross-venue
-dispersion was the strongest external near-miss -- a real edge in ONE
-~12-month regime (2024-06/2025-05) that has since decayed. What remains
-requires a user spend/instrument decision: paid feeds (premium on-chain,
-options surface) or the options-book instrument pivot (Options/VRP, #1 in the
-literature). No more edge is extractable from free data.
+**Free-data frontier update.** Public-data families are closed; free-tier
+on-chain (ALT-009) and cross-venue funding dispersion (ALT-010) both came back
+SEM_INFO. BUT the #1-ranked family produced the project's **first external-data
+HIT on free data**: ALT-011 found the **variance risk premium (from free Deribit
+DVOL) predicts 7d BTC/ETH forward returns** -- rho +0.087, sign-consistent
+across all 3 sub-periods, theory-coherent. It is a BTC/ETH-only timing signal
+and must still pass the descriptive economic check (info != edge). Remaining
+paid/pivot avenues (options surface/skew, VRP-harvesting options book, premium
+on-chain) are user spend/instrument decisions.
 
 **TSM Improvement Program (ADR-0031), 6 lines complete:** regime filter,
 conviction sizing, and meta-labeling all REJECTED (each failed the robustness
@@ -83,7 +83,8 @@ sign-consistent across 3 fixed 12-month sub-periods. Pure diagnostic, no gate.
 | E -- Flow (FC-II-004) | taker aggressor + long/short ratios | all 10 cells SEM_INFO (abs(rho)<0.011) | SEM_INFO | Aggressor flow and positioning ratios carry no directional info |
 | B+C -- Range-vol shape + Amihud (ALT-008) | Parkinson/Rogers-Satchell/close-location + Amihud/turnover/trade-size, 24h & 4h | all 12 cells SEM_INFO (max abs(rho) 0.027 < 0.03); range-vol magnitude highest but sub-threshold (vol-clustering, not directional); Amihud rho ~0.00 | SEM_INFO | Closes the DIRECTIONAL test of the two families the report cites (range vol, illiquidity premium). Public-data family sweep now complete: only external-data families remain |
 | G -- On-chain, free tier (ALT-009) | MVRV / active-addr growth / tx-count growth / BTC-ETH exchange net-flow (Coin Metrics community, ZERO cost), 1d & 7d | all 8 cells SEM_INFO by locked rule. Near-miss `exchange_netflow_z@7d` rho -0.0346 (clears magnitude, theory-coherent, 2 of 3 sub-periods negative) but sign-consistency FAILS (middle period flips) and BTC/ETH-only | SEM_INFO (near-miss noted) | First EXTERNAL family tested, at zero spend. Free proxies null -> paying for premium on-chain needs a stronger prior than "free was null". Cross-venue flow deferred (key-gated) |
-| Flow -- cross-venue funding dispersion (ALT-010) | std / range / mean of daily funding across {Binance,Bybit,OKX,Huobi,BitMEX} (Coinalyze free tier, ZERO cost), 1d & 3d | all 6 cells SEM_INFO by locked rule. Strongest external near-miss: `disp`/`range`@3d clear magnitude (+0.040) but are a one-regime mirage (middle sub-period +0.10, recent slightly negative); @1d sign-consistent but sub-threshold. Mean control ~0 (confirms aggregate carry adds nothing, like single-venue funding) | SEM_INFO (structured near-miss) | Cross-venue DISAGREEMENT had a coherent edge in ONE 2024-06/2025-05 regime that decayed (efficiency-decay pattern). Closes the FREE-TIER external avenue (on-chain + cross-venue both null) |
+| Flow -- cross-venue funding dispersion (ALT-010) | std / range / mean of daily funding across {Binance,Bybit,OKX,Huobi,BitMEX} (Coinalyze free tier, ZERO cost), 1d & 3d | all 6 cells SEM_INFO by locked rule. Strongest external near-miss: `disp`/`range`@3d clear magnitude (+0.040) but are a one-regime mirage (middle sub-period +0.10, recent slightly negative); @1d sign-consistent but sub-threshold. Mean control ~0 (confirms aggregate carry adds nothing, like single-venue funding) | SEM_INFO (structured near-miss) | Cross-venue DISAGREEMENT had a coherent edge in ONE 2024-06/2025-05 regime that decayed (efficiency-decay pattern) |
+| F -- Options DVOL/VRP-as-predictor (ALT-011) | DVOL level / VRP (IV2-RV2) / DVOL shock / IV-RV ratio (free Deribit DVOL, BTC+ETH), 7d & 30d | **`vrp_z@7d` TEM_INFORMACAO** (rho +0.087, positive & sign-consistent in all 3 sub-periods); vrp@30d bigger full rho (+0.11) but flips sign in period 1 -> correctly SEM; dvol/iv-rv sub-threshold-or-inconsistent | **HIT (first external)** | VRP predicts 7d BTC/ETH forward return, theory-coherent, matches literature. 2-asset (BTC/ETH) pooled timing signal. Economic check (decile spread vs cost) is the next pre-registered step before any strategy; NOT an options-book pivot |
 
 ---
 
@@ -141,7 +142,7 @@ sign-consistent across 3 fixed 12-month sub-periods. Pure diagnostic, no gate.
 | E -- Flow | CONCLUIDA | FC-II-004 all SEM_INFO (single-venue); ALT-010 cross-venue funding dispersion also SEM_INFO (structured near-miss, one-regime, decayed) |
 | I -- Microstructure (bars) | CONCLUIDA | book (H) null 24h; short-horizon (FC-II-003) info-but-ABORT |
 | J -- Regime | ~Concluida | info (risk/context); operational use (ALT-004) failed |
-| **F -- Options** | **OPEN** | needs external data (options IV / skew / surface); instrument-class pivot (options book) |
+| **F -- Options** | **HIT (free tier, economic check pending)** | ALT-011 DVOL/VRP-as-predictor (free Deribit DVOL, zero cost): **`vrp_z@7d` TEM_INFORMACAO** -- variance risk premium (IV2-RV2) predicts 7d forward return, rho +0.087, POSITIVE and sign-consistent in ALL 3 sub-periods (+0.088/+0.046/+0.110), theory-coherent (matches the crypto-VRP literature). **First external-data hit of the project.** Caveats: BTC/ETH-only (2-asset pooled timing signal, not cross-sectional); info != edge -> descriptive economic check is the pre-registered next step. Skew/surface + VRP-harvesting (Angle A, options book) still untested |
 | G -- On-chain | CONCLUIDA (free tier) | ALT-009 on Coin Metrics community (ZERO cost): MVRV / active-addr / tx-count growth / BTC-ETH exchange net-flow, 1d & 7d, all 8 cells SEM_INFO by the locked rule. Near-miss `exchange_netflow_z@7d` (rho -0.0346, theory-coherent) clears magnitude but sign-consistency FAILS (middle sub-period flips) and is BTC/ETH-only. Premium on-chain (Glassnode/CryptoQuant) = user spend decision |
 | Flow -- cross-venue | CONCLUIDA (free tier) | ALT-010 on Coinalyze (ZERO cost): cross-venue funding dispersion, all 6 cells SEM_INFO. Structured near-miss (disp/range coherent in one 2024-06/2025-05 regime, decayed). Aggregated OI / paid tick = user spend decision |
 | **H -- Sentiment** | **OPEN** | needs external data |

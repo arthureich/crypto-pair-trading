@@ -154,8 +154,22 @@ ganho dev, Sharpe 1,51, mas carry-fragil OOS). Proximo passo do plano: familia
 **Options/VRP** (#1 do relatorio) -- exige revisao de literatura profunda e,
 provavelmente, dado externo (gratis primeiro).
 
-**AVENIDA DE DADO EXTERNO GRATIS ESGOTADA:** on-chain (ALT-009) + cross-venue
-(ALT-010) ambos nulos. O que resta exige decisao de GASTO ou de INSTRUMENTO do
+**Familia F (Options) ABERTA (ADR-0032) -- 1o HIT em dado externo.** Apos o TSM,
+a familia #1 do relatorio. Revisao de literatura: a evidencia mais forte de
+todas (VRP cripto positivo/persistente, option-implied preve retorno BTC).
+Usuario escolheu Angle B (preditor p/ perp, sem pivo de opcoes). TASK-ALT-011
+(free Deribit DVOL, BTC+ETH): **`vrp_z@7d` TEM_INFORMACAO** -- o premio de risco
+de variancia (IV^2-RV^2) preve o retorno 7d de BTC/ETH, rho +0,087, positivo e
+sign-consistent nos 3 subperiodos, coerente com a literatura. **Primeiro hit em
+dado externo.** Ressalvas: BTC/ETH-only (2-asset, timing, nao cross-sectional);
+info != edge. **Proximo passo pre-registrado: teste economico descritivo**
+(spread por decil vs custo) antes de qualquer estrategia; skew/superficie e o
+VRP-harvesting (Angle A, livro de opcoes) seguem intocados (decisoes do
+usuario). Ver `reports/alt_options_vrp_diagnostic.md`.
+
+**Avenida de dado externo GRATIS:** on-chain (ALT-009) e cross-venue funding
+(ALT-010) nulos; MAS options/VRP (ALT-011) deu hit em dado gratis (Deribit
+DVOL). Nem toda a fronteira gratis estava esgotada -- o DVOL faltava. O que resta exige decisao de GASTO ou de INSTRUMENTO do
 usuario: F/opcoes-VRP (#1 no relatorio, mas PIVO de instrumento -- livro de
 opcoes, nao pair-trade de perp), on-chain premium pago (#2, Glassnode/
 CryptoQuant), OI agregado / tick pago, I/ticks. Nada mais a fazer em dado gratis
