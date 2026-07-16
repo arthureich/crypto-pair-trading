@@ -1,0 +1,196 @@
+{
+  "generated_at_utc": "2026-07-16T23:24:22.330287+00:00",
+  "summary": {
+    "base_positive": 6,
+    "base_wins": 6,
+    "n_run": 6
+  },
+  "task": "TASK-TSM-010 multi-universe generalization of the base TSM (ADR-0031)",
+  "universes": {
+    "defi": {
+      "base": {
+        "max_dd": 0.7488443576800463,
+        "n": 219,
+        "net": 1.5664894605921953,
+        "sharpe": 0.8323436769898712
+      },
+      "buy_hold": {
+        "max_dd": 1.851053994769426,
+        "n": 219,
+        "net": -1.0311016440098237,
+        "sharpe": -0.4522709690949633
+      },
+      "combined": {
+        "max_dd": 1.0180226508324908,
+        "n": 219,
+        "net": 1.068482551880201,
+        "sharpe": 0.5693654779584622
+      },
+      "symbols": [
+        "AAVEUSDT",
+        "CRVUSDT",
+        "UNIUSDT",
+        "SNXUSDT",
+        "COMPUSDT",
+        "SUSHIUSDT",
+        "1INCHUSDT",
+        "YFIUSDT"
+      ]
+    },
+    "gaming": {
+      "base": {
+        "max_dd": 0.7450455089041201,
+        "n": 219,
+        "net": 2.186094371578391,
+        "sharpe": 1.0042704605116184
+      },
+      "buy_hold": {
+        "max_dd": 2.641467679508703,
+        "n": 219,
+        "net": -2.002924448417137,
+        "sharpe": -0.7968087694338144
+      },
+      "combined": {
+        "max_dd": 1.0451270110169883,
+        "n": 219,
+        "net": 2.0752194194214333,
+        "sharpe": 0.9570225779530582
+      },
+      "symbols": [
+        "SANDUSDT",
+        "MANAUSDT",
+        "AXSUSDT",
+        "GALAUSDT",
+        "ENJUSDT",
+        "CHZUSDT",
+        "APEUSDT"
+      ]
+    },
+    "large_cap": {
+      "base": {
+        "max_dd": 0.41897224966276875,
+        "n": 219,
+        "net": 1.3880113723867284,
+        "sharpe": 0.9870514136339168
+      },
+      "buy_hold": {
+        "max_dd": 1.1377006453232839,
+        "n": 219,
+        "net": 0.26030795313391136,
+        "sharpe": 0.13943125362527667
+      },
+      "combined": {
+        "max_dd": 0.3718368987281594,
+        "n": 219,
+        "net": 1.4728431181507613,
+        "sharpe": 1.0755682250858059
+      },
+      "symbols": [
+        "BTCUSDT",
+        "ETHUSDT",
+        "BNBUSDT",
+        "SOLUSDT",
+        "XRPUSDT",
+        "ADAUSDT",
+        "AVAXUSDT",
+        "DOGEUSDT",
+        "LINKUSDT",
+        "DOTUSDT"
+      ]
+    },
+    "mid_alt_l1": {
+      "base": {
+        "max_dd": 0.7687257665914542,
+        "n": 219,
+        "net": 1.211119109966877,
+        "sharpe": 0.6499991716958177
+      },
+      "buy_hold": {
+        "max_dd": 2.271671562335127,
+        "n": 219,
+        "net": -1.2996670783563327,
+        "sharpe": -0.5569981448602784
+      },
+      "combined": {
+        "max_dd": 0.8721102647231262,
+        "n": 219,
+        "net": 1.1875768222666885,
+        "sharpe": 0.6098076321471019
+      },
+      "symbols": [
+        "NEARUSDT",
+        "FILUSDT",
+        "ALGOUSDT",
+        "ICPUSDT",
+        "ATOMUSDT",
+        "APTUSDT",
+        "ARBUSDT",
+        "OPUSDT",
+        "SUIUSDT",
+        "EGLDUSDT"
+      ]
+    },
+    "mid_tier_ref": {
+      "base": {
+        "max_dd": 0.8014299227224203,
+        "n": 219,
+        "net": 1.1262124214885372,
+        "sharpe": 0.5765205139566363
+      },
+      "buy_hold": {
+        "max_dd": 1.9942828343933185,
+        "n": 219,
+        "net": -1.0102332560530987,
+        "sharpe": -0.4286086500288282
+      },
+      "combined": {
+        "max_dd": 0.9329795915205715,
+        "n": 219,
+        "net": 0.673228380679996,
+        "sharpe": 0.3347483048795018
+      },
+      "symbols": [
+        "NEARUSDT",
+        "FILUSDT",
+        "AAVEUSDT",
+        "ALGOUSDT",
+        "ICPUSDT",
+        "SANDUSDT",
+        "MANAUSDT",
+        "AXSUSDT",
+        "GRTUSDT",
+        "CRVUSDT"
+      ]
+    },
+    "old_guard": {
+      "base": {
+        "max_dd": 0.5707708234305612,
+        "n": 219,
+        "net": 0.7384179490566491,
+        "sharpe": 0.4617595111264883
+      },
+      "buy_hold": {
+        "max_dd": 0.9438911740263509,
+        "n": 219,
+        "net": 0.12692316977151524,
+        "sharpe": 0.06160689009166204
+      },
+      "combined": {
+        "max_dd": 0.69545613282203,
+        "n": 219,
+        "net": 0.9510555903872102,
+        "sharpe": 0.5621039103530855
+      },
+      "symbols": [
+        "LTCUSDT",
+        "BCHUSDT",
+        "ETCUSDT",
+        "XLMUSDT",
+        "XTZUSDT",
+        "DASHUSDT",
+        "ZECUSDT",
+        "NEOUSDT"
+      ]
+    }
+  }
+}

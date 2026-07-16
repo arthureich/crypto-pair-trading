@@ -183,6 +183,17 @@ no combinado. Leitura: a **base vol-targeted e o CORE robusto e o lead confiavel
 o combinado e melhor so na universe de deploy (20 orig). O OOS forward
 (acumulando) arbitra no fim. Ver `reports/tsm_out_of_universe.md`.
 
+**TASK-TSM-010 (multi-universo) -- EVIDENCIA MAIS FORTE DO PROJETO:** base TSM
+FIXO (zero re-tune) rodado em 6 universos tematicos (large_cap, mid_alt_l1,
+defi, gaming, old_guard, mid_tier_ref). **Sharpe > 0 E > buy-hold em 6/6** (0,46
+a 1,00; buy-hold NEGATIVO em 4 dos 6). Out-of-sample na dimensao de ATIVOS com
+params fixos -> a evidencia mais forte contra overfitting ate aqui; o edge de
+trend e GERAL, nao universe-specific. Reforca que os overlays nao generalizam
+(combinado bate a base em so 2/6). AI/memecoins nao testaveis (sem historico
+3a). Ver `reports/tsm_multiverse.md`. **Proximo (plano do usuario): outras
+exchanges (Bybit/OKX/Hyperliquid), outras classes de ativo (commodities/forex/
+indices/ETFs), OOS continuo -- depois disso, dados pagos.**
+
 **Options-skew/surface PAID-GATED (reconnaissance 2026-07-13):** API publica
 Deribit so serve snapshot ATUAL da cadeia + DVOL 30d (ja usado); historico de
 skew/RR/butterfly/term-structure exige dado PAGO (Tardis/Amberdata) -> item de

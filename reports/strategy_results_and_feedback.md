@@ -45,8 +45,13 @@ partly universe-specific (mildly overfit). Net: the base TSM is the trustworthy
 lead; the combined is a caveated enhancement on the original 20. The trend+carry
 ensemble (blend Sharpe 1.51) is a secondary candidate but carry-OOS-fragile. All
 DEVELOPMENT; only untouched OOS promotes. The un-tuned base survived every
-rejected attempt (regime/conviction/meta-labeling/execution/VRP) AND generalized
-out-of-universe -- it is the project's one robust edge.
+rejected attempt (regime/conviction/meta-labeling/execution/VRP) AND -- the
+strongest result in the project -- **generalizes with FIXED params across 6
+thematic universes (positive & buy-hold-beating in 6/6; TSM-010) and a separate
+out-of-universe test (TSM-009)**. That cross-asset breadth (out-of-sample in the
+asset dimension), not the +0.2 dev Sharpe, is the real evidence the trend edge
+is genuine. The overlays do NOT share this breadth (beat base in only 2/6
+universes) -> base TSM is the one robust, general edge.
 
 Verdict legend: **NAO_PASSA** = ran, failed its gate. **SEM_INFO** = no
 information-content. **NEAR-MISS** = closest to passing. **ABORT** =
@@ -113,6 +118,7 @@ sign-consistent across 3 fixed 12-month sub-periods. Pure diagnostic, no gate.
 | TSM-007 -- volatility targeting (managed-vol overlay) | scale each rebalance's return inversely to the strategy's own trailing realized vol (target ~const vol, avg leverage ~1), Moreira-Muir | Sharpe **0.970 -> 1.107 (+0.137)**; maxDD 0.347 -> **0.329 (better)** | **CARRIED FORWARD** | Better in ALL 3 sub-periods, BOTH BTC regimes, and EVERY cost level (by more at higher cost) -- passes cleanly. Despite the "muted for pure trend" caveat, the TSM's own return vol is exploitably time-varying. Pure-TSM. (Now subsumed by the combined TSM-008.) |
 | TSM-008 -- **combined ERC + vol-targeting** | compose the two clean independent wins (cross-sectional ERC + time-series vol-targeting) | Sharpe **0.970 -> 1.183** on the original 20; maxDD **0.309**; net highest | **LEAD candidate (overlays caveated by TSM-009)** | On the original 20 the overlays are COMPLEMENTARY: combined beats the best single (vol-target 1.107) by +0.076, lowest drawdown, best in every sub-period/BTC-regime/cost level. BUT the out-of-universe test (TSM-009) found the overlays do NOT generalize -> base TSM is the more robust core; overlays partly universe-specific. Combined still best ON the deployment universe (orig 20). Pure-TSM. OOS-gated |
 | TSM-009 -- out-of-universe test | run the FIXED combined config on a DIFFERENT 10-alt universe (NEAR/FIL/AAVE/ALGO/ICP/SAND/MANA/AXS/GRT/CRV), zero re-tune | base 0.577 / combined **0.335** / buy-hold **-0.429** | **CORE generalizes; OVERLAYS don't** | HIGH-VALUE finding the dev-window couldn't surface: the CORE TSM edge GENERALIZES (base & combined both beat buy-hold in every sub-period on a fresh universe -> trend is a general crypto-perp edge, not an artifact of the 20). BUT the overlays FAIL to generalize -- combined 0.335 < base 0.577 (worse DD too), the OPPOSITE of the original 20 -> ERC+vol-target are partly universe-specific / mildly overfit. Tempers confidence in the combined; raises it in the base. (5 of 15 candidates dropped on download-availability, not performance.) |
+| TSM-010 -- MULTI-universe generalization | FIXED base TSM (zero re-tune) across 6 thematic USDM-perp universes (large-cap, mid/alt-L1, DeFi, gaming, old-guard, mid-tier-ref) | **base Sharpe > 0 AND > buy-hold in 6/6 universes** (0.46-1.00; buy-hold NEGATIVE in 4 of them) | **STRONG breadth generalization** | The project's strongest anti-overfitting evidence (out-of-sample in the ASSET dimension): the base trend edge holds across every theme with fixed params -- large_cap 0.99, gaming 1.00, defi 0.83, mid_alt_l1 0.65, mid_tier_ref 0.58, old_guard 0.46, all beating buy-hold (negative in 4). Reinforces TSM-009: the combined overlays beat base in only 2/6 universes -> base is the robust core, overlays universe-specific. (AI/memecoins untestable -- no 3y history; some symbols dropped on download availability.) |
 
 ---
 

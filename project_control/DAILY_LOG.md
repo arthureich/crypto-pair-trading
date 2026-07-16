@@ -1,5 +1,26 @@
 # Daily Log
 
+## 2026-07-16 (TSM base generaliza em 6/6 universos tematicos -- evidencia mais forte contra overfitting)
+
+```text
+- Usuario: breadth de validacao > +0,2 Sharpe; o resultado que importa e o TSM
+  base funcionar em outro universo com params fixos. Prioridade #1: expandir
+  out-of-universe para varios universos tematicos.
+- TASK-TSM-010: base TSM FIXO (FC-II-008, zero re-tune) em 6 universos
+  (large_cap, mid_alt_l1, defi, gaming, old_guard, mid_tier_ref). Harness com
+  download resiliente POR SIMBOLO (flaky/ausente pulado). 44 symbols.
+- Resultado: base Sharpe > 0 E > buy-hold em 6/6 -- large_cap 0,99 (bh 0,14),
+  gaming 1,00 (bh -0,80), defi 0,83 (bh -0,45), mid_alt_l1 0,65 (bh -0,56),
+  mid_tier_ref 0,58 (bh -0,43), old_guard 0,46 (bh 0,06). Em 4/6 o buy-hold e
+  NEGATIVO e o TSM positivo. **Evidencia mais forte do projeto contra
+  overfitting** (out-of-sample na dimensao de ATIVOS, params fixos). Reforca
+  TSM-009: combinado bate base em so 2/6 -> base = core robusto, overlays
+  universe-specific.
+- Limitacao honesta: AI/memecoins sem historico 3a -> nao testaveis nesta
+  janela. Nao e promocao live. Proximo (plano do usuario): outras exchanges
+  (Bybit/OKX), outras classes de ativo, OOS continuo. 552 testes, ruff limpo.
+```
+
 ## 2026-07-13d (teste out-of-universe do TSM combinado -- CORE generaliza, OVERLAYS nao)
 
 ```text
