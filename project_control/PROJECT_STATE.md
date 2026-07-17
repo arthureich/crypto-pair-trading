@@ -22,13 +22,21 @@ zero re-tune em todos):
   (cripto teve regime ideal de trend; TradFi bull liso = adverso). LIMITA a
   claim; nenhuma mudanca de estrategia (efeito de regime/benchmark).
 - OVERLAYS (ERC + vol-target): PARCIALMENTE universe-specific. Combinado bate a
-  base so nos 20 originais (TSM-008, 1,183) e em 2/6 universos; base vol-targeted
-  e o CORE robusto. Combinado no paper-forward como candidato lider (OOS-gated).
+  base so nos 20 originais (TSM-008, 1,183) e em 3/7 universos (TSM-013); base
+  vol-targeted e o CORE robusto. Combinado no paper-forward (OOS-gated).
+- CARACTERIZACAO ESTATISTICA (TSM-013): ROBUSTEZ IN-DOMAIN comprovada. Base TSM
+  Sharpe medio 0,783 em n=7 universos cripto, IC95 bootstrap [0,628, 0,928]
+  EXCLUI zero (t-IC [0,579, 0,987]), positivo 7/7, bate buy-hold 7/7, CV 0,28,
+  degradacao suave (pior old_guard 0,462, ainda positivo). TradFi (n=4) reportado
+  a parte: -0,037, 0/4. -> o edge cripto e propriedade cross-universo estavel,
+  nao sorte. Ressalva: n=7 pequeno; sub-periodo salvo so 1/7 cripto.
 
-Proximos passos do programa: #3 universos adicionais (alta/baixa vol, liquidez,
-small caps, setores); #4 robustez temporal (janelas independentes, nunca
-escolhidas apos ver resultados); #5 caracterizacao estatistica (media/CI/
-dispersao de Sharpe/DD/PF/turnover entre universos; onde degrada).
+Estado do programa de validacao: #1 cross-exchange OK, #2 cross-asset-class
+(limite documentado), #5 caracterizacao estatistica OK. Proximos: #3 universos
+adicionais (alta/baixa vol, liquidez, small caps, setores -- exige downloads
+novos); #4 robustez temporal (janelas independentes, nunca escolhidas apos ver
+resultados). Melhoria de cobertura futura: salvar sub-periodos por universo no
+multiverse para caracterizacao temporal cross-universo mais rica.
 
 ## Atualizacao 2026-07-11: TASK-FC-II-005 (TSM classico vol-targeted) -- PRIMEIRO lead risco-ajustado positivo; REABRE a familia PRECO (correcao)
 

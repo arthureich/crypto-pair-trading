@@ -1,5 +1,32 @@
 # Daily Log
 
+## 2026-07-17 (TSM caracterizacao estatistica -- ROBUSTEZ IN-DOMAIN comprovada: Sharpe medio 0,783, IC95 [0,628,0,928] exclui zero)
+
+```text
+- Prioridade #5 do usuario: caracterizacao estatistica. Sintese DESCRITIVA dos
+  artefatos ja committados (TSM-008/009/010/011/012) numa unica frase de robustez.
+- TASK-TSM-013: docs/pre_registers/TASK-TSM-013.md travado ANTES de computar
+  (define as estatisticas). scripts/run_tsm_stat_characterization.py le so JSON
+  do cost_pilot; NENHUM backtest novo, NENHUMA mudanca de param. Cripto in-domain
+  (n=7 universos) vs TradFi out-of-domain (n=4) NUNCA pooled. Bootstrap semente
+  FIXA 0 (10k) -> reproduzivel; t-IC como cross-check (n pequeno).
+- Resultado CRIPTO (base TSM fixo): Sharpe media 0,783 (mediana 0,832, sd 0,220,
+  CV 0,28); IC95 bootstrap [0,628, 0,928] EXCLUI zero (t-IC [0,579, 0,987]);
+  positivo 7/7; bate buy-hold 7/7. -> ROBUSTEZ ESTATISTICA IN-DOMAIN: o edge e
+  propriedade cross-universo estavel, nao sorte.
+- Degradacao SUAVE: melhor gaming 1,004, pior old_guard 0,462 (spread 0,543),
+  pior ainda positivo -> sem penhasco. Sub-periodo mais fraco: 2024-06/2025-05.
+- Overlay (combined-base): delta Sharpe medio -0,027; combined>base so 3/7 ->
+  confirma overlays parcialmente universe-specific; base vol-targeted = CORE.
+- TradFi (out-of-domain, SEPARADO): Sharpe medio -0,037, 0/4 bate buy-hold ->
+  limite documentado (TSM-012), reportado a parte, nunca pooled.
+- Ressalvas honestas: n=7 pequeno (IC largo-ish); cobertura de sub-periodo so
+  1/7 cripto (original_20, unico com sub-periodos salvos). Descritivo; sem
+  promocao; sem mudanca de parametro.
+- Verificacao: 558 testes (6 novos: helpers puros + reprodutibilidade do
+  bootstrap), ruff limpo. Nenhum arquivo de Execution/Ledger/live tocado.
+```
+
 ## 2026-07-17 (TSM cross-asset-class -- 0/4 TradFi; LIMITE documentado, edge cripto-especifico nesta janela)
 
 ```text
