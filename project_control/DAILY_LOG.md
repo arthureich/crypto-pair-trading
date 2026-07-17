@@ -1,5 +1,35 @@
 # Daily Log
 
+## 2026-07-17 (TSM cross-asset-class -- 0/4 TradFi; LIMITE documentado, edge cripto-especifico nesta janela)
+
+```text
+- Prioridade #2 do usuario: generalizacao cross-asset-class. Pergunta central:
+  o edge e trend-following multi-ativos (Hurst-Ooi-Pedersen) ou cripto-especifico?
+- TASK-TSM-012: scripts/run_tsm_asset_classes.py -- Yahoo chart API keyless,
+  MESMOS horizontes economicos (28/7/5 dias) em barras diarias, include_funding
+  =False, sqrt(252/5), ZERO re-tune. 4 universos: indices/commodities/forex/ETFs.
+  25.735 barras baixadas.
+- Resultado: TSM positivo E > buy-hold em 0/4 classes. Absoluto: commodities
+  +0,18 e ETFs +0,13 (fraco+), indices -0,29 e forex -0,16.
+- Regra #6 (literatura ANTES de interpretar): o comportamento CONCORDA com a
+  evidencia recente -- 2023-2024 foi periodo DOCUMENTADAMENTE fraco pra trend/
+  CTAs de TradFi (bull de acoes, baixa 'trendiness'; SG Trend flat-to-down --
+  Capstone/Auspice/HedgeNordic/Quantica). Papel do trend = crisis-alpha/
+  diversificacao, NAO bater um bull -> 'bate buy-hold' e regua adversa-por-
+  construcao e a janela e um regime fraco conhecido.
+- Leitura honesta (limite, nao refutacao): o edge FORTE do TSM e, nesta janela,
+  CRIPTO-ESPECIFICO (cripto 2023-26 = dispersao/vol/negative-alt-drift altos,
+  ideal pra long/short trend; TradFi = bull liso, adverso). NAO refuta o edge
+  cripto (7 universos + 2 exchanges). LIMITA a claim: robustez cripto multi-
+  universo + cross-exchange comprovada, cross-asset-class NAO.
+- Por regra #6, NENHUMA mudanca de estrategia (efeito de regime/benchmark).
+  Teste futuro justo = janela mais longa + universo pooled ~50+ + regua de
+  diversificacao/absoluto (pre-registro proprio).
+- Ressalva: futuros continuos do Yahoo tem vies de roll. Nao e promocao live.
+- Verificacao: 552 testes passando, ruff limpo. Sem testes novos (script).
+- Nenhum arquivo de Execution/Ledger/Recovery/ML/live/order-routing tocado.
+```
+
 ## 2026-07-17 (TSM cross-exchange na Bybit -- Sharpe 0,971 vs Binance 0,970, venue-independent)
 
 ```text

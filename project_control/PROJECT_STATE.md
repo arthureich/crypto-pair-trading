@@ -1,6 +1,34 @@
 # PROJECT_STATE
 
-Last updated: 2026-07-11
+Last updated: 2026-07-17
+
+## Atualizacao 2026-07-17: Programa de VALIDACAO/ROBUSTEZ do TSM -- mapa da generalizacao (o que generaliza e o que NAO)
+
+O foco virou de "achar edge" para PROVAR robustez ou demonstrar limites
+honestamente. Estado da generalizacao do TSM base (params FIXOS FC-II-008,
+zero re-tune em todos):
+
+- CROSS-UNIVERSO (cripto): GENERALIZA. Out-of-universe (TSM-009) e 6/6
+  universos tematicos (TSM-010) positivos e > buy-hold com params fixos ->
+  trend e edge GERAL de perp cripto, nao artefato dos 20 originais. Evidencia
+  mais forte contra overfitting.
+- CROSS-EXCHANGE: GENERALIZA (venue-independent). Bybit Sharpe 0,971 vs
+  Binance 0,970 (TSM-011). Ressalva: mesmo simbolo e arbitrado entre venues.
+- CROSS-ASSET-CLASS (TradFi): LIMITE DOCUMENTADO (TSM-012). TSM > buy-hold em
+  0/4 classes (indices/commodities/forex/ETFs). NAO refuta o edge cripto --
+  literatura (regra #6): 2023-2024 foi periodo fraco conhecido pra trend de
+  TradFi e 'bate buy-hold' e regua adversa (trend = crisis-alpha/diversificacao,
+  nao bull-outperformer). O edge FORTE e, nesta janela, cripto-especifico
+  (cripto teve regime ideal de trend; TradFi bull liso = adverso). LIMITA a
+  claim; nenhuma mudanca de estrategia (efeito de regime/benchmark).
+- OVERLAYS (ERC + vol-target): PARCIALMENTE universe-specific. Combinado bate a
+  base so nos 20 originais (TSM-008, 1,183) e em 2/6 universos; base vol-targeted
+  e o CORE robusto. Combinado no paper-forward como candidato lider (OOS-gated).
+
+Proximos passos do programa: #3 universos adicionais (alta/baixa vol, liquidez,
+small caps, setores); #4 robustez temporal (janelas independentes, nunca
+escolhidas apos ver resultados); #5 caracterizacao estatistica (media/CI/
+dispersao de Sharpe/DD/PF/turnover entre universos; onde degrada).
 
 ## Atualizacao 2026-07-11: TASK-FC-II-005 (TSM classico vol-targeted) -- PRIMEIRO lead risco-ajustado positivo; REABRE a familia PRECO (correcao)
 
