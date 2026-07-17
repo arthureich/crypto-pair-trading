@@ -1,0 +1,56 @@
+{
+  "binance": {
+    "headline": {
+      "baseline_sharpe": -0.14290870990435928,
+      "max_dd": 0.34698069756361516,
+      "mean_turnover": 0.4570301002448149,
+      "n_rebalances": 219,
+      "net": 1.2672020782884936,
+      "sharpe": 0.9697595937420403
+    },
+    "sub_period_sharpe": {
+      "2023-06_2024-05": 1.5558324921689615,
+      "2024-06_2025-05": 0.5855386502417977,
+      "2025-06_2026-05": 0.9748185754879608
+    }
+  },
+  "bybit": {
+    "headline": {
+      "baseline_sharpe": -0.1429132887883396,
+      "max_dd": 0.34087308327194227,
+      "mean_turnover": 0.4576195008609611,
+      "n_rebalances": 219,
+      "net": 1.269650141365648,
+      "sharpe": 0.9707647104931714
+    },
+    "sub_period_sharpe": {
+      "2023-06_2024-05": 1.5500687386473864,
+      "2024-06_2025-05": 0.5856691510753056,
+      "2025-06_2026-05": 0.9814885472522906
+    }
+  },
+  "generated_at_utc": "2026-07-17T03:34:05.857059+00:00",
+  "kept_symbols": [
+    "ADAUSDT",
+    "APTUSDT",
+    "ARBUSDT",
+    "ATOMUSDT",
+    "AVAXUSDT",
+    "BCHUSDT",
+    "BNBUSDT",
+    "BTCUSDT",
+    "DOGEUSDT",
+    "DOTUSDT",
+    "ETCUSDT",
+    "ETHUSDT",
+    "LINKUSDT",
+    "LTCUSDT",
+    "OPUSDT",
+    "SOLUSDT",
+    "SUIUSDT",
+    "TRXUSDT",
+    "UNIUSDT",
+    "XRPUSDT"
+  ],
+  "task": "TASK-TSM-011 cross-exchange (Bybit) generalization of the base TSM"
+}

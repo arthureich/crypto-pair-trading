@@ -1,5 +1,26 @@
 # Daily Log
 
+## 2026-07-17 (TSM cross-exchange na Bybit -- Sharpe 0,971 vs Binance 0,970, venue-independent)
+
+```text
+- Prioridade #1 do usuario: generalizacao cross-exchange. Reconnaissance:
+  Bybit v5 (klines+funding 8h, historico 2023-06, 633 perps) e OKX viaveis;
+  Hyperliquid FORA (candleSnapshot raso).
+- TASK-TSM-011: scripts/run_tsm_bybit_crossexchange.py -- cliente Bybit v5
+  publico resiliente (klines+funding paginados, backward as-of merge -> mesma
+  schema), TSM BASE FIXO (zero re-tune), MESMOS 20 symbols, mesmo codigo,
+  Bybit vs Binance. 20/20 baixados (26.304 barras cada).
+- Resultado: Bybit Sharpe 0,971 vs Binance 0,970; maxDD 0,341 vs 0,347;
+  turnover/net/subperiodos quase identicos. GENERALIZA (venue-independent) ->
+  o edge nao e artefato de dados/microestrutura da Binance. Ressalva: precos
+  do mesmo simbolo sao arbitrados entre venues -> similaridade esperada; este
+  teste descarta artefatos de dado de venue, e os cross-UNIVERSE (TSM-009/010)
+  sao a diversidade mais forte. O match quase-identico valida o pipeline Bybit.
+- Scorecard: TSM base testado em 7 universos de ativos + 2 exchanges, params
+  fixos, zero retuning, positivo em todos. Proximo: OKX, classes de ativo,
+  OOS continuo. 552 testes, ruff limpo.
+```
+
 ## 2026-07-16 (TSM base generaliza em 6/6 universos tematicos -- evidencia mais forte contra overfitting)
 
 ```text

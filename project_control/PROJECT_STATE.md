@@ -194,6 +194,15 @@ trend e GERAL, nao universe-specific. Reforca que os overlays nao generalizam
 exchanges (Bybit/OKX/Hyperliquid), outras classes de ativo (commodities/forex/
 indices/ETFs), OOS continuo -- depois disso, dados pagos.**
 
+**TASK-TSM-011 (cross-exchange, Bybit) -- FEITO:** TSM base FIXO, mesmos 20
+symbols, mesmo codigo, na Bybit vs Binance -> **Sharpe 0,971 vs 0,970**, maxDD/
+turnover/net/subperiodos quase identicos. GENERALIZA (venue-independent) -> o
+edge nao e artefato de dado/microestrutura da Binance. Ressalva: precos
+arbitrados entre venues -> similaridade esperada; os cross-UNIVERSE (TSM-009/010)
+sao a diversidade mais forte. Hyperliquid fora (historico raso); OKX = follow-up.
+**Scorecard de robustez: TSM base positivo em 7 universos de ativos + 2 exchanges,
+params fixos, zero retuning.** Ver `reports/tsm_bybit_crossexchange.md`.
+
 **Options-skew/surface PAID-GATED (reconnaissance 2026-07-13):** API publica
 Deribit so serve snapshot ATUAL da cadeia + DVOL 30d (ja usado); historico de
 skew/RR/butterfly/term-structure exige dado PAGO (Tardis/Amberdata) -> item de
