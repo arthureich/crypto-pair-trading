@@ -1,5 +1,36 @@
 # Daily Log
 
+## 2026-07-17 (TSM robustez temporal -- TEMPORALMENTE ROBUSTO com custo honesto: drawdowns longos ~14m mas rasos)
+
+```text
+- Prioridade #4 do usuario: robustez temporal (janelas independentes, NUNCA
+  escolhidas apos ver resultados). Tambem preenche a lacuna de TSM-013 (sub-
+  periodo salvo so 1/7).
+- TASK-TSM-014: docs/pre_registers/TASK-TSM-014.md travado com janelas FIXAS A
+  PRIORI (3 sub-periodos padrao; rolantes W6=37/W12=73 derivadas da cadencia 5d).
+  scripts/run_tsm_temporal_robustness.py reconstroi OFFLINE (barras cacheadas,
+  ZERO download) o stream de PnL/rebalance do TSM base (FC-II-008, include_funding,
+  zero re-tune) de 7 universos cripto; reusa UNIVERSES do multiverse.
+- (A) Sub-periodos x universo (backfill 1/7 -> 7/7): cada universo positivo em
+  >=2/3. Medias cross-universo: 2023-06/2024-05 1,39 (100% pos); 2024-06/2025-05
+  0,50 (100% pos, mais fraco); 2025-06/2026-05 0,56 (86% pos). So 1 celula
+  negativa quase-zero (defi 2025-06 -0,02).
+- (B) Rolling pooled: W6(~6m) 77% positivas; W12(~12m) 91%.
+- (C) Duracao de drawdown: pior ~415d (~14 meses), time-underwater 79-89%.
+- Veredito: TEMPORALMENTE ROBUSTO -- edge holds no tempo, nao numa janela quente.
+  CUSTO HONESTO (nao acucarado): drawdowns LONGOS (~14m nos universos mid/alt --
+  mid_alt_l1/defi/mid_tier_ref, os mesmos mais fracos no ano FINAL, provavelmente
+  ainda underwater no fim), MAS em profundidade MODESTA (maxDD ~0,31-0,80) =
+  grinds rasos-porem-longos, tipicos de trend. Robustez repousa em (A)+(B); (C)
+  e o risco honesto.
+- Achado colateral: corrigido bug real do _sharpe (slice constante gerava Sharpe
+  ~5e16 por std de rounding ~3e-17 != 0) -> guard com epsilon 1e-12 -> None. Um
+  teste pegou isso; outro pegou off-by-one na duracao de drawdown (peak-to-
+  recovery deve incluir a barra de recuperacao). Ambos corrigidos.
+- Verificacao: 568 testes (10 novos: helpers puros + os 2 bugs acima), ruff
+  limpo. Descritivo; sem promocao; sem mudanca de parametro. TradFi nao re-rodado.
+```
+
 ## 2026-07-17 (TSM caracterizacao estatistica -- ROBUSTEZ IN-DOMAIN comprovada: Sharpe medio 0,783, IC95 [0,628,0,928] exclui zero)
 
 ```text

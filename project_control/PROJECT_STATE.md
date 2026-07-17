@@ -29,14 +29,21 @@ zero re-tune em todos):
   EXCLUI zero (t-IC [0,579, 0,987]), positivo 7/7, bate buy-hold 7/7, CV 0,28,
   degradacao suave (pior old_guard 0,462, ainda positivo). TradFi (n=4) reportado
   a parte: -0,037, 0/4. -> o edge cripto e propriedade cross-universo estavel,
-  nao sorte. Ressalva: n=7 pequeno; sub-periodo salvo so 1/7 cripto.
+  nao sorte. Ressalva: n=7 pequeno.
+- ROBUSTEZ TEMPORAL (TSM-014): TEMPORALMENTE ROBUSTO com custo honesto. Cada
+  universo positivo em >=2/3 sub-periodos fixos (mais fraco 2024-06/2025-05, mean
+  0,50, ainda 100% pos); rolling pooled W6 77% / W12 91% positivas -> edge holds
+  no tempo, nao numa janela quente. Backfill da lacuna de TSM-013: cobertura de
+  sub-periodo 1/7 -> 7/7. CUSTO HONESTO: drawdowns LONGOS (~14 meses nos universos
+  mid/alt) e time-underwater 79-89%, mas em profundidade MODESTA (maxDD 0,31-0,80)
+  = grinds rasos-porem-longos tipicos de trend. (Corrigiu bug real _sharpe: slice
+  constante -> None.)
 
 Estado do programa de validacao: #1 cross-exchange OK, #2 cross-asset-class
-(limite documentado), #5 caracterizacao estatistica OK. Proximos: #3 universos
-adicionais (alta/baixa vol, liquidez, small caps, setores -- exige downloads
-novos); #4 robustez temporal (janelas independentes, nunca escolhidas apos ver
-resultados). Melhoria de cobertura futura: salvar sub-periodos por universo no
-multiverse para caracterizacao temporal cross-universo mais rica.
+(limite documentado), #4 robustez temporal OK, #5 caracterizacao estatistica OK.
+Resta: #3 universos adicionais (alta/baixa vol, liquidez, small caps, setores --
+exige downloads novos). A lacuna de cobertura de sub-periodo (TSM-013) ja foi
+preenchida por TSM-014 (7/7 offline).
 
 ## Atualizacao 2026-07-11: TASK-FC-II-005 (TSM classico vol-targeted) -- PRIMEIRO lead risco-ajustado positivo; REABRE a familia PRECO (correcao)
 
