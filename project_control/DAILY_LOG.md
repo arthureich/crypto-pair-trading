@@ -1,5 +1,35 @@
 # Daily Log
 
+## 2026-07-18 (DEPLOY-001 Fases 0+1 -- config canonica congelada; AUDITORIA de drawdown corrige narrativa "shallow")
+
+```text
+- NOVA fase do projeto (ADR-0033, TASK-DEPLOY-001): congelar a TSM validada e
+  transforma-la em sistema forward executavel/auditavel. NAO e pesquisa de alpha.
+  Principio: separar pesquisa/validacao/execucao/risco/producao/forward; infra
+  nunca altera parametros economicos. Sem dinheiro real.
+- FASE 0 (congelar config canonica): scripts/freeze_canonical_config.py ->
+  artifacts/tsm/canonical-config.json + frozen-configs.json. Ambiguidade de nome
+  resolvida PELOS ARTEFATOS (nao relatorios): o nucleo robusto validado (TSM-009
+  ..015 primario) e o BASE PURO -- sign x inverse-vol, unit-gross, 5d, funding
+  on, SEM overlay managed-vol (Moreira-Muir window12/cap3) e SEM ERC. Esses dois
+  formam o combined-caveated (secundario). config_hash reproduzivel ba5037fc...,
+  source_commit e0779b0 (FC-II-008).
+- FASE 1 (auditoria de metricas/unidades): src/research/drawdown.py (framings
+  COMPOSTA e ADITIVA, com timestamps de pico/vale/recuperacao) + 13 testes de
+  borda (incl. o check canonico equity 1.00->0.20 = 80%). scripts/
+  run_tsm_drawdown_audit.py reconstroi os 7 universos offline.
+- VEREDITO = B (unidade/enquadramento, NAO bug de calculo): o maxDD ~0.31-0.80
+  reportado era ADITIVO (np.cumsum, P&L cumulativo por unidade de gross), NAO %
+  de equity composta. O aditivo REPRODUZ o _max_drawdown legado exatamente. Os
+  drawdowns COMPOSTOS reais sao 31.0%-57.8% -> ou seja "0.80" = 57.8% (NAO 80%),
+  MAS NAO sao "shallow": 58% e um drawdown severo. Corrige a narrativa anterior.
+- Achado adicional honesto: mid_alt_l1 e defi ficam UNRECOVERED no fim da janela
+  (drawdown composto ~55-57% ainda aberto) -- casa com o achado temporal (TSM-014).
+- DECISAO: daqui pra frente a metrica-cabeca de risco e o maxDD COMPOSTO %.
+  Nenhum parametro/estrategia alterado (drawdown e reporting, nao logica economica).
+- Verificacao: 588 testes (13 novos de drawdown), ruff limpo. Fases 2-7 a seguir.
+```
+
 ## 2026-07-17 (TSM stress de liquidez -- LIQUIDITY-ROBUST dentro dos sobreviventes; LOW tier sobrevive ate 30bps)
 
 ```text

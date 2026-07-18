@@ -1,6 +1,32 @@
 # PROJECT_STATE
 
-Last updated: 2026-07-17
+Last updated: 2026-07-18
+
+## Atualizacao 2026-07-18: DEPLOY-001 (ADR-0033) -- congelar a TSM validada; engenharia de forward/execucao, NAO alpha
+
+Nova fase: transformar a TSM validada num sistema forward executavel, auditavel
+e anti-overfit. Separacao rigorosa pesquisa/validacao/execucao/risco/producao/
+forward; infra nunca altera parametros economicos; sem dinheiro real. 7 fases
+(pre-registro `docs/pre_registers/TASK-DEPLOY-001.md`).
+
+- FASE 0 (feita): config canonica CONGELADA em `artifacts/tsm/canonical-config
+  .json` (hash reproduzivel ba5037fc..., source_commit e0779b0). Nucleo = BASE
+  PURO (sign x inverse-vol, unit-gross, 5d, funding on); overlay managed-vol +
+  ERC EXCLUIDOS do nucleo (= combined-caveated, secundario). Ambiguidade de nome
+  resolvida pelos artefatos, nao pelos relatorios.
+- FASE 1 (feita): AUDITORIA de drawdown. VEREDITO B (unidade): o maxDD ~0.31-0.80
+  era ADITIVO (np.cumsum, reproduz o legado exatamente), NAO % de equity composta.
+  Drawdowns COMPOSTOS reais = **31.0%-57.8%** -> "0.80" = 57.8% (nao 80%), mas
+  NAO "shallow": 58% e severo. mid_alt_l1 e defi ficam UNRECOVERED no fim da
+  janela. Metrica-cabeca de risco daqui pra frente = maxDD COMPOSTO %. Novo
+  `src/research/drawdown.py` + 13 testes. Nenhum parametro alterado.
+- FASES 2-7 (a seguir): forward imutavel 3-streams; execucao realista; capacidade;
+  controles de producao; haircut por multiplas tentativas; monitoramento forward.
+
+CORRECAO IMPORTANTE de honestidade: a caracterizacao anterior de drawdown como
+"modest/shallow (maxDD 0.31-0.80)" estava enganosa -- os drawdowns reais
+(compostos) sao 31-58%, materiais. O TSM permanece robusto no Sharpe, mas o risco
+de drawdown e maior do que a linguagem anterior sugeria.
 
 ## Atualizacao 2026-07-17: Programa de VALIDACAO/ROBUSTEZ do TSM -- mapa da generalizacao (o que generaliza e o que NAO)
 

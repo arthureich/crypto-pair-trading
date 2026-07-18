@@ -1,0 +1,30 @@
+{
+  "config_hash": "ba5037fc14d0d10db5c20622a79549c44ca55c8b794b195123d8fe20be069071",
+  "conviction_sizing": false,
+  "cost_policy": "6.0 bps per leg, applied on turnover",
+  "frozen_at_utc": "2026-07-18T20:27:58.175666+00:00",
+  "funding": true,
+  "lookbacks": {
+    "realized_vol_window_hours": 168,
+    "signal_lookback_hours": 672
+  },
+  "portfolio_erc": false,
+  "provenance": "Reconciled from code (src/research/tsm_trend.py defaults + include_funding=True) and validation artifacts (TSM-009..015 primary stream). Managed-vol overlay + ERC excluded from the core per artifact evidence, not report naming.",
+  "rebalance_cadence": "120h (5d)",
+  "regime_filter": false,
+  "signal_definition": "sign of the 28d (672h) trailing log-price change per symbol; long if positive, short if negative",
+  "source_commit": "e0779b0",
+  "strategy_id": "tsm-canonical-core",
+  "universe_policy": "deployment universe = original 20 liquid Binance USDM perps; generalization validated across thematic/liquidity universes with FIXED params (zero re-tune)",
+  "variant": "canonical-core",
+  "volatility_targeting": {
+    "enabled": true,
+    "managed_vol_overlay": {
+      "enabled": false,
+      "note": "Moreira-Muir managed-vol overlay (window=12 rebalances, cap=3.0) is NOT in the canonical core; it belongs to combined-caveated."
+    },
+    "realized_vol_window_hours": 168,
+    "type": "intrinsic_per_leg_inverse_vol"
+  },
+  "weighting": "per-leg inverse realized-volatility (7d), signed by the 28d trend, normalized to unit gross exposure across the long/short book"
+}

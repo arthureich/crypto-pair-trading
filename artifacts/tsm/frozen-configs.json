@@ -1,0 +1,75 @@
+{
+  "configs": {
+    "buy-hold-benchmark": {
+      "config_hash": "9a78d0270e2a2e5857c5316d62a646fbb1b4efb7041fa4039d76d214a4e7a217",
+      "definition": "equal-weight long-only buy-and-hold of the same universe, unit gross, same rebalance grid (reference, not a strategy)",
+      "strategy_id": "buy-hold-benchmark",
+      "variant": "benchmark"
+    },
+    "canonical-core": {
+      "config_hash": "ba5037fc14d0d10db5c20622a79549c44ca55c8b794b195123d8fe20be069071",
+      "conviction_sizing": false,
+      "cost_policy": "6.0 bps per leg, applied on turnover",
+      "funding": true,
+      "lookbacks": {
+        "realized_vol_window_hours": 168,
+        "signal_lookback_hours": 672
+      },
+      "portfolio_erc": false,
+      "rebalance_cadence": "120h (5d)",
+      "regime_filter": false,
+      "signal_definition": "sign of the 28d (672h) trailing log-price change per symbol; long if positive, short if negative",
+      "strategy_id": "tsm-canonical-core",
+      "universe_policy": "deployment universe = original 20 liquid Binance USDM perps; generalization validated across thematic/liquidity universes with FIXED params (zero re-tune)",
+      "variant": "canonical-core",
+      "volatility_targeting": {
+        "enabled": true,
+        "managed_vol_overlay": {
+          "enabled": false,
+          "note": "Moreira-Muir managed-vol overlay (window=12 rebalances, cap=3.0) is NOT in the canonical core; it belongs to combined-caveated."
+        },
+        "realized_vol_window_hours": 168,
+        "type": "intrinsic_per_leg_inverse_vol"
+      },
+      "weighting": "per-leg inverse realized-volatility (7d), signed by the 28d trend, normalized to unit gross exposure across the long/short book"
+    },
+    "cash-benchmark": {
+      "config_hash": "bc13ea3379460b7740e523b4ed426c8de74875884abc27623b9fc100c2745a75",
+      "definition": "flat / zero-return cash (0% nominal, no funding)",
+      "strategy_id": "cash-benchmark",
+      "variant": "benchmark"
+    },
+    "combined-caveated": {
+      "config_hash": "62034927b12e0421da52d905bcbd83f6ec9230c651f526ebd9804c294883e849",
+      "conviction_sizing": false,
+      "cost_policy": "6.0 bps per leg, applied on turnover",
+      "funding": true,
+      "lookbacks": {
+        "realized_vol_window_hours": 168,
+        "signal_lookback_hours": 672
+      },
+      "note": "SECONDARY monitoring variant (TSM-008). Only partly generalizes (beats base in 3/7 universes); NOT the universal core.",
+      "portfolio_erc": true,
+      "rebalance_cadence": "120h (5d)",
+      "regime_filter": false,
+      "signal_definition": "sign of the 28d (672h) trailing log-price change per symbol; long if positive, short if negative",
+      "strategy_id": "tsm-combined-caveated",
+      "universe_policy": "deployment universe = original 20 liquid Binance USDM perps; generalization validated across thematic/liquidity universes with FIXED params (zero re-tune)",
+      "variant": "combined-caveated",
+      "volatility_targeting": {
+        "enabled": true,
+        "managed_vol_overlay": {
+          "cap": 3.0,
+          "enabled": true,
+          "target_definition": "expanding causal mean of trailing realized vol; scale = clip(target/sigma, 0, cap); both sigma and target use shift(1)",
+          "window_rebalances": 12
+        },
+        "realized_vol_window_hours": 168,
+        "type": "intrinsic_per_leg_inverse_vol"
+      },
+      "weighting": "per-leg inverse realized-volatility (7d), signed by the 28d trend, normalized to unit gross exposure across the long/short book"
+    }
+  },
+  "frozen_at_utc": "2026-07-18T20:27:58.175666+00:00",
+  "source_commit": "e0779b0"
+}

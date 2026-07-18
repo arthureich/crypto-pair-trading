@@ -2572,3 +2572,56 @@ pure parse fixture-tested) and `scripts/diagnostic_alt_options_vrp.py` (reuses
 `info_content.py`). Write `reports/alt_options_vrp_diagnostic.md` + results
 JSON. Update the ledger family matrix, `PROJECT_STATE.md`, `TASK_BOARD.md`,
 `TEST_MATRIX.md`, `DAILY_LOG.md`.
+
+## ADR-0033 - Freeze The Validated TSM And Open The Deployment-Engineering / Forward Program (TASK-DEPLOY-001): Validation & Execution, Not Alpha Research
+
+## Status
+
+Accepted
+
+## Context
+
+The TSM validation program (ADR-0031 + TSM-009..015) is complete: the base
+canonical-core is robust in-domain (7 crypto universes, 2 exchanges, temporal,
+liquidity), with limits documented (cross-asset-class out-of-domain; overlays
+only partly generalize). The next step is NOT more alpha. It is to measure
+whether the edge already found survives real costs, execution and capacity, and
+to harden operations -- while STRICTLY separating research / validation /
+execution / risk / production / forward, and never letting infra changes touch
+economic parameters. A specific integrity flag motivated Phase 1: the reported
+`maxDD ~0.31-0.80` was called "modest/shallow", which is suspicious if those are
+decimals (0.80 = 80%).
+
+## Decision
+
+Open TASK-DEPLOY-001 (pre-registered in `docs/pre_registers/TASK-DEPLOY-001.md`),
+a 7-phase program: (0) freeze canonical config with a reproducible hash and
+source commit; (1) metric-units audit of drawdown; (2) immutable append-only
+paper-forward with three streams (theoretical / executable / conservative);
+(3) a single pre-declared conservative execution model with anti-lookahead
+guards; (4) capacity/liquidity/impact; (5) production controls (limits, failure
+modes, idempotency, kill switches); (6) multiple-testing statistical haircut;
+(7) forward monitoring. Hard constraints: no re-optimization of any economic
+parameter, no ex-post universe/asset selection, no execution policy chosen by
+backtest Sharpe, no real trading, no remote push without authorization.
+
+## Consequences
+
+Phase 0 froze `tsm-canonical-core` (config_hash ba5037fc..., source_commit
+e0779b0): the PURE base (sign x inverse-vol, unit-gross, 5d, funding on), with
+the Moreira-Muir managed-vol overlay + ERC explicitly EXCLUDED (that is the
+combined-caveated secondary). Phase 1 verdict = B (unit/framing): the additive
+`np.cumsum` drawdown reproduces the legacy metric exactly, but the CANONICAL
+compounded drawdowns are 31.0%-57.8% (so `0.80` = 57.8%, NOT 80%, and NOT
+"shallow"). Two universes are unrecovered at window-end. Headline risk going
+forward is the compounded maxDD %. New `src/research/drawdown.py` (both framings)
++ 13 edge-case tests. No strategy/parameter changed.
+
+## Migration
+
+Add `docs/pre_registers/TASK-DEPLOY-001.md`. Artifacts: `artifacts/tsm/
+canonical-config.json`, `frozen-configs.json`; `scripts/freeze_canonical_config
+.py`. Phase 1: `src/research/drawdown.py`, `tests/test_drawdown.py`, `scripts/
+run_tsm_drawdown_audit.py`, `reports/metric_units_audit.md`, `reports/
+per_universe_drawdown_audit.{csv,json}`. Phases 2-7 to follow. Update
+`PROJECT_STATE.md`, `TASK_BOARD.md`, `DAILY_LOG.md`.
