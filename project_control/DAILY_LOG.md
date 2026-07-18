@@ -1,5 +1,28 @@
 # Daily Log
 
+## 2026-07-18 (DEPLOY-001 Fase 3 -- execucao realista: gap teorico-vs-executavel MINIMO em tamanho pequeno)
+
+```text
+- FASE 3 (modelo de execucao realista): src/research/execution_model.py.
+  - UMA politica conservadora PRE-DECLARADA (nao escolhida por Sharpe): taker fee
+    4.5bps + half-spread 2.0bps + slippage linear na participacao; executa no
+    primeiro preco APOS o sinal, cruza o spread, sem fill maker, sem melhor preco
+    posterior. Memoryless por rebalance (cost[t] usa so t -> sem lookahead).
+  - Limitacao honesta: temos klines (sem bid/ask/tick) -> friccoes sao overlay de
+    custo sobre os retornos causais, nao simulacao de fill tick-a-tick.
+- scripts/run_forward_execution_report.py: mede teorico(A) vs executavel(B) vs
+  conservador(C, 50% do risco) e POPULA o ledger imutavel com os rebalances OOS.
+  - Resultado (dev original-20): Sharpe A/B/C = 0.970 / 0.966 / 0.966; custo
+    executavel base 6.5bps/leg vs 6.0 declarado -> gap MINIMO (haircut ~0.4%),
+    coerente com cost-insensitivity (FC-II-007 breakeven ~142bps). Slippage de
+    TAMANHO cresce com participacao -> quantificado na Fase 4.
+  - Ledger: 5 eventos OOS (junho/2026) escritos em artifacts/tsm/forward/
+    canonical_ledger.jsonl (append-only, idempotente na re-execucao). Movido para
+    artifacts/ (data/research/* e gitignored) para o historico viver no git.
+- Verificacao: 606 testes (8 novos de execucao), ruff limpo. Nenhum parametro
+  economico tocado.
+```
+
 ## 2026-07-18 (DEPLOY-001 Fase 2 -- ledger forward IMUTAVEL append-only, 3 streams)
 
 ```text
