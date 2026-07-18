@@ -1,0 +1,234 @@
+{
+  "generated_at_utc": "2026-07-18T20:06:12.834816+00:00",
+  "result": {
+    "liquidity_proxy_median_daily_quote_volume": {
+      "1INCHUSDT": 12844462.4599,
+      "AAVEUSDT": 110676875.64050001,
+      "ADAUSDT": 264381672.39915,
+      "ALGOUSDT": 31233305.164290003,
+      "APEUSDT": 44454240.30455001,
+      "APTUSDT": 101389909.25341001,
+      "ARBUSDT": 125389631.411355,
+      "ATOMUSDT": 55206364.119165,
+      "AVAXUSDT": 236493648.4215,
+      "AXSUSDT": 28824584.9025,
+      "BCHUSDT": 167895843.668695,
+      "BNBUSDT": 413641296.17620003,
+      "BTCUSDT": 13709600404.844875,
+      "CHZUSDT": 21719966.235395,
+      "COMPUSDT": 17324124.161365002,
+      "CRVUSDT": 91137574.4009,
+      "DASHUSDT": 9201363.108084999,
+      "DOGEUSDT": 712761899.48067,
+      "DOTUSDT": 127484152.75365,
+      "EGLDUSDT": 11156631.7292,
+      "ENJUSDT": 8959565.522705,
+      "ETCUSDT": 82981752.50329,
+      "ETHUSDT": 8454270215.586334,
+      "FILUSDT": 133535680.2905,
+      "GALAUSDT": 74419561.60038999,
+      "GRTUSDT": 20565562.15897,
+      "ICPUSDT": 35262445.8735,
+      "LINKUSDT": 243110749.36868,
+      "LTCUSDT": 186718268.11603498,
+      "MANAUSDT": 20495933.47165,
+      "NEARUSDT": 129895359.12,
+      "NEOUSDT": 17049891.911815003,
+      "OPUSDT": 119024520.06035501,
+      "SANDUSDT": 35995249.746005,
+      "SNXUSDT": 17257854.02945,
+      "SOLUSDT": 2599680342.7678204,
+      "SUIUSDT": 371909407.858635,
+      "SUSHIUSDT": 17913572.8073,
+      "TRXUSDT": 68955583.503865,
+      "UNIUSDT": 91704986.7095,
+      "XLMUSDT": 50255571.07258999,
+      "XRPUSDT": 870907635.675255,
+      "XTZUSDT": 13299616.8519,
+      "YFIUSDT": 7912505.032,
+      "ZECUSDT": 19941632.453709997
+    },
+    "n_covered": 45,
+    "tiers": {
+      "HIGH": {
+        "buy_hold": {
+          "max_dd": 1.2320947804011424,
+          "n": 219,
+          "net": 0.11874069872793225,
+          "sharpe": 0.06212449779183758
+        },
+        "by_cost": {
+          "12": {
+            "max_dd": 0.47866620913248636,
+            "mean_turnover": 0.4644317093186807,
+            "n": 219,
+            "net": 1.0086411601783678,
+            "sharpe": 0.7251951990648917
+          },
+          "20": {
+            "max_dd": 0.48918151366822604,
+            "mean_turnover": 0.4644317093186807,
+            "n": 219,
+            "net": 0.9272727247057353,
+            "sharpe": 0.6666183450943831
+          },
+          "30": {
+            "max_dd": 0.5023256443379003,
+            "mean_turnover": 0.4644317093186807,
+            "n": 219,
+            "net": 0.8255621803649442,
+            "sharpe": 0.5933898395299173
+          },
+          "6": {
+            "max_dd": 0.4707797307306818,
+            "mean_turnover": 0.4644317093186807,
+            "n": 219,
+            "net": 1.0696674867828426,
+            "sharpe": 0.7691207927258591
+          }
+        },
+        "median_dollar_vol": 264381672.39915,
+        "n_symbols": 15,
+        "symbols": [
+          "DOTUSDT",
+          "NEARUSDT",
+          "FILUSDT",
+          "BCHUSDT",
+          "LTCUSDT",
+          "AVAXUSDT",
+          "LINKUSDT",
+          "ADAUSDT",
+          "SUIUSDT",
+          "BNBUSDT",
+          "DOGEUSDT",
+          "XRPUSDT",
+          "SOLUSDT",
+          "ETHUSDT",
+          "BTCUSDT"
+        ]
+      },
+      "LOW": {
+        "buy_hold": {
+          "max_dd": 1.8362434295081782,
+          "n": 219,
+          "net": -1.1219728511528861,
+          "sharpe": -0.510365418385318
+        },
+        "by_cost": {
+          "12": {
+            "max_dd": 0.6983488227101734,
+            "mean_turnover": 0.44539017880447923,
+            "n": 219,
+            "net": 1.4833160363776172,
+            "sharpe": 0.8101151102496527
+          },
+          "20": {
+            "max_dd": 0.7154795840331507,
+            "mean_turnover": 0.44539017880447923,
+            "n": 219,
+            "net": 1.4052836770510728,
+            "sharpe": 0.7672209395469666
+          },
+          "30": {
+            "max_dd": 0.7368930356868706,
+            "mean_turnover": 0.44539017880447923,
+            "n": 219,
+            "net": 1.3077432278928915,
+            "sharpe": 0.7136215576384825
+          },
+          "6": {
+            "max_dd": 0.6855007517179411,
+            "mean_turnover": 0.44539017880447923,
+            "n": 219,
+            "net": 1.541840305872526,
+            "sharpe": 0.8422921693892029
+          }
+        },
+        "median_dollar_vol": 17257854.02945,
+        "n_symbols": 15,
+        "symbols": [
+          "YFIUSDT",
+          "ENJUSDT",
+          "DASHUSDT",
+          "EGLDUSDT",
+          "1INCHUSDT",
+          "XTZUSDT",
+          "NEOUSDT",
+          "SNXUSDT",
+          "COMPUSDT",
+          "SUSHIUSDT",
+          "ZECUSDT",
+          "MANAUSDT",
+          "GRTUSDT",
+          "CHZUSDT",
+          "AXSUSDT"
+        ]
+      },
+      "MID": {
+        "buy_hold": {
+          "max_dd": 1.9654847422349109,
+          "n": 219,
+          "net": -1.1133333460211938,
+          "sharpe": -0.5121989453647064
+        },
+        "by_cost": {
+          "12": {
+            "max_dd": 0.47512438135581914,
+            "mean_turnover": 0.43606436828226913,
+            "n": 219,
+            "net": 1.4566506074878562,
+            "sharpe": 0.8986456116207466
+          },
+          "20": {
+            "max_dd": 0.4899709146476178,
+            "mean_turnover": 0.43606436828226913,
+            "n": 219,
+            "net": 1.3802521301648025,
+            "sharpe": 0.8514146819127535
+          },
+          "30": {
+            "max_dd": 0.5085290812623653,
+            "mean_turnover": 0.43606436828226913,
+            "n": 219,
+            "net": 1.2847540335109862,
+            "sharpe": 0.7923697205884064
+          },
+          "6": {
+            "max_dd": 0.46761101221456947,
+            "mean_turnover": 0.43606436828226913,
+            "n": 219,
+            "net": 1.5139494654801466,
+            "sharpe": 0.9340640526693793
+          }
+        },
+        "median_dollar_vol": 74419561.60038999,
+        "n_symbols": 15,
+        "symbols": [
+          "ALGOUSDT",
+          "ICPUSDT",
+          "SANDUSDT",
+          "APEUSDT",
+          "XLMUSDT",
+          "ATOMUSDT",
+          "TRXUSDT",
+          "GALAUSDT",
+          "ETCUSDT",
+          "CRVUSDT",
+          "UNIUSDT",
+          "APTUSDT",
+          "AAVEUSDT",
+          "OPUSDT",
+          "ARBUSDT"
+        ]
+      }
+    }
+  },
+  "task": "TASK-TSM-015 liquidity-stress test of the base TSM (ADR-0031)",
+  "verdict": {
+    "low_buy_hold_sharpe": -0.510365418385318,
+    "low_sharpe_at_realistic_cost": 0.7672209395469666,
+    "low_tier_survives_realistic_cost": true,
+    "realistic_cost_bps": 20.0,
+    "sharpe_drop_high_minus_low_at_6bps": -0.07317137666334383
+  }
+}

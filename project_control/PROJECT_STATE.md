@@ -38,12 +38,24 @@ zero re-tune em todos):
   mid/alt) e time-underwater 79-89%, mas em profundidade MODESTA (maxDD 0,31-0,80)
   = grinds rasos-porem-longos tipicos de trend. (Corrigiu bug real _sharpe: slice
   constante -> None.)
+- STRESS DE LIQUIDEZ (TSM-015): LIQUIDITY-ROBUST (dentro dos sobreviventes). 45
+  symbols em tercis por dollar-volume; LOW tier Sharpe 0,842@6bps -> 0,714@30bps
+  (buy-hold -0,510), bate buy-hold em TODO custo; sem degradacao monotona (HIGH
+  0,77 e o MAIS BAIXO, MID 0,93 o mais alto -> edge mais forte em alts menos
+  eficientes). CUSTO HONESTO: LOW tier com drawdown mais profundo (maxDD 0,686 vs
+  ~0,47). RESSALVA central: SURVIVORSHIP -- microcaps reais ausentes (sem 3a de
+  historico); e o extremo menos liquido dos sobreviventes, limite inferior otimista.
 
-Estado do programa de validacao: #1 cross-exchange OK, #2 cross-asset-class
-(limite documentado), #4 robustez temporal OK, #5 caracterizacao estatistica OK.
-Resta: #3 universos adicionais (alta/baixa vol, liquidez, small caps, setores --
-exige downloads novos). A lacuna de cobertura de sub-periodo (TSM-013) ja foi
-preenchida por TSM-014 (7/7 offline).
+Estado do programa de validacao: TODAS as 5 prioridades executadas -- #1 cross-
+exchange OK, #2 cross-asset-class (limite out-of-domain documentado), #3 stress
+de liquidez OK (com ressalva de survivorship), #4 robustez temporal OK (com custo
+de drawdown honesto), #5 caracterizacao estatistica OK. SINTESE: o TSM base vol-
+targeted e uma estrategia cripto COMPROVADAMENTE ROBUSTA in-domain (cross-universo,
+cross-exchange, temporal, liquidez), com limites HONESTAMENTE documentados
+(cross-asset-class fora de dominio; drawdowns longos-porem-rasos; survivorship na
+cauda iliquida). Candidato lider (combinado ERC+vol-target) segue no paper-forward
+OOS-gated. Extensoes futuras exigem pre-registro proprio (ex.: janela mais longa
+com stress 2022; universo TradFi pooled ~50+; microcaps reais com custo modelado).
 
 ## Atualizacao 2026-07-11: TASK-FC-II-005 (TSM classico vol-targeted) -- PRIMEIRO lead risco-ajustado positivo; REABRE a familia PRECO (correcao)
 

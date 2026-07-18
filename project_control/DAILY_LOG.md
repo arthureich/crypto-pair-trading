@@ -1,5 +1,31 @@
 # Daily Log
 
+## 2026-07-17 (TSM stress de liquidez -- LIQUIDITY-ROBUST dentro dos sobreviventes; LOW tier sobrevive ate 30bps)
+
+```text
+- Prioridade #3 do usuario (universos adicionais), focada no eixo DISCRIMINANTE
+  que faltava: LIQUIDEZ. Todos os resultados ate agora viviam em majors/alts
+  liquidos onde 6bps e valido; liquidez baixa e onde trend tipicamente quebra.
+- TASK-TSM-015: docs/pre_registers/TASK-TSM-015.md travado A PRIORI (tercis por
+  mediana de quote_volume diario; varredura de custo 6/12/20/30bps).
+  scripts/run_tsm_liquidity_stress.py OFFLINE (uniao dos 45 symbols cacheados,
+  ZERO download); TSM base FIXO por tier.
+- Resultado: LIQUIDITY-ROBUST (dentro dos sobreviventes). Sharpe @6bps HIGH
+  0,769 / MID 0,934 / LOW 0,842 (gap HIGH-LOW -0,073, SEM degradacao monotona).
+  LOW tier na varredura: 6bps 0,842 -> 12 0,810 -> 20 0,767 -> 30 0,714; buy-hold
+  do LOW -0,510. LOW bate buy-hold em TODO custo, incl. a regua de 20bps.
+- Notavel: HIGH e o tier MAIS BAIXO, MID o mais alto -> edge de trend mais forte
+  nos alts menos eficientes, nao nos majors (coerente com toda a tese).
+- CUSTO HONESTO: LOW tem drawdowns MAIS PROFUNDOS (maxDD 0,686 vs ~0,47 HIGH/MID)
+  -- Sharpe comparavel, risco maior em baixa liquidez.
+- RESSALVA DE SURVIVORSHIP (central): iliquidos/microcap reais nao tem 3a de
+  historico e estao AUSENTES -> testa so o extremo menos liquido dos
+  sobreviventes = limite inferior otimista, nao a cauda real. quote_volume e
+  proxy grosseiro (sem spread/book).
+- Verificacao: 575 testes (7 novos: proxy de liquidez, tercis, metrics), ruff
+  limpo. Descritivo; sem promocao; sem mudanca de parametro.
+```
+
 ## 2026-07-17 (TSM robustez temporal -- TEMPORALMENTE ROBUSTO com custo honesto: drawdowns longos ~14m mas rasos)
 
 ```text
