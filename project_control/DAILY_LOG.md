@@ -1,5 +1,28 @@
 # Daily Log
 
+## 2026-07-18 (DEPLOY-001 Fase 2 -- ledger forward IMUTAVEL append-only, 3 streams)
+
+```text
+- FASE 2 (paper-forward imutavel): src/research/forward_ledger.py.
+  - decision_id DETERMINISTICO = sha256(config_hash|exchange|symbol|signal_ts) ->
+    replay do mesmo dia e idempotente.
+  - Append-only JSONL: replay identico = no-op; MESMO id com conteudo DIFERENTE
+    -> LedgerImmutabilityError (o passado nunca e sobrescrito).
+  - Correcoes = eventos NOVOS (event_type=correction) que referenciam o original
+    + motivo; a linha original nunca e editada (fluxo de bug da spec).
+  - Schema de evento COMPLETO (decision_id, config_hash, commit, timestamps com
+    UTC, side/pesos/notional, bid/ask/mid/fill, fee/slippage/funding, gross +
+    3 streams de PnL, flags de data/execucao).
+  - 3 streams via three_stream_pnl: A teorico (gross - custo declarado), B
+    executavel (gross - friccoes reais), C conservador (fracao de risco * B - drag).
+- Populacao REAL do ledger com os 3 streams depende do modelo de execucao (Fase
+  3) -- separacao correta de responsabilidades, nao atalho. Fase 2 entrega o
+  backbone testado (10 testes: id deterministico, idempotencia, imutabilidade,
+  fluxo de correcao, round-trip, ordenacao dos streams).
+- Verificacao: 598 testes (10 novos), ruff limpo. Nenhum parametro economico
+  tocado.
+```
+
 ## 2026-07-18 (DEPLOY-001 Fases 0+1 -- config canonica congelada; AUDITORIA de drawdown corrige narrativa "shallow")
 
 ```text
