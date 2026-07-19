@@ -1,5 +1,31 @@
 # Daily Log
 
+## 2026-07-18 (DEPLOY-001 Fase 6 -- haircut por multiplas tentativas: edge sobrevive a selecao MAS evidencia efetiva e MAIS FINA)
+
+```text
+- FASE 6 (ajuste estatistico por multiplas tentativas). src/research/
+  multiple_testing.py (PSR, expected-max-Sharpe, DSR, effective-trials; stdlib
+  NormalDist) + 9 testes. scripts/run_multiple_testing_haircut.py + inventario
+  artifacts/tsm/attempt_ledger.json (24 hipoteses de estrategia).
+- Resultado MISTO e honesto:
+  - REASSURING: PSR vs 0 = 0.957; DSR (deflacionado por 24 hipoteses) = 0.80 ->
+    o lead NAO e plausivelmente a sorte entre muitas tentativas (e as tentativas
+    sao quase todas a mesma familia TSM -> contagem naive superestima o risco).
+  - SOBRIO 1: CI de Sharpe por BLOCK-BOOTSTRAP (respeita autocorrelacao) =
+    [-0.05, 1.94] -> INCLUI zero. No stream unico de 3 anos o Sharpe NAO e
+    conclusivamente > 0; o PSR iid era otimista.
+  - SOBRIO 2: os 7 universos cripto sao 0.83-correlacionados -> ~1.17 EFETIVOS
+    independentes. O "positivo em 7/7" (TSM-010/013) vale ~1 aposta independente,
+    NAO 7 -- o claim de breadth estava materialmente superestimado. CORRECAO.
+  - SOBRIO 3: PnL CONCENTRADO -- melhor mes 38%, top-3 meses 71% do total. Edge
+    episodico, nao estavel.
+  - PBO/CSCV: NAO estimavel na nossa estrutura (poucas variantes pre-registradas,
+    nao um grid combinatorio) -> reportado como tal, nao fabricado.
+- VEREDITO honesto: edge REAL mas MODESTO e descontado-por-dependencia; muito
+  mais fino que o headline "7/7, CI exclui zero". O forward (Fase 7) e o juiz.
+- Verificacao: 631 testes (9 novos), ruff limpo. Nenhum parametro economico tocado.
+```
+
 ## 2026-07-18 (DEPLOY-001 Fase 5 -- controles de producao: limites, failure modes, kill switches, idempotencia)
 
 ```text

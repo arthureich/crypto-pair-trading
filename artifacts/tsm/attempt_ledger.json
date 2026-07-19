@@ -1,0 +1,254 @@
+{
+  "fields": [
+    "strategy_id",
+    "family",
+    "pre_registered",
+    "primary_or_secondary",
+    "n_variants",
+    "dev_window",
+    "result",
+    "selected_or_rejected"
+  ],
+  "attempts": [
+    {
+      "strategy_id": "sprint8_kalman_pairs",
+      "family": "price",
+      "pre_registered": true,
+      "primary_or_secondary": "primary",
+      "n_variants": 1,
+      "dev_window": "2023-06_2026-05",
+      "result": "NAO_PASSA",
+      "selected_or_rejected": "rejected"
+    },
+    {
+      "strategy_id": "sprint9_executable_pairs",
+      "family": "price",
+      "pre_registered": true,
+      "primary_or_secondary": "primary",
+      "n_variants": 1,
+      "dev_window": "2023-06_2026-05",
+      "result": "NAO_PASSA",
+      "selected_or_rejected": "rejected"
+    },
+    {
+      "strategy_id": "sprint10_passive_pairs",
+      "family": "price",
+      "pre_registered": true,
+      "primary_or_secondary": "primary",
+      "n_variants": 2,
+      "dev_window": "2023-06_2026-05",
+      "result": "NAO_PASSA",
+      "selected_or_rejected": "rejected"
+    },
+    {
+      "strategy_id": "sprint8_canonical_triple_barrier",
+      "family": "price",
+      "pre_registered": true,
+      "primary_or_secondary": "primary",
+      "n_variants": 1,
+      "dev_window": "2023-06_2026-05",
+      "result": "NAO_PASSA",
+      "selected_or_rejected": "rejected"
+    },
+    {
+      "strategy_id": "signal_iteration_SIG001_004",
+      "family": "price",
+      "pre_registered": true,
+      "primary_or_secondary": "secondary",
+      "n_variants": 4,
+      "dev_window": "2023-06_2026-05",
+      "result": "REJECTED",
+      "selected_or_rejected": "rejected"
+    },
+    {
+      "strategy_id": "funding_carry_full_rebalance",
+      "family": "carry",
+      "pre_registered": true,
+      "primary_or_secondary": "primary",
+      "n_variants": 1,
+      "dev_window": "2023-06_2026-05",
+      "result": "NAO_PASSA",
+      "selected_or_rejected": "rejected"
+    },
+    {
+      "strategy_id": "funding_carry_incremental_K5",
+      "family": "carry",
+      "pre_registered": true,
+      "primary_or_secondary": "primary",
+      "n_variants": 1,
+      "dev_window": "2023-06_2026-05",
+      "result": "NEAR_MISS",
+      "selected_or_rejected": "forward"
+    },
+    {
+      "strategy_id": "tsmom_donchian",
+      "family": "price",
+      "pre_registered": true,
+      "primary_or_secondary": "primary",
+      "n_variants": 1,
+      "dev_window": "2023-06_2026-05",
+      "result": "NAO_PASSA",
+      "selected_or_rejected": "rejected"
+    },
+    {
+      "strategy_id": "tsrev_24h",
+      "family": "price",
+      "pre_registered": true,
+      "primary_or_secondary": "primary",
+      "n_variants": 1,
+      "dev_window": "2023-06_2026-05",
+      "result": "NAO_PASSA",
+      "selected_or_rejected": "rejected"
+    },
+    {
+      "strategy_id": "regime_conditioned_tsrev",
+      "family": "price",
+      "pre_registered": true,
+      "primary_or_secondary": "secondary",
+      "n_variants": 1,
+      "dev_window": "2023-06_2026-05",
+      "result": "NAO_PASSA",
+      "selected_or_rejected": "rejected"
+    },
+    {
+      "strategy_id": "cross_sectional_momentum",
+      "family": "price",
+      "pre_registered": true,
+      "primary_or_secondary": "primary",
+      "n_variants": 1,
+      "dev_window": "2023-06_2026-05",
+      "result": "NAO_PASSA",
+      "selected_or_rejected": "rejected"
+    },
+    {
+      "strategy_id": "cross_sectional_reversion",
+      "family": "price",
+      "pre_registered": true,
+      "primary_or_secondary": "primary",
+      "n_variants": 1,
+      "dev_window": "2023-06_2026-05",
+      "result": "NAO_PASSA",
+      "selected_or_rejected": "rejected"
+    },
+    {
+      "strategy_id": "vrp_timing",
+      "family": "options",
+      "pre_registered": true,
+      "primary_or_secondary": "primary",
+      "n_variants": 1,
+      "dev_window": "2023-06_2026-05",
+      "result": "NAO_PASSA",
+      "selected_or_rejected": "rejected"
+    },
+    {
+      "strategy_id": "vrp_overlay_on_tsm",
+      "family": "options",
+      "pre_registered": true,
+      "primary_or_secondary": "secondary",
+      "n_variants": 1,
+      "dev_window": "2023-06_2026-05",
+      "result": "NAO_PASSA",
+      "selected_or_rejected": "rejected"
+    },
+    {
+      "strategy_id": "tsm_base_vol_targeted",
+      "family": "price",
+      "pre_registered": true,
+      "primary_or_secondary": "primary",
+      "n_variants": 1,
+      "dev_window": "2023-06_2026-05",
+      "result": "LEAD",
+      "selected_or_rejected": "selected"
+    },
+    {
+      "strategy_id": "tsm_regime_filter",
+      "family": "price",
+      "pre_registered": true,
+      "primary_or_secondary": "secondary",
+      "n_variants": 1,
+      "dev_window": "2023-06_2026-05",
+      "result": "REJECTED",
+      "selected_or_rejected": "rejected"
+    },
+    {
+      "strategy_id": "tsm_conviction_sizing",
+      "family": "price",
+      "pre_registered": true,
+      "primary_or_secondary": "secondary",
+      "n_variants": 1,
+      "dev_window": "2023-06_2026-05",
+      "result": "REJECTED",
+      "selected_or_rejected": "rejected"
+    },
+    {
+      "strategy_id": "tsm_erc",
+      "family": "price",
+      "pre_registered": true,
+      "primary_or_secondary": "secondary",
+      "n_variants": 1,
+      "dev_window": "2023-06_2026-05",
+      "result": "CARRIED",
+      "selected_or_rejected": "secondary"
+    },
+    {
+      "strategy_id": "tsm_meta_labeling",
+      "family": "price",
+      "pre_registered": true,
+      "primary_or_secondary": "secondary",
+      "n_variants": 1,
+      "dev_window": "2023-06_2026-05",
+      "result": "REJECTED",
+      "selected_or_rejected": "rejected"
+    },
+    {
+      "strategy_id": "tsm_ensemble_trend_carry",
+      "family": "price+carry",
+      "pre_registered": true,
+      "primary_or_secondary": "secondary",
+      "n_variants": 1,
+      "dev_window": "2023-06_2026-05",
+      "result": "CARRIED",
+      "selected_or_rejected": "secondary"
+    },
+    {
+      "strategy_id": "tsm_vol_target_overlay",
+      "family": "price",
+      "pre_registered": true,
+      "primary_or_secondary": "secondary",
+      "n_variants": 1,
+      "dev_window": "2023-06_2026-05",
+      "result": "CARRIED",
+      "selected_or_rejected": "secondary"
+    },
+    {
+      "strategy_id": "tsm_combined_erc_voltarget",
+      "family": "price",
+      "pre_registered": true,
+      "primary_or_secondary": "secondary",
+      "n_variants": 1,
+      "dev_window": "2023-06_2026-05",
+      "result": "CARRIED",
+      "selected_or_rejected": "secondary"
+    },
+    {
+      "strategy_id": "fc_ii_001_risk_sizing",
+      "family": "carry",
+      "pre_registered": true,
+      "primary_or_secondary": "secondary",
+      "n_variants": 1,
+      "dev_window": "2023-06_2026-05",
+      "result": "CAUTIONARY",
+      "selected_or_rejected": "rejected"
+    },
+    {
+      "strategy_id": "ml_001_meta_labeling_carry",
+      "family": "carry",
+      "pre_registered": true,
+      "primary_or_secondary": "secondary",
+      "n_variants": 1,
+      "dev_window": "2023-06_2026-05",
+      "result": "CAUTIONARY",
+      "selected_or_rejected": "rejected"
+    }
+  ]
+}

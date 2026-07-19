@@ -20,8 +20,23 @@ forward; infra nunca altera parametros economicos; sem dinheiro real. 7 fases
   NAO "shallow": 58% e severo. mid_alt_l1 e defi ficam UNRECOVERED no fim da
   janela. Metrica-cabeca de risco daqui pra frente = maxDD COMPOSTO %. Novo
   `src/research/drawdown.py` + 13 testes. Nenhum parametro alterado.
-- FASES 2-7 (a seguir): forward imutavel 3-streams; execucao realista; capacidade;
-  controles de producao; haircut por multiplas tentativas; monitoramento forward.
+- FASES 2-6 (feitas): forward imutavel 3-streams (ledger append-only); execucao
+  realista (gap teorico-vs-executavel MINIMO ~0.4% Sharpe); capacidade (~$10M
+  prudente nos majors, limite <=10% ADV); controles de producao (limites/kill
+  switches/idempotencia). FASE 6 (haircut por multiplas tentativas) trouxe a
+  CORRECAO mais importante: PSR vs 0 = 0.957 e DSR (24 hipoteses) = 0.80 ->
+  sobrevive a selecao, MAS (1) CI de Sharpe por block-bootstrap [-0.05, 1.94]
+  INCLUI zero no stream unico; (2) os 7 universos sao 0.83-correlacionados ->
+  ~1.17 EFETIVOS independentes -> o "7/7" vale ~1 aposta, nao 7 (breadth
+  SUPERESTIMADO); (3) PnL concentrado (top-3 meses = 71%). Veredito honesto: edge
+  real mas MODESTO e descontado-por-dependencia; o forward e o juiz final.
+- FASE 7 (a seguir): monitoramento forward.
+
+CORRECAO DE BREADTH (importante): o headline anterior "positivo em 7/7 universos,
+IC exclui zero" (TSM-010/013) e ESTATISTICAMENTE MAIS FRACO do que parecia -- os
+universos sao ~0.83 correlacionados, entao equivalem a ~1 experimento
+independente. A evidencia in-domain permanece POSITIVA mas modesta, nao a
+multiplicidade que "7/7" sugeria.
 
 CORRECAO IMPORTANTE de honestidade: a caracterizacao anterior de drawdown como
 "modest/shallow (maxDD 0.31-0.80)" estava enganosa -- os drawdowns reais
