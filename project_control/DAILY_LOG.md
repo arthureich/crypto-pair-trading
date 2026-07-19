@@ -1,5 +1,30 @@
 # Daily Log
 
+## 2026-07-18 (DEPLOY-001 Fase 4 -- capacidade: ~$10M prudente nos majors, limitado por TRX; Sharpe-based e otimista)
+
+```text
+- FASE 4 (capacidade/liquidez/impacto).
+- Infra (ZERO mudanca economica): TsmTrendResult agora expoe per-symbol L/S
+  weights (symbols + ls_weight_rows), read-only, para analise downstream. Os 27
+  testes do tsm_trend seguem passando (base intacta; pesos somam unit-gross).
+- src/research/capacity.py: turnover_matrix / participation_matrix /
+  slippage_bps_matrix / capacity_net_returns (puros) + 6 testes.
+- scripts/run_tsm_capacity.py: varre grid de capital ($1k..$100M) usando
+  participacao REAL por simbolo (dollar-volume trailing-24h) + cenarios de
+  impacto (none/low/moderate/severe).
+- Resultado (majors original-20): participacao escala linear; simbolo GARGALO =
+  TRXUSDT (menos liquido dos 20). Capacidade PRUDENTE (<=10% ADV) ~$10M. O Sharpe
+  quase nao degrada ate $100M (0.966 -> 0.959) MAS isso e o modelo linear de
+  slippage sendo gentil (cap em 100% ADV subestima o impacto real em alta
+  participacao) -> as figuras Sharpe sao OTIMISTAS; a headline honesta e a
+  participacao. Achei o defeito do criterio (Sharpe-based enganava) e corrigi:
+  headline = capacidade por participacao.
+- Universo majors = LIMITE SUPERIOR de capacidade; universos menos liquidos
+  (TSM-015) tem capacidade bem menor.
+- Verificacao: 612 testes (6 novos de capacity), ruff limpo. Nenhum parametro
+  economico tocado. reports/capacity_analysis.md.
+```
+
 ## 2026-07-18 (DEPLOY-001 Fase 3 -- execucao realista: gap teorico-vs-executavel MINIMO em tamanho pequeno)
 
 ```text

@@ -70,6 +70,11 @@ class TsmTrendResult:
     tsm_turnover: tuple[float, ...]  # sum|dw| per rebalance (long/short book)
     tsm_long_sleeve: tuple[float, ...]  # long-leg gross contribution (same book)
     tsm_short_sleeve: tuple[float, ...]  # short-leg gross contribution (sums to gross)
+    # Read-only per-symbol exposure for downstream capacity analysis (TASK-DEPLOY-001
+    # Phase 4). Does NOT affect any P&L / signal computation above.
+    symbols: tuple[str, ...] = ()
+    # per-rebalance L/S weight rows, aligned to `symbols` and `rebalance_times`
+    ls_weight_rows: tuple[tuple[float, ...], ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -173,6 +178,10 @@ def run_tsm_trend_backtest(
         tsm_turnover=tuple(float(x) for x in ls_turnover[valid]),
         tsm_long_sleeve=tuple(float(x) for x in long_sleeve[valid]),
         tsm_short_sleeve=tuple(float(x) for x in short_sleeve[valid]),
+        symbols=tuple(str(c) for c in ls_weight.columns),
+        ls_weight_rows=tuple(
+            tuple(float(x) for x in row) for row in ls_weight[valid].fillna(0.0).to_numpy()
+        ),
     )
 
 
