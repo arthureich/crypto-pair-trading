@@ -30,7 +30,12 @@ forward; infra nunca altera parametros economicos; sem dinheiro real. 7 fases
   ~1.17 EFETIVOS independentes -> o "7/7" vale ~1 aposta, nao 7 (breadth
   SUPERESTIMADO); (3) PnL concentrado (top-3 meses = 71%). Veredito honesto: edge
   real mas MODESTO e descontado-por-dependencia; o forward e o juiz final.
-- FASE 7 (a seguir): monitoramento forward.
+- FASE 7 (feita): monitoramento forward -- horizontes de leitura (guardas contra
+  concluir cedo), metricas por stream, criterios de ALERTA (so alertam, nunca
+  modificam). 5 eventos OOS = operational-diagnostic (nao veredito), sem alertas.
+- PROGRAMA DEPLOY-001 COMPLETO (7/7). `reports/deploy_program_status.md` responde
+  as 10 perguntas. STOP POLICY em vigor: familia TSM CONGELADA, so o forward
+  continua; nova ideia exige nova hipotese + pre-registro + dados independentes.
 
 CORRECAO DE BREADTH (importante): o headline anterior "positivo em 7/7 universos,
 IC exclui zero" (TSM-010/013) e ESTATISTICAMENTE MAIS FRACO do que parecia -- os

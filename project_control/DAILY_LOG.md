@@ -1,5 +1,31 @@
 # Daily Log
 
+## 2026-07-18 (DEPLOY-001 Fase 7 + FECHAMENTO -- monitor forward; PROGRAMA COMPLETO 7/7; STOP POLICY)
+
+```text
+- FASE 7 (monitoramento forward). src/research/forward_monitor.py: horizontes de
+  leitura (1mo diagnostico / 3mo preliminar / 6mo inicial / 12mo primeiro
+  relevante / 18-24mo mais confiavel -- guardas contra concluir cedo), metricas
+  por stream (Sharpe/Sortino/maxDD composto/DD duration/underwater/PF/hit-rate),
+  criterios de ALERTA (shortfall>budget, custo>breakeven, DD alem do historico,
+  queda de hit-rate, concentracao de PnL, falhas de dados, config-hash !=
+  congelado, exposicao != config). Alertas SO alertam, nunca modificam. + 8 testes.
+- scripts/run_forward_monitor.py le o ledger imutavel: 5 eventos OOS =
+  operational_diagnostic (NAO veredito), nenhum alerta, config-hash bate.
+  reports/forward_monitor.md.
+- PROGRAMA DEPLOY-001 COMPLETO (7/7). reports/deploy_program_status.md responde
+  as 10 perguntas de conclusao. Bottom line honesto: TSM e um edge REAL mas
+  MODESTO -- Sharpe teorico ~0.97 sobrevive execucao (tamanho pequeno) e selecao
+  por multiplas tentativas (DSR 0.80), MAS peso estatistico efetivo fino (~1
+  universo independente, CI de stream unico toca zero, PnL episodico) e drawdowns
+  profundos/longos (31-58% compostos, ate ~14mo). Capacidade prudente ~$10M nos
+  majors. O veredito real agora depende so do forward.
+- STOP POLICY em vigor: familia TSM CONGELADA; so o forward continua; sem novas
+  variantes na mesma janela; nova ideia exige nova hipotese + pre-registro +
+  dados independentes.
+- Verificacao: 639 testes (8 novos), ruff limpo. Nenhum parametro economico tocado.
+```
+
 ## 2026-07-18 (DEPLOY-001 Fase 6 -- haircut por multiplas tentativas: edge sobrevive a selecao MAS evidencia efetiva e MAIS FINA)
 
 ```text
