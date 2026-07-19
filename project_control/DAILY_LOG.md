@@ -1,5 +1,29 @@
 # Daily Log
 
+## 2026-07-18 (DEPLOY-001 Fase 5 -- controles de producao: limites, failure modes, kill switches, idempotencia)
+
+```text
+- FASE 5 (controles de producao): src/research/production_controls.py.
+  Adicionados por justificativa OPERACIONAL, nunca por melhorar backtest.
+  - Limites pre-trade (rejeitam a ordem, sistema segue): max gross 1.0 / net 0.30
+    / leverage 2.0 / por-simbolo 0.20 / participacao 10% ADV / liquidez-min $1M /
+    turnover diario 2.0.
+  - Failure modes (flags): stale_data, non_positive_price, incomplete_bar,
+    missing_funding, price_deviation (>20% vs ref), abnormal_spread (>1%). Tambem
+    tratados operacionalmente: API down, conexao, ativo suspenso/delistado,
+    mudanca de spec, symbol-mapping, fill parcial, clock skew, restart no meio.
+  - Kill switches (HALT sistema): config_hash != congelado, margem<buffer 30%,
+    divergencia de estado local, dado invalido critico. Acao segura =
+    HALT_NO_NEW_EXPOSURE -- NAO auto-liquida (auto-liquidacao exige politica
+    explicita + humano).
+  - Idempotencia: ordens chaveadas pelo decision_id deterministico (Fase 2) ->
+    reprocessar apos restart nao duplica ordem/PnL.
+- reports/production_risk_policy.md documenta a politica (3 camadas + safe action).
+- NAO e loop de trading ao vivo (fora de escopo, nao autorizado; sem dinheiro real).
+- Verificacao: 622 testes (10 novos de failure-mode/controles), ruff limpo.
+  Nenhum parametro economico tocado.
+```
+
 ## 2026-07-18 (DEPLOY-001 Fase 4 -- capacidade: ~$10M prudente nos majors, limitado por TRX; Sharpe-based e otimista)
 
 ```text
