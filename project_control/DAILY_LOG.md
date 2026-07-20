@@ -1,5 +1,34 @@
 # Daily Log
 
+## 2026-07-20 (BASIS-001 Fase 1 -- cash-and-carry BTC/ETH: net APR ~11%, maxDD 0%, delta~0; CONDICIONAL Binance-only)
+
+```text
+- Camada de dados basis (SEPARADA da TSM): src/research/basis_data.py (expiries
+  trimestrais = ultima sexta de mar/jun/set/dez; parse de klines com deteccao de
+  header e normalizacao ms/microssegundos; 8 testes) + scripts/run_basis_cash_carry
+  .py (baixa spot + futuro datado da data.binance.vision, cache offline em
+  data/research/basis).
+- Rodou 16 contratos (BTC/ETH x 8 trimestrais 2024-2025), cash-and-carry a lead
+  fixo (~inicio do trimestre frontal), segurando ate o vencimento.
+- Resultado: net APR media 11.3% (mediana 8.7%, 100% positivo em 16/16); rolled
+  maxDD 0.0% (todos os trades net-positivos); delta-corr carry-vs-spot -0.14 (~0);
+  basis converge a ~0 no vencimento; pior MTM adverso <=1.6%. Basis comprimiu no
+  tempo (32% APR no contrato jun/2024 -> ~3-5% em 2025, coerente com compressao
+  pos-ETF ja notada no ledger).
+- Perfil OPOSTO ao da TSM: sem drawdown, sem direcao, carry positivo estavel (mas
+  comprimindo). Ataca exatamente o que reprovou a TSM.
+- VEREDITO: CONDICIONAL, NAO aprovado -- so Binance; o criterio #1 (travado) exige
+  positivo em Binance+Bybit+OKX. Ressalvas honestas: custos = constante
+  conservadora (26 bps round-trip, nao fills reais); risco de margem/liquidacao do
+  short em movimento extremo + custodia/exchange sao reais; entrada a lead fixo
+  (sem timing); rolled DD mistura BTC+ETH (proxy de sequencia toda-positiva, nao
+  curva de portfolio ao vivo).
+- Proximo passo (criterio): replicar cash-and-carry em Bybit/OKX (passo #4) antes
+  de qualquer aprovacao. Paper only.
+- Verificacao: 657 testes (18 novos: cash_carry 10 + basis_data 8), ruff limpo.
+  Infra da TSM congelada intacta. reports/basis_cash_carry.md.
+```
+
 ## 2026-07-19 (Nova familia BASIS/CARRY delta-neutral -- ADR-0034, TASK-BASIS-001 pre-registrado)
 
 ```text

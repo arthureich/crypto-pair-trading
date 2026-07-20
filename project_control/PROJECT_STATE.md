@@ -1,6 +1,20 @@
 # PROJECT_STATE
 
-Last updated: 2026-07-18
+Last updated: 2026-07-20
+
+## Atualizacao 2026-07-20: nova familia BASIS/CARRY delta-neutral (ADR-0034) -- cash-and-carry BTC/ETH promissor (CONDICIONAL)
+
+TSM congelada (DEPLOY-001 completo). Nova direcao do usuario: basis/carry
+DELTA-NEUTRAL (nao modelo preditivo). TASK-BASIS-001 pre-registrado (ADR-0034) e
+Fase 1 rodada: cash-and-carry spot x futuro datado, BTC/ETH, 16 contratos
+trimestrais 2024-2025. Resultado: net APR media **11,3%** (mediana 8,7%, **100%
+positivo**), **rolled maxDD 0,0%**, **delta-corr -0,14** (~0), pior MTM adverso
+<=1,6%; basis comprimindo (32% APR mid-2024 -> ~3-5% em 2025). Perfil OPOSTO ao da
+TSM (sem drawdown/direcao). VEREDITO: **CONDICIONAL, NAO aprovado** -- so Binance;
+o criterio travado #1 exige positivo em Binance+Bybit+OKX. Proximo: replicar em
+Bybit/OKX. Modulos NOVOS e SEPARADOS (cash_carry.py, basis_data.py) -- infra da TSM
+intacta. Paper only. Ver `reports/basis_cash_carry.md`, `docs/pre_registers/
+TASK-BASIS-001.md`.
 
 ## Atualizacao 2026-07-18: DEPLOY-001 (ADR-0033) -- congelar a TSM validada; engenharia de forward/execucao, NAO alpha
 
