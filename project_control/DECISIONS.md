@@ -2625,3 +2625,63 @@ canonical-config.json`, `frozen-configs.json`; `scripts/freeze_canonical_config
 run_tsm_drawdown_audit.py`, `reports/metric_units_audit.md`, `reports/
 per_universe_drawdown_audit.{csv,json}`. Phases 2-7 to follow. Update
 `PROJECT_STATE.md`, `TASK_BOARD.md`, `DAILY_LOG.md`.
+
+## ADR-0034 - Open The Basis / Carry Delta-Neutral Family (TASK-BASIS-001): Cash-And-Carry Spot x Dated Futures On BTC/ETH, Pre-Registered Before Code
+
+## Status
+
+Accepted
+
+## Context
+
+The TSM deployment program (ADR-0033) is complete and the TSM family is FROZEN
+(forward-only). The user chose the next direction: NOT another price-prediction
+model, but a delta-neutral basis/carry family, starting with cash-and-carry (buy
+spot, short the same-asset dated future, hold to expiry, capture basis
+convergence). Rationale: it attacks exactly what failed the TSM -- directional
+risk, 31-58% compounded drawdowns, long underwater stretches, PnL concentrated in
+a few trend months. The profit mechanism is convergence of a known entry basis,
+not a forecast. This is a genuinely NEW hypothesis and construction (per-asset
+two-leg neutrality, not a cross-sectional funding-selected alt basket), so under
+the stop policy it requires a new ADR + pre-registration + its own data.
+
+Reconnaissance (2026-07-19) confirmed the data is FREE and offline-cacheable on
+data.binance.vision: spot klines (data/spot/...) and USD-M quarterly delivery
+klines (BTCUSDT_240628 etc.) both return 200; the dated contract has no
+indexPriceKlines archive (404), so TRUE spot is the convergence reference (correct
+anyway). Cross-exchange (Bybit/OKX), required by the approval criterion, is a
+later step.
+
+## Decision
+
+Open TASK-BASIS-001 (pre-registered in docs/pre_registers/TASK-BASIS-001.md):
+cash-and-carry delta-neutral, spot x dated quarterly future, BTC & ETH ONLY, no
+alt basket, no picking the asset by historical carry. Central metric = net return
+per CAPITAL EMPLOYED (not just Sharpe), net of conservative costs (taker both
+legs, spread, slippage; dated futures have no funding). Locked approval criteria
+(from the user): net positive on Binance AND Bybit AND OKX, positive after
+conservative costs, equity drawdown clearly below the TSM, low observed delta, PnL
+not concentrated, no reliance on high leverage, sufficient majors capacity, and a
+return-on-capital that justifies the risk. Research order: (1) spot x dated
+futures, (2) calendar spread, (3) spot x perp funding-neutral, (4) cross-exchange
+basis, (5) options/VRP. Negatives documented. Paper only, no real money.
+
+## Consequences
+
+If cash-and-carry passes conservatively across exchanges with a materially smaller
+drawdown than the TSM and a return that justifies capital employed, it becomes the
+project's first delta-neutral candidate and a diversifier to the (frozen, trend-
+directional) TSM. If it fails (e.g. the net basis after realistic fees/spread does
+not cover entry+exit, or it depends on one exchange / high leverage), that is
+documented as a negative -- equally informative. A NEW, SEPARATE data + backtest
+layer is built so the frozen TSM infra (historical_dataset.py, tsm_trend.py) is
+untouched.
+
+## Migration
+
+Add docs/pre_registers/TASK-BASIS-001.md and a board row. Build a separate basis
+data layer (spot + dated-futures klines download/normalize), a delta-neutral
+cash-and-carry backtest module (APR gross/net, capital-employed return, worst
+adverse MTM, margin/liquidation proxy, leg risk), tests, a runner and report on
+BTC/ETH. Update PROJECT_STATE.md, TASK_BOARD.md, DAILY_LOG.md, and the consolidated
+ledger as results land.

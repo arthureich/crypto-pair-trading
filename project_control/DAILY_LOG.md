@@ -1,5 +1,29 @@
 # Daily Log
 
+## 2026-07-19 (Nova familia BASIS/CARRY delta-neutral -- ADR-0034, TASK-BASIS-001 pre-registrado)
+
+```text
+- Decisao do usuario: proxima direcao = basis/carry DELTA-NEUTRAL (nao outro
+  modelo preditivo). Comecar por cash-and-carry: comprar spot + vender futuro
+  DATADO do mesmo ativo, segurar ate o vencimento, capturar convergencia do basis.
+  Ataca o que reprovou a TSM (risco direcional, DD 31-58%, underwater longo, PnL
+  concentrado). NOVA familia -> exige ADR + pre-registro novos (stop policy da
+  ADR-0033). ADR-0034 aberto.
+- RECON de dados (gratis/offline, data.binance.vision): spot klines (data/spot/)
+  OK 200; futuro USD-M trimestral BTCUSDT_240628 OK 200; contrato datado NAO tem
+  indexPriceKlines (404) -> usa SPOT verdadeiro como referencia de convergencia
+  (correto de qualquer forma). Perp index tambem OK (para o passo spot-perp #3).
+- docs/pre_registers/TASK-BASIS-001.md travado ANTES de codigo: BTC/ETH apenas,
+  delta-neutral (nocionais iguais), metrica central = retorno liquido por CAPITAL
+  IMOBILIZADO, custos conservadores, criterio de aprovacao do usuario (positivo em
+  Binance+Bybit+OKX, DD << TSM, delta~0, PnL nao-concentrado, sem alavancagem
+  alta, capacidade nos majors, ROC justifica risco), ordem de pesquisa e riscos.
+- Decisao de engenharia: camada de dados/backtest de basis SEPARADA -- NAO mexe em
+  historical_dataset.py nem tsm_trend.py (TSM congelada intacta).
+- Paper only, sem dinheiro real. Proximo: camada de dados basis + modulo
+  cash-and-carry + rodar BTC/ETH vs criterio.
+```
+
 ## 2026-07-18 (DEPLOY-001 Fase 7 + FECHAMENTO -- monitor forward; PROGRAMA COMPLETO 7/7; STOP POLICY)
 
 ```text
