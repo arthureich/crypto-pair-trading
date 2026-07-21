@@ -271,15 +271,18 @@ def _write_report(p: dict) -> None:
         "",
         "## Reading vs the locked criteria (fact / limitation)",
         "",
-        f"- DELTA-NEUTRAL: carry return vs spot move correlation ~"
-        f"{p['observed_delta_corr_carry_vs_spotmove']} and the final basis converges "
-        "to ~0 -> the return is basis-driven, not directional (criterion #4).",
+        f"- LOW DIRECTIONAL RISK (not 'no risk'): carry return vs spot move correlation "
+        f"~{p['observed_delta_corr_carry_vs_spotmove']} and the final basis converges to "
+        "~0 -> the return is basis-driven, with LOW directional risk and LOW path-"
+        "dependence PROVIDED both legs stay operational and adequately margined "
+        "(criterion #4). It is NOT risk-free.",
         f"- DRAWDOWN: every one of the {rolled['n_trades']} contract-trades was net "
         f"POSITIVE, so any ordering has maxDD **{rolled['max_drawdown_pct']:.1f}%** vs the "
-        "TSM's 31-58% compounded -> the direction-risk problem is addressed (criterion "
-        "#3). CAVEAT: this rolled curve concatenates BTC+ETH contracts, so it is an "
-        "all-positive-sequence proxy, not a live overlapping-portfolio equity curve; "
-        "the real intra-trade risk is the worst adverse MTM above (<=1.6%).",
+        "TSM's 31-58% compounded -> the direction-risk problem is much reduced (criterion "
+        "#3). CAVEAT: 'maxDD 0%' is an all-positive-sequence proxy (concatenates BTC+ETH, "
+        "not a live overlapping-portfolio curve); the real intra-trade risk is the worst "
+        "adverse MTM above (<=1.6%), plus funding/basis-widening/leg-failure/liquidation/"
+        "exchange/custody risks -- 'delta-neutral' is NOT 'no drawdown'.",
         "- CONCENTRATION / capacity / no-leverage: per-contract APRs above; capacity "
         "on BTC/ETH spot+quarterly is deep (majors).",
         "- LIMITATION: Binance-only (criterion #1 unmet -> NOT approved); costs are a "

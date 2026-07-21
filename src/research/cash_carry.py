@@ -22,6 +22,7 @@ __all__ = [
     "annualized_basis",
     "basis_fraction",
     "capital_employed_return",
+    "clears_deploy_hurdle",
     "funding_carry_return",
     "locked_carry_return",
     "net_carry_return",
@@ -100,6 +101,20 @@ def annualize_return(total_return: float, days_held: float) -> float:
     if days_held <= 0:
         raise ValueError("days_held must be positive")
     return total_return * (365.0 / days_held)
+
+
+def clears_deploy_hurdle(
+    net_apr_on_capital: float,
+    hurdle_apr: float,
+    n_settlements: int,
+    *,
+    min_settlements: int,
+) -> bool:
+    """Deploy rule: net forward APR on TOTAL capital must exceed the operational
+    hurdle AND the window must have enough settlements to be a valid read. The
+    hurdle is set a-priori (opportunity + counterparty + custody + fees + funding-
+    inversion safety + two-leg cost) -- NOT chosen from the data to make it pass."""
+    return net_apr_on_capital > hurdle_apr and n_settlements >= min_settlements
 
 
 def capital_employed_return(net_return_on_spot: float, *, margin_fraction: float) -> dict:

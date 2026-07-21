@@ -313,8 +313,9 @@ def _write_report(p: dict) -> None:
     lines += [
         "## Reading (fact / limitation)",
         "",
-        "- Delta-neutral by construction (long spot + short perp, equal notional); the "
-        "return is the funding the short earns, not a price bet.",
+        "- LOW directional risk / LOW path-dependence (long spot + short perp, equal "
+        "notional) PROVIDED both legs stay operational and adequately margined -- the "
+        "return is the funding the short earns, not a price bet, but it is NOT risk-free.",
         "- LIMITATION: this is the PERP construction (funding), NOT the dated cash-and-"
         "carry of Phase 1 (which stays Binance-only, data-gated cross-exchange). Funding "
         "turns NEGATIVE in sustained bear regimes (short perp then PAYS) -> the cum-"

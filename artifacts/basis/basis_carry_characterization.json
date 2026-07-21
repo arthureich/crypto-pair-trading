@@ -1,0 +1,442 @@
+{
+  "binance_bybit_net_apr_dispersion": {
+    "BTC": {
+      "2023(H2)": 0.01681884122946517,
+      "2024": 0.0006253777575205288,
+      "2025": 0.00010745815692674715,
+      "2026_YTD": 0.005893540133498155,
+      "rolling_180d": 0.008808871180151792,
+      "rolling_365d": 0.0014587630021129366,
+      "rolling_90d": 0.007086842717568578
+    },
+    "ETH": {
+      "2023(H2)": 0.005549822117014699,
+      "2024": 0.004952594165907015,
+      "2025": 0.0010210725070529322,
+      "2026_YTD": 0.013065719943823603,
+      "rolling_180d": 0.017503009384414736,
+      "rolling_365d": 0.0037906069179300082,
+      "rolling_90d": 0.009410888918129419
+    }
+  },
+  "generated_at_utc": "2026-07-21T22:35:08.758707+00:00",
+  "hurdle_apr": 0.11,
+  "hurdle_components": {
+    "exchange_counterparty": 0.03,
+    "fees_and_slippage_annualized": 0.005,
+    "funding_inversion_safety": 0.02,
+    "opportunity_cost_of_capital": 0.04,
+    "stablecoin_custody": 0.01,
+    "two_leg_maintenance": 0.005
+  },
+  "last_calendar_window_clearing_hurdle_all": null,
+  "margin_fraction": 0.1,
+  "min_settlements": 180,
+  "okx_recent": {
+    "BTC": {
+      "best_month_share_of_total": 0.57483092336412,
+      "clears_hurdle": false,
+      "days": 97.66666666666667,
+      "gross_apr": 0.02165245417700454,
+      "n_months": 4,
+      "n_settlements": 294,
+      "negative_months": 1,
+      "net_apr": 0.011935730627516485,
+      "pct_settlements_positive": 0.6666666666666666,
+      "return_on_total_capital_apr": 0.010850664206833168,
+      "worst_cum_funding_dd_return_units": 0.0013239180950432
+    },
+    "ETH": {
+      "best_month_share_of_total": 0.7646836831214693,
+      "clears_hurdle": false,
+      "days": 97.66666666666667,
+      "gross_apr": 0.02212527335497574,
+      "n_months": 4,
+      "n_settlements": 294,
+      "negative_months": 2,
+      "net_apr": 0.012408549805487685,
+      "pct_settlements_positive": 0.6598639455782312,
+      "return_on_total_capital_apr": 0.011280499823170621,
+      "worst_cum_funding_dd_return_units": 0.0015152317515088978
+    }
+  },
+  "results": {
+    "binance": {
+      "BTC": {
+        "2023(H2)": {
+          "best_month_share_of_total": 0.34588059664163057,
+          "clears_hurdle": false,
+          "days": 213.66666657407407,
+          "gross_apr": 0.08332767218899621,
+          "n_months": 7,
+          "n_settlements": 642,
+          "negative_months": 0,
+          "net_apr": 0.0788861745271651,
+          "pct_settlements_positive": 0.881619937694704,
+          "return_on_total_capital_apr": 0.07171470411560464,
+          "worst_cum_funding_dd_return_units": 0.000271560000000004
+        },
+        "2024": {
+          "best_month_share_of_total": 0.26262588669639064,
+          "clears_hurdle": false,
+          "days": 365.6666666666667,
+          "gross_apr": 0.11935083760255243,
+          "n_months": 12,
+          "n_settlements": 1098,
+          "negative_months": 0,
+          "net_apr": 0.11675557780309936,
+          "pct_settlements_positive": 0.9162112932604736,
+          "return_on_total_capital_apr": 0.10614143436645396,
+          "worst_cum_funding_dd_return_units": 0.0008883599999999631
+        },
+        "2025": {
+          "best_month_share_of_total": 0.14207104830107828,
+          "clears_hurdle": false,
+          "days": 364.66666650462963,
+          "gross_apr": 0.05131113951091673,
+          "n_months": 12,
+          "n_settlements": 1095,
+          "negative_months": 0,
+          "net_apr": 0.04870876291012602,
+          "pct_settlements_positive": 0.8712328767123287,
+          "return_on_total_capital_apr": 0.044280693554660015,
+          "worst_cum_funding_dd_return_units": 0.0006220799999999953
+        },
+        "2026_YTD": {
+          "best_month_share_of_total": 0.8187854140910288,
+          "clears_hurdle": false,
+          "days": 180.66666663194445,
+          "gross_apr": 0.011291894559365755,
+          "n_months": 6,
+          "n_settlements": 543,
+          "negative_months": 3,
+          "net_apr": 0.006039127030680952,
+          "pct_settlements_positive": 0.6187845303867403,
+          "return_on_total_capital_apr": 0.0054901154824372285,
+          "worst_cum_funding_dd_return_units": 0.004124629999999999
+        },
+        "rolling_180d": {
+          "best_month_share_of_total": 0.9028637438631273,
+          "clears_hurdle": false,
+          "days": 159.6666666087963,
+          "gross_apr": 0.005857632778741023,
+          "n_months": 6,
+          "n_settlements": 480,
+          "negative_months": 3,
+          "net_apr": -8.59997912629028e-05,
+          "pct_settlements_positive": 0.5770833333333333,
+          "return_on_total_capital_apr": -7.818162842082073e-05,
+          "worst_cum_funding_dd_return_units": 0.004124629999999999
+        },
+        "rolling_365d": {
+          "best_month_share_of_total": 0.19468116282739545,
+          "clears_hurdle": false,
+          "days": 344.666666712963,
+          "gross_apr": 0.0328837819104766,
+          "n_months": 12,
+          "n_settlements": 1035,
+          "negative_months": 3,
+          "net_apr": 0.03013039699788706,
+          "pct_settlements_positive": 0.7468599033816425,
+          "return_on_total_capital_apr": 0.027391269998079143,
+          "worst_cum_funding_dd_return_units": 0.004124629999999997
+        },
+        "rolling_90d": {
+          "best_month_share_of_total": 0.6309399136012568,
+          "clears_hurdle": false,
+          "days": 69.66666667824074,
+          "gross_apr": 0.019210805738435206,
+          "n_months": 3,
+          "n_settlements": 210,
+          "negative_months": 1,
+          "net_apr": 0.0055887961713203095,
+          "pct_settlements_positive": 0.680952380952381,
+          "return_on_total_capital_apr": 0.005080723792109372,
+          "worst_cum_funding_dd_return_units": 0.00137875
+        }
+      },
+      "ETH": {
+        "2023(H2)": {
+          "best_month_share_of_total": 0.359847486996302,
+          "clears_hurdle": false,
+          "days": 213.66666657407407,
+          "gross_apr": 0.0872184241407603,
+          "n_months": 7,
+          "n_settlements": 642,
+          "negative_months": 0,
+          "net_apr": 0.08277692647892917,
+          "pct_settlements_positive": 0.9018691588785047,
+          "return_on_total_capital_apr": 0.07525175134448106,
+          "worst_cum_funding_dd_return_units": 0.0007504799999999996
+        },
+        "2024": {
+          "best_month_share_of_total": 0.24790559978099422,
+          "clears_hurdle": true,
+          "days": 365.6666666666667,
+          "gross_apr": 0.12973223614402918,
+          "n_months": 12,
+          "n_settlements": 1098,
+          "negative_months": 0,
+          "net_apr": 0.12713697634457613,
+          "pct_settlements_positive": 0.9581056466302368,
+          "return_on_total_capital_apr": 0.11557906940416011,
+          "worst_cum_funding_dd_return_units": 0.0004186900000000132
+        },
+        "2025": {
+          "best_month_share_of_total": 0.16380483448133276,
+          "clears_hurdle": false,
+          "days": 364.66666650462963,
+          "gross_apr": 0.04933224229797162,
+          "n_months": 12,
+          "n_settlements": 1095,
+          "negative_months": 0,
+          "net_apr": 0.046729865697180906,
+          "pct_settlements_positive": 0.8383561643835616,
+          "return_on_total_capital_apr": 0.042481696088346274,
+          "worst_cum_funding_dd_return_units": 0.0006786699999999993
+        },
+        "2026_YTD": {
+          "best_month_share_of_total": 1.928703102809364,
+          "clears_hurdle": false,
+          "days": 180.66666663194445,
+          "gross_apr": 0.004296076938095033,
+          "n_months": 6,
+          "n_settlements": 543,
+          "negative_months": 3,
+          "net_apr": -0.0009566905905897703,
+          "pct_settlements_positive": 0.58195211786372,
+          "return_on_total_capital_apr": -0.000869718718717973,
+          "worst_cum_funding_dd_return_units": 0.005974970000000001
+        },
+        "rolling_180d": {
+          "best_month_share_of_total": null,
+          "clears_hurdle": false,
+          "days": 159.6666666087963,
+          "gross_apr": -0.0028320037588552556,
+          "n_months": 6,
+          "n_settlements": 480,
+          "negative_months": 3,
+          "net_apr": -0.008775636328859181,
+          "pct_settlements_positive": 0.53125,
+          "return_on_total_capital_apr": -0.007977851208053801,
+          "worst_cum_funding_dd_return_units": 0.005974969999999996
+        },
+        "rolling_365d": {
+          "best_month_share_of_total": 0.22502249849140046,
+          "clears_hurdle": false,
+          "days": 344.666666712963,
+          "gross_apr": 0.02535872799465953,
+          "n_months": 12,
+          "n_settlements": 1035,
+          "negative_months": 3,
+          "net_apr": 0.022605343082069993,
+          "pct_settlements_positive": 0.7120772946859903,
+          "return_on_total_capital_apr": 0.020550311892790902,
+          "worst_cum_funding_dd_return_units": 0.005974969999999968
+        },
+        "rolling_90d": {
+          "best_month_share_of_total": 1.1088516194518778,
+          "clears_hurdle": false,
+          "days": 69.66666667824074,
+          "gross_apr": 0.013626620093429923,
+          "n_months": 3,
+          "n_settlements": 210,
+          "negative_months": 1,
+          "net_apr": 4.610526315025661e-06,
+          "pct_settlements_positive": 0.6238095238095238,
+          "return_on_total_capital_apr": 4.1913875591142365e-06,
+          "worst_cum_funding_dd_return_units": 0.0015047799999999998
+        }
+      }
+    },
+    "bybit": {
+      "BTC": {
+        "2023(H2)": {
+          "best_month_share_of_total": 0.3318394775706709,
+          "clears_hurdle": false,
+          "days": 213.66666666666666,
+          "gross_apr": 0.10014651341653667,
+          "n_months": 7,
+          "n_settlements": 642,
+          "negative_months": 0,
+          "net_apr": 0.09570501575663028,
+          "pct_settlements_positive": 0.9158878504672897,
+          "return_on_total_capital_apr": 0.08700455977875479,
+          "worst_cum_funding_dd_return_units": 0.00015936000000000075
+        },
+        "2024": {
+          "best_month_share_of_total": 0.262483864808414,
+          "clears_hurdle": false,
+          "days": 365.6666666666667,
+          "gross_apr": 0.11997621536007294,
+          "n_months": 12,
+          "n_settlements": 1098,
+          "negative_months": 0,
+          "net_apr": 0.11738095556061989,
+          "pct_settlements_positive": 0.8934426229508197,
+          "return_on_total_capital_apr": 0.10670995960056354,
+          "worst_cum_funding_dd_return_units": 0.0011373399999999728
+        },
+        "2025": {
+          "best_month_share_of_total": 0.14806423060653376,
+          "clears_hurdle": false,
+          "days": 364.6666666666667,
+          "gross_apr": 0.05120368135283364,
+          "n_months": 12,
+          "n_settlements": 1095,
+          "negative_months": 0,
+          "net_apr": 0.04860130475319927,
+          "pct_settlements_positive": 0.8182648401826484,
+          "return_on_total_capital_apr": 0.04418300432109024,
+          "worst_cum_funding_dd_return_units": 0.0004879800000000007
+        },
+        "2026_YTD": {
+          "best_month_share_of_total": 0.3511897103304496,
+          "clears_hurdle": false,
+          "days": 201.0,
+          "gross_apr": 0.016654060199004977,
+          "n_months": 7,
+          "n_settlements": 604,
+          "negative_months": 2,
+          "net_apr": 0.011932667164179107,
+          "pct_settlements_positive": 0.6357615894039735,
+          "return_on_total_capital_apr": 0.010847879240162823,
+          "worst_cum_funding_dd_return_units": 0.0017614099999999975
+        },
+        "rolling_180d": {
+          "best_month_share_of_total": 0.46666975769702784,
+          "clears_hurdle": false,
+          "days": 180.0,
+          "gross_apr": 0.013995093611111111,
+          "n_months": 7,
+          "n_settlements": 541,
+          "negative_months": 2,
+          "net_apr": 0.00872287138888889,
+          "pct_settlements_positive": 0.6173752310536045,
+          "return_on_total_capital_apr": 0.007929883080808081,
+          "worst_cum_funding_dd_return_units": 0.0017614099999999997
+        },
+        "rolling_365d": {
+          "best_month_share_of_total": 0.19761322009666224,
+          "clears_hurdle": false,
+          "days": 365.0,
+          "gross_apr": 0.034189159999999996,
+          "n_months": 13,
+          "n_settlements": 1096,
+          "negative_months": 2,
+          "net_apr": 0.03158916,
+          "pct_settlements_positive": 0.7262773722627737,
+          "return_on_total_capital_apr": 0.028717418181818177,
+          "worst_cum_funding_dd_return_units": 0.001761410000000005
+        },
+        "rolling_90d": {
+          "best_month_share_of_total": 0.5625377696271069,
+          "clears_hurdle": false,
+          "days": 90.0,
+          "gross_apr": 0.023220083333333332,
+          "n_months": 4,
+          "n_settlements": 271,
+          "negative_months": 1,
+          "net_apr": 0.012675638888888887,
+          "pct_settlements_positive": 0.6937269372693727,
+          "return_on_total_capital_apr": 0.011523308080808078,
+          "worst_cum_funding_dd_return_units": 0.0007999600000000003
+        }
+      },
+      "ETH": {
+        "2023(H2)": {
+          "best_month_share_of_total": 0.34413998747454905,
+          "clears_hurdle": false,
+          "days": 213.66666666666666,
+          "gross_apr": 0.09276824625585026,
+          "n_months": 7,
+          "n_settlements": 642,
+          "negative_months": 0,
+          "net_apr": 0.08832674859594387,
+          "pct_settlements_positive": 0.8566978193146417,
+          "return_on_total_capital_apr": 0.08029704417813079,
+          "worst_cum_funding_dd_return_units": 0.0005778399999999892
+        },
+        "2024": {
+          "best_month_share_of_total": 0.240787136456958,
+          "clears_hurdle": true,
+          "days": 365.6666666666667,
+          "gross_apr": 0.12477964197812218,
+          "n_months": 12,
+          "n_settlements": 1098,
+          "negative_months": 0,
+          "net_apr": 0.12218438217866912,
+          "pct_settlements_positive": 0.8861566484517304,
+          "return_on_total_capital_apr": 0.11107671107151737,
+          "worst_cum_funding_dd_return_units": 0.0008712300000000145
+        },
+        "2025": {
+          "best_month_share_of_total": 0.15695862912690958,
+          "clears_hurdle": false,
+          "days": 364.6666666666667,
+          "gross_apr": 0.04831116978976234,
+          "n_months": 12,
+          "n_settlements": 1095,
+          "negative_months": 0,
+          "net_apr": 0.04570879319012797,
+          "pct_settlements_positive": 0.7808219178082192,
+          "return_on_total_capital_apr": 0.04155344835466179,
+          "worst_cum_funding_dd_return_units": 0.0015404800000000038
+        },
+        "2026_YTD": {
+          "best_month_share_of_total": 0.32022731343315797,
+          "clears_hurdle": false,
+          "days": 201.0,
+          "gross_apr": 0.016830422388059704,
+          "n_months": 7,
+          "n_settlements": 604,
+          "negative_months": 1,
+          "net_apr": 0.012109029353233831,
+          "pct_settlements_positive": 0.6473509933774835,
+          "return_on_total_capital_apr": 0.011008208502939846,
+          "worst_cum_funding_dd_return_units": 0.0014004100000000012
+        },
+        "rolling_180d": {
+          "best_month_share_of_total": 0.361444456836778,
+          "clears_hurdle": false,
+          "days": 180.0,
+          "gross_apr": 0.013999595277777777,
+          "n_months": 7,
+          "n_settlements": 541,
+          "negative_months": 1,
+          "net_apr": 0.008727373055555555,
+          "pct_settlements_positive": 0.6321626617375231,
+          "return_on_total_capital_apr": 0.007933975505050504,
+          "worst_cum_funding_dd_return_units": 0.0014004100000000008
+        },
+        "rolling_365d": {
+          "best_month_share_of_total": 0.18386222903543423,
+          "clears_hurdle": false,
+          "days": 365.0,
+          "gross_apr": 0.02899595,
+          "n_months": 13,
+          "n_settlements": 1096,
+          "negative_months": 1,
+          "net_apr": 0.02639595,
+          "pct_settlements_positive": 0.697992700729927,
+          "return_on_total_capital_apr": 0.02399631818181818,
+          "worst_cum_funding_dd_return_units": 0.0015404800000000003
+        },
+        "rolling_90d": {
+          "best_month_share_of_total": 0.5070230797520333,
+          "clears_hurdle": false,
+          "days": 90.0,
+          "gross_apr": 0.019959943888888887,
+          "n_months": 4,
+          "n_settlements": 271,
+          "negative_months": 1,
+          "net_apr": 0.009415499444444444,
+          "pct_settlements_positive": 0.6937269372693727,
+          "return_on_total_capital_apr": 0.008559544949494948,
+          "worst_cum_funding_dd_return_units": 0.0007269999999999993
+        }
+      }
+    }
+  },
+  "task": "TASK-BASIS-001 (b) carry time-profile characterization"
+}

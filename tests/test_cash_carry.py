@@ -16,6 +16,7 @@ from src.research.cash_carry import (
     annualized_basis,
     basis_fraction,
     capital_employed_return,
+    clears_deploy_hurdle,
     funding_carry_return,
     locked_carry_return,
     net_carry_return,
@@ -107,3 +108,12 @@ def test_annualize_return():
     assert math.isclose(annualize_return(0.03, 90.0), 0.03 * 365.0 / 90.0, rel_tol=1e-9)
     with pytest.raises(ValueError, match="days_held"):
         annualize_return(0.03, 0.0)
+
+
+def test_clears_deploy_hurdle():
+    # above hurdle with enough settlements -> deployable
+    assert clears_deploy_hurdle(0.15, 0.11, 400, min_settlements=90) is True
+    # below hurdle -> not deployable even with many settlements
+    assert clears_deploy_hurdle(0.07, 0.11, 400, min_settlements=90) is False
+    # above hurdle but too few settlements -> not a valid read
+    assert clears_deploy_hurdle(0.15, 0.11, 50, min_settlements=90) is False

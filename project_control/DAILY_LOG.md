@@ -1,5 +1,34 @@
 # Daily Log
 
+## 2026-07-21 (BASIS-001 (b) caracterizacao temporal + PAUSA da familia -- "edge real mas comprimido")
+
+```text
+- (b) Caracterizacao temporal do funding carry (sem otimizar; janelas FIXAS).
+  scripts/run_basis_carry_characterization.py (offline, dos caches) + helper puro
+  clears_deploy_hurdle em cash_carry.py (+1 teste). Hurdle operacional A-PRIORI
+  ~11% APR = custo de capital 4% + contraparte 3% + custodia/stablecoin 1% +
+  fees/slippage 0.5% + buffer de inversao de funding 2% + manutencao 2 pernas
+  0.5% (de primeiros principios, NAO ajustado pra passar).
+- Retorno sobre CAPITAL TOTAL (net APR/(1+margem)), Binance BTC: 2023H2 7.2% ->
+  2024 10.6% (pico) -> 2025 4.4% -> 2026-YTD 0.5%. Ao hurdle cheio ~11% NUNCA
+  passou em janela calendario (2024 ficou logo abaixo); a um hurdle enxuto ~5%
+  (capital ja on-venue) passa 2023-2024 e cruza pra baixo em ~2025. Bybit quase
+  identico; dispersao Binance-Bybit pequena. OKX so recente (~0).
+- Resposta a pergunta central: o carry deixou de compensar os riscos ~2025 e
+  esta ~0 agora. A APR alta e front-loaded no regime de funding rico 2023-2024.
+- RISCO REFRASEADO (por pedido, honesto): a posicao tem BAIXO risco DIRECIONAL e
+  baixa path-dependence DESDE QUE as 2 pernas fiquem operacionais e margined --
+  NAO e sem risco / sem drawdown (funding inverte, spread spot-perp amplia,
+  pernas margined separadamente/liquidacao, uma perna pode falhar; exchange/
+  index/ADL/custodia). Suavizado nos relatorios e no ledger.
+- VEREDITO DA FAMILIA: EDGE REAL mas ATUALMENTE COMPRIMIDO -> PAUSADA. Regra de
+  re-abertura: so se o funding forward voltar acima do hurdle por um minimo de
+  settlements (causal, conservador). NAO ir pra calendar spread (mesma expressao
+  do premio de basis, correlacionada -> pouco ganho informacional).
+- Paper only. 661 testes (1 novo), ruff limpo. Infra da TSM intacta.
+  reports/basis_carry_characterization.md.
+```
+
 ## 2026-07-20 (BASIS-001 cross-exchange -- spot x perp funding carry: Binance+Bybit confirmam ~7.5%; edge comprimindo)
 
 ```text

@@ -40,5 +40,5 @@ Cross-exchange dated cash-and-carry is data-gated (OKX/Bybit drop expired contra
 
 ## Reading (fact / limitation)
 
-- Delta-neutral by construction (long spot + short perp, equal notional); the return is the funding the short earns, not a price bet.
+- LOW directional risk / LOW path-dependence (long spot + short perp, equal notional) PROVIDED both legs stay operational and adequately margined -- the return is the funding the short earns, not a price bet, but it is NOT risk-free.
 - LIMITATION: this is the PERP construction (funding), NOT the dated cash-and-carry of Phase 1 (which stays Binance-only, data-gated cross-exchange). Funding turns NEGATIVE in sustained bear regimes (short perp then PAYS) -> the cum-funding drawdown column is the real risk. Funding has COMPRESSED over 2025-2026 (consistent with the dated-basis compression in Phase 1) -- the carry is real but thinning. Costs are a conservative constant; borrow/withdrawal/custody and short-leg liquidation risks stand. No real money.

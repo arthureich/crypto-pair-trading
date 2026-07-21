@@ -17,9 +17,17 @@ spot x PERP funding carry (mesmo mecanismo). Binance+Bybit confirmam ~7.5% net A
 em ~3a (quase identicos -> nao e artefato de 1 venue); OKX free funding-history e
 raso (~3m, +1.2% recente). Janela comum recente: as 3 ~0 -> carry COMPRIMIU em
 2026 (edge real mas regime-dependente; 7.5% vem de 2023-2024). Criterio #1
-PARCIALMENTE atendido. Modulos NOVOS e SEPARADOS -- infra da TSM intacta. Paper
-only. Ver `reports/basis_cash_carry.md`, `reports/basis_perp_carry_xexch.md`,
-`docs/pre_registers/TASK-BASIS-001.md`.
+PARCIALMENTE atendido. (b) Caracterizacao temporal (hurdle operacional a-priori
+~11% APR, nao ajustado): ROC sobre capital total (Binance BTC) 2023H2 7.2% -> 2024
+10.6% (pico) -> 2025 4.4% -> 2026 0.5% -> nunca passou o hurdle cheio; cruzou pra
+baixo ~2025. VEREDITO: FAMILIA PAUSADA = edge REAL mas ATUALMENTE COMPRIMIDO; re-
+abrir so se o funding forward voltar acima do hurdle por um minimo de settlements.
+Risco refraseado: baixo risco direcional/path-dependence DESDE QUE as 2 pernas
+fiquem operacionais e margined (nao e sem risco). NAO seguir pra calendar spread
+(mesma expressao do premio, correlacionada). Modulos NOVOS e SEPARADOS -- infra da
+TSM intacta. Paper only. Ver `reports/basis_cash_carry.md`, `reports/
+basis_perp_carry_xexch.md`, `reports/basis_carry_characterization.md`, `docs/
+pre_registers/TASK-BASIS-001.md`.
 
 ## Atualizacao 2026-07-18: DEPLOY-001 (ADR-0033) -- congelar a TSM validada; engenharia de forward/execucao, NAO alpha
 
