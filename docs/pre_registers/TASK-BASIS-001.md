@@ -96,6 +96,24 @@ contrato-indice; fees consumindo o spread; custodia do spot; basis ampliando ANT
 de convergir (perda MTM). O criterio de aprovacao ja exige robustez a varios deles.
 ```
 
+## Addendum 2026-07-20 (data-gating -> reordena #3 antes de #4 para o criterio #1)
+
+```text
+RECON: cash-and-carry DATADO cross-exchange e INVIAVEL historicamente -- OKX
+recusa contratos expirados (code 50047 "has already settled"; so contratos VIVOS)
+e a Bybit so lista datados vivos (2026-2027). So a Binance publica arquivos de
+contratos datados EXPIRADOS. Logo o criterio #1 (positivo em Binance+Bybit+OKX)
+NAO e satisfazivel historicamente para futuro datado.
+DECISAO (usuario): trazer o passo #3 (spot x PERP funding-neutral) PARA A FRENTE
+como o teste cross-exchange do MESMO mecanismo delta-neutral -- dados de perp +
+funding + spot PERSISTEM nas 3 exchanges. Construcao: long spot + short perp
+(nocionais iguais, delta~0); retorno ~ funding acumulado recebido pelo short
+(quando funding>0) - drift do basis spot-perp (2a ordem) - custos. Metrica: APR
+de funding-carry liquido por (exchange, ativo); criterio #1 = positivo nas 3.
+NAO substitui o resultado datado da Fase 1 (Binance) -- e o teste cross-exchange
+da familia. Continua BTC/ETH, delta-neutral, custos conservadores, paper only.
+```
+
 ## Invariantes / Fora de escopo
 
 ```text

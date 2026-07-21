@@ -12,9 +12,11 @@ import numpy as np
 import pytest
 
 from src.research.cash_carry import (
+    annualize_return,
     annualized_basis,
     basis_fraction,
     capital_employed_return,
+    funding_carry_return,
     locked_carry_return,
     net_carry_return,
     worst_adverse_mtm,
@@ -86,3 +88,22 @@ def test_capital_employed_return_scaling():
 def test_capital_employed_rejects_bad_margin():
     with pytest.raises(ValueError, match="margin_fraction"):
         capital_employed_return(0.02, margin_fraction=0.0)
+
+
+def test_funding_carry_sums_rates_minus_cost():
+    # short perp receives +sum(rate); 3 settlements of +1bp = +3bps gross
+    rates = [0.0001, 0.0001, 0.0001]
+    net = funding_carry_return(rates, cost_bps_per_leg=6.5, n_legs_roundtrip=4)
+    assert math.isclose(net, 0.0003 - 4 * 6.5 / 10_000.0, rel_tol=1e-9)
+
+
+def test_funding_carry_negative_when_funding_turns_negative():
+    # persistently negative funding (bear) -> short perp PAYS -> negative carry
+    rates = [-0.0002] * 10
+    assert funding_carry_return(rates, cost_bps_per_leg=6.5) < 0.0
+
+
+def test_annualize_return():
+    assert math.isclose(annualize_return(0.03, 90.0), 0.03 * 365.0 / 90.0, rel_tol=1e-9)
+    with pytest.raises(ValueError, match="days_held"):
+        annualize_return(0.03, 0.0)

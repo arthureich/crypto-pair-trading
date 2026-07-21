@@ -1,5 +1,32 @@
 # Daily Log
 
+## 2026-07-20 (BASIS-001 cross-exchange -- spot x perp funding carry: Binance+Bybit confirmam ~7.5%; edge comprimindo)
+
+```text
+- Recon cross-exchange do cash-and-carry DATADO: INVIAVEL historicamente -- OKX
+  recusa contratos expirados (code 50047), Bybit so lista datados vivos. So a
+  Binance publica datados expirados. Decisao do usuario: pivotar pro passo #3
+  (spot x PERP funding-neutral) como teste cross-exchange do MESMO mecanismo
+  delta-neutral (dado que PERSISTE nas 3 exchanges). Addendum no pre-registro.
+- funding_carry_return + annualize_return em cash_carry.py (+3 testes: short
+  perp recebe Sigma funding; negativo quando funding vira negativo).
+- scripts/run_basis_perp_carry_xexch.py: baixa funding history de Binance
+  (arquivo), Bybit (v5 API paginada), OKX (v5 API paginada); cache offline.
+- Resultado FULL-DEPTH (~3 anos): Binance BTC/ETH 7.2%/7.5%, Bybit 7.5%/7.5% net
+  APR -- quase identicos -> NAO e artefato de uma exchange (forte confirmacao de
+  2 venues). OKX: funding-history free e RASA (~3 meses; request de 2024 volta
+  vazio) -> +1.2% no span recente.
+- Janela COMUM recente (abr-jun/2026, apples-to-apples): as 3 venues ~0 (Binance
+  -0.04%, Bybit -0.46%, OKX -0.06% pra BTC) -> funding COMPRIMIU no regime atual,
+  coerente com a compressao do basis datado (Fase 1: 32% mid-2024 -> ~3-5% 2025).
+- VEREDITO cross-exchange: criterio #1 PARCIALMENTE atendido -- consistencia
+  forte (Binance+Bybit full-depth), OKX inconclusivo por LIMITE DE DADO (nao
+  negativo de venue). Edge REAL mas REGIME-DEPENDENTE e comprimindo: 7.5% vem de
+  2023-2024; ~0% agora. Risco real: funding vira negativo em bear (short paga).
+- Paper only. Verificacao: 660 testes (3 novos), ruff limpo. Infra TSM intacta.
+  reports/basis_perp_carry_xexch.md.
+```
+
 ## 2026-07-20 (BASIS-001 Fase 1 -- cash-and-carry BTC/ETH: net APR ~11%, maxDD 0%, delta~0; CONDICIONAL Binance-only)
 
 ```text

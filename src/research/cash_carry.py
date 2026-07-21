@@ -18,9 +18,11 @@ from __future__ import annotations
 import numpy as np
 
 __all__ = [
+    "annualize_return",
     "annualized_basis",
     "basis_fraction",
     "capital_employed_return",
+    "funding_carry_return",
     "locked_carry_return",
     "net_carry_return",
     "worst_adverse_mtm",
@@ -76,6 +78,28 @@ def worst_adverse_mtm(entry_spot: float, entry_fut: float, spot_path, fut_path) 
     basis0 = entry_fut - entry_spot
     mtm = (basis0 - (f - s)) / entry_spot  # position value change vs entry
     return float(mtm.min()) if mtm.size else 0.0
+
+
+def funding_carry_return(
+    funding_rates, *, cost_bps_per_leg: float, n_legs_roundtrip: int = 4
+) -> float:
+    """Gross return of long-spot + short-perp (delta ~0), net of round-trip cost.
+
+    The SHORT perp RECEIVES funding when the rate is positive, so the funding P&L
+    (as a fraction of notional) is the SUM of the funding rates over the hold; the
+    long spot pays no funding. The spot-perp basis drift is second-order over a
+    continuous hold and is handled separately by the caller. Cost is a one-time
+    round trip (enter + exit both legs)."""
+    total_funding = float(np.asarray(funding_rates, dtype=float).sum())
+    cost = n_legs_roundtrip * cost_bps_per_leg / 10_000.0
+    return total_funding - cost
+
+
+def annualize_return(total_return: float, days_held: float) -> float:
+    """Simple annualization of a period return."""
+    if days_held <= 0:
+        raise ValueError("days_held must be positive")
+    return total_return * (365.0 / days_held)
 
 
 def capital_employed_return(net_return_on_spot: float, *, margin_fraction: float) -> dict:

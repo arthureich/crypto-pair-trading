@@ -11,10 +11,15 @@ trimestrais 2024-2025. Resultado: net APR media **11,3%** (mediana 8,7%, **100%
 positivo**), **rolled maxDD 0,0%**, **delta-corr -0,14** (~0), pior MTM adverso
 <=1,6%; basis comprimindo (32% APR mid-2024 -> ~3-5% em 2025). Perfil OPOSTO ao da
 TSM (sem drawdown/direcao). VEREDITO: **CONDICIONAL, NAO aprovado** -- so Binance;
-o criterio travado #1 exige positivo em Binance+Bybit+OKX. Proximo: replicar em
-Bybit/OKX. Modulos NOVOS e SEPARADOS (cash_carry.py, basis_data.py) -- infra da TSM
-intacta. Paper only. Ver `reports/basis_cash_carry.md`, `docs/pre_registers/
-TASK-BASIS-001.md`.
+o criterio travado #1 exige positivo em Binance+Bybit+OKX. CROSS-EXCHANGE (decisao
+do usuario): dated e data-gated (OKX/Bybit descartam expirados) -> pivotou pro
+spot x PERP funding carry (mesmo mecanismo). Binance+Bybit confirmam ~7.5% net APR
+em ~3a (quase identicos -> nao e artefato de 1 venue); OKX free funding-history e
+raso (~3m, +1.2% recente). Janela comum recente: as 3 ~0 -> carry COMPRIMIU em
+2026 (edge real mas regime-dependente; 7.5% vem de 2023-2024). Criterio #1
+PARCIALMENTE atendido. Modulos NOVOS e SEPARADOS -- infra da TSM intacta. Paper
+only. Ver `reports/basis_cash_carry.md`, `reports/basis_perp_carry_xexch.md`,
+`docs/pre_registers/TASK-BASIS-001.md`.
 
 ## Atualizacao 2026-07-18: DEPLOY-001 (ADR-0033) -- congelar a TSM validada; engenharia de forward/execucao, NAO alpha
 

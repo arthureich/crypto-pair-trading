@@ -1,0 +1,150 @@
+{
+  "assets": [
+    "BTC",
+    "ETH"
+  ],
+  "binance_bybit_full_depth_positive": true,
+  "common_window": {
+    "BTC": {
+      "binance": {
+        "cum_funding_maxdd_return_units": 0.0025432699999999985,
+        "days": 77.33333335648148,
+        "frac_settlements_positive": 0.6266094420600858,
+        "gross_apr": 0.011876454953341579,
+        "n_settlements": 233,
+        "net_apr": -0.00039509676712311454,
+        "window_end": "2026-06-30",
+        "window_start": "2026-04-14"
+      },
+      "bybit": {
+        "cum_funding_maxdd_return_units": 0.0017223400000000006,
+        "days": 77.33333333333333,
+        "frac_settlements_positive": 0.575107296137339,
+        "gross_apr": 0.007656457112068965,
+        "n_settlements": 233,
+        "net_apr": -0.004615094612068966,
+        "window_end": "2026-06-30",
+        "window_start": "2026-04-14"
+      },
+      "okx": {
+        "cum_funding_maxdd_return_units": 0.0013239180950432,
+        "days": 77.33333333333333,
+        "frac_settlements_positive": 0.5879828326180258,
+        "gross_apr": 0.01162648494463773,
+        "n_settlements": 233,
+        "net_apr": -0.0006450667795002015,
+        "window_end": "2026-06-30",
+        "window_start": "2026-04-14"
+      },
+      "window_end": "2026-06-30",
+      "window_start": "2026-04-14"
+    },
+    "ETH": {
+      "binance": {
+        "cum_funding_maxdd_return_units": 0.0020851700000000003,
+        "days": 77.33333335648148,
+        "frac_settlements_positive": 0.6008583690987125,
+        "gross_apr": 0.00913668943692029,
+        "n_settlements": 233,
+        "net_apr": -0.003134862283544403,
+        "window_end": "2026-06-30",
+        "window_start": "2026-04-14"
+      },
+      "bybit": {
+        "cum_funding_maxdd_return_units": 0.00140041,
+        "days": 77.33333333333333,
+        "frac_settlements_positive": 0.5965665236051502,
+        "gross_apr": 0.007496502155172414,
+        "n_settlements": 233,
+        "net_apr": -0.004775049568965517,
+        "window_end": "2026-06-30",
+        "window_start": "2026-04-14"
+      },
+      "okx": {
+        "cum_funding_maxdd_return_units": 0.0015152317515088978,
+        "days": 77.33333333333333,
+        "frac_settlements_positive": 0.630901287553648,
+        "gross_apr": 0.018924209864450942,
+        "n_settlements": 233,
+        "net_apr": 0.00665265814031301,
+        "window_end": "2026-06-30",
+        "window_start": "2026-04-14"
+      },
+      "window_end": "2026-06-30",
+      "window_start": "2026-04-14"
+    }
+  },
+  "common_window_all_three_positive": false,
+  "cost_bps_per_leg": 6.5,
+  "generated_at_utc": "2026-07-21T00:51:52.673070+00:00",
+  "okx_funding_history_depth_limited": true,
+  "results_full_depth": {
+    "binance": {
+      "BTC": {
+        "cum_funding_maxdd_return_units": 0.0041246300000001845,
+        "days": 1125.6666666319445,
+        "frac_settlements_positive": 0.8472468916518651,
+        "gross_apr": 0.07302206104755891,
+        "n_settlements": 3378,
+        "net_apr": 0.07217900508069845,
+        "window_end": "2026-06-30",
+        "window_start": "2023-06-01"
+      },
+      "ETH": {
+        "cum_funding_maxdd_return_units": 0.005974969999999941,
+        "days": 1125.6666666319445,
+        "frac_settlements_positive": 0.8481349911190054,
+        "gross_apr": 0.07536903158360998,
+        "n_settlements": 3378,
+        "net_apr": 0.0745259756167495,
+        "window_end": "2026-06-30",
+        "window_start": "2023-06-01"
+      }
+    },
+    "bybit": {
+      "BTC": {
+        "cum_funding_maxdd_return_units": 0.0017614099999999078,
+        "days": 1146.0,
+        "frac_settlements_positive": 0.8284384995638266,
+        "gross_apr": 0.07616842613438045,
+        "n_settlements": 3439,
+        "net_apr": 0.07534032840314137,
+        "window_end": "2026-07-21",
+        "window_start": "2023-06-01"
+      },
+      "ETH": {
+        "cum_funding_maxdd_return_units": 0.0015404800000000107,
+        "days": 1146.0,
+        "frac_settlements_positive": 0.8051759232334981,
+        "gross_apr": 0.07543597369109947,
+        "n_settlements": 3439,
+        "net_apr": 0.07460787595986038,
+        "window_end": "2026-07-21",
+        "window_start": "2023-06-01"
+      }
+    },
+    "okx": {
+      "BTC": {
+        "cum_funding_maxdd_return_units": 0.0013239180950432,
+        "days": 97.66666666666667,
+        "frac_settlements_positive": 0.6666666666666666,
+        "gross_apr": 0.02165245417700454,
+        "n_settlements": 294,
+        "net_apr": 0.011935730627516485,
+        "window_end": "2026-07-21",
+        "window_start": "2026-04-14"
+      },
+      "ETH": {
+        "cum_funding_maxdd_return_units": 0.0015152317515088978,
+        "days": 97.66666666666667,
+        "frac_settlements_positive": 0.6598639455782312,
+        "gross_apr": 0.02212527335497574,
+        "n_settlements": 294,
+        "net_apr": 0.012408549805487685,
+        "window_end": "2026-07-21",
+        "window_start": "2026-04-14"
+      }
+    }
+  },
+  "task": "TASK-BASIS-001 cross-exchange spot-perp funding carry (criterion #1)"
+}
